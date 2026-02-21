@@ -1,0 +1,14 @@
+{
+  "name": "rose-n-petals",
+  "version": "1.0.0",
+  "description": "Rose n Petals Node Web Service",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'No build step required for static frontend'"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

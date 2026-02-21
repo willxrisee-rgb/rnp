@@ -1,0 +1,218 @@
+// js/pages.js
+
+window.Pages = {
+    renderHomePage(container) {
+        document.title = "Rose n Petals - Home";
+
+        const bouquets = Store.getAllProducts();
+        const bestSellers = bouquets.filter(b => b.isBestSeller).slice(0, 8);
+        const occasionTags = ["All", ...Store.getAllOccasionTags(), "Under ₹499"];
+
+        const stepsData = [
+            { title: "Choose a bouquet", description: "Browse our curated collections for every occasion." },
+            { title: "Fill your details", description: "Enter delivery address, date, time, and message card text." },
+            { title: "Confirm on WhatsApp", description: "We confirm availability and payment via UPI or bank transfer, then deliver." }
+        ];
+
+        let html = `
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content container">
+                    <h1 class="hero-title">Fresh bouquets in Kavi Nagar & Raj Nagar</h1>
+                    <p class="hero-subtitle">Hand‑picked premium flowers for your special moments. Local delivery available.</p>
+                    <div class="hero-actions">
+                        <a href="#/catalog" class="btn btn-primary btn-lg">View Bouquets</a>
+                    </div>
+                    <div class="hero-badges">
+                        <span class="badge">✓ 2‑hour delivery available (where possible)</span>
+                        <span class="badge">✓ Loved by locals in Ghaziabad</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Shop by Occasion -->
+            <section class="section container">
+                <h2 class="section-title">Shop by occasion</h2>
+                ${Components.createFilterChips(occasionTags, 'All')}
+            </section>
+            
+            <!-- Best Sellers -->
+            <section class="section section-light">
+                <div class="container">
+                    <h2 class="section-title">Best Sellers</h2>
+                    <div class="product-grid">
+                        ${bestSellers.map(b => Components.createProductCard(b)).join('')}
+                    </div>
+                    ${bestSellers.length === 0 ? '<p class="text-center text-muted">No best sellers found currently.</p>' : ''}
+                </div>
+            </section>
+            
+            <!-- How it works -->
+            <section id="how-it-works" class="section container">
+                <h2 class="section-title">How it works</h2>
+                ${Components.createSteps(stepsData)}
+            </section>
+            
+            <!-- About & Contact Strip -->
+            <section class="section section-light">
+                <div class="container about-contact-container">
+                    <div class="about-card">
+                        <h3>About our shop</h3>
+                        <p>Rose n Petals is a local family‑run florist in Kavi Nagar & Raj Nagar, dedicated to making your special moments bloom with carefully selected fresh flowers.</p>
+                        <ul class="highlight-stats">
+                            <li><strong>✓</strong> Years of local experience</li>
+                            <li><strong>✓</strong> Hundreds of happy customers</li>
+                        </ul>
+                    </div>
+                    <div class="contact-card" id="contact">
+                        <h3>Contact Rose n Petals</h3>
+                        <p class="mb-4">Need help choosing? Reach out to us directly.</p>
+                        <div class="contact-buttons">
+                            <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank" class="btn btn-primary mb-2">Chat on WhatsApp</a>
+                            <a href="tel:+919810244455" class="btn btn-outline">Call now (+91 9810244455)</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        `;
+
+        container.innerHTML = html;
+        this.setupChipListeners('#/catalog?filter=');
+    },
+
+    renderCatalogPage(container, activeFilterParam) {
+        document.title = "Catalog - Rose n Petals";
+
+        const decodedFilter = decodeURIComponent(activeFilterParam);
+        const occasionTags = ["All", ...Store.getAllOccasionTags(), "Under ₹499"];
+        const filteredProducts = Store.getProductsByOccasion(decodedFilter);
+
+        let html = `
+            <div class="page-header section-light">
+                <div class="container">
+                    <h1 class="mb-2">Our Bouquets</h1>
+                    <p class="text-muted">Fresh, hand-arranged flowers for every moment.</p>
+                </div>
+            </div>
+            
+            <section class="section container">
+                <!-- Filters -->
+                <div class="mb-4">
+                    ${Components.createFilterChips(occasionTags, decodedFilter)}
+                </div>
+                
+                <!-- Grid -->
+                <div class="product-grid">
+                    ${filteredProducts.length > 0
+                ? filteredProducts.map(b => Components.createProductCard(b)).join('')
+                : '<div class="empty-state"><p>No bouquets found for this occasion. Please try another filter.</p></div>'
+            }
+                </div>
+            </section>
+        `;
+
+        container.innerHTML = html;
+        this.setupChipListeners('#/catalog?filter=');
+    },
+
+    renderBouquetDetailPage(container, id) {
+        const decodedId = decodeURIComponent(id);
+        const bouquet = Store.getProductById(decodedId);
+
+        if (!bouquet) {
+            container.innerHTML = `<div class="container section"><h2 class="text-center">Bouquet not found</h2><div class="text-center"><a href="#/catalog" class="btn btn-primary mt-4">Back to Catalog</a></div></div>`;
+            return;
+        }
+
+        document.title = `${bouquet.name} - Rose n Petals`;
+
+        // Pick 4 related bouquets
+        const related = Store.getAllProducts()
+            .filter(p => p.id !== id && p.occasionTags.some(t => bouquet.occasionTags.includes(t)))
+            .slice(0, 4);
+
+        // Fallback to any 4 if not enough related tags
+        if (related.length < 4) {
+            const others = Store.getAllProducts().filter(p => p.id !== id && !related.find(r => r.id === p.id));
+            related.push(...others.slice(0, 4 - related.length));
+        }
+
+        const tagsHtml = bouquet.occasionTags.map(t => `<span class="badge detail-badge">${t}</span>`).join('');
+
+        const detailImageHtml = bouquet.image_url
+            ? `<img src="${bouquet.image_url}" alt="${bouquet.name}" class="detail-image">`
+            : `<div class="detail-image placeholder-image"><span>Image coming soon</span></div>`;
+
+        let html = `
+            <!-- Product Detail Section -->
+            <section class="section container detail-section">
+                <div class="detail-grid">
+                    <div class="detail-image-wrapper">
+                        ${detailImageHtml}
+                    </div>
+                    <div class="detail-info">
+                        <div class="detail-tags mb-2">${tagsHtml}</div>
+                        <h1 class="detail-title">${bouquet.name}</h1>
+                        <p class="detail-price mt-2 mb-4">₹${bouquet.price}</p>
+                        
+                        <div class="detail-desc mb-4">
+                            <p>${bouquet.shortDescription}</p>
+                        </div>
+                        
+                        <div class="local-promise-box mb-4">
+                            <h4>🛡️ Local Promise</h4>
+                            <ul class="promise-list">
+                                <li>Local delivery available in Kavi Nagar & Raj Nagar</li>
+                                <li>Custom message card available</li>
+                                <li>Fresh flowers arranged to order</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Embedded Order Form -->
+                        <div id="inline-order-form">
+                            ${Components.createOrderForm(bouquet)}
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Related Bouquets -->
+            ${related.length > 0 ? `
+            <section class="section section-light">
+                <div class="container">
+                    <h2 class="section-title">You might also like</h2>
+                    <div class="product-grid">
+                        ${related.map(b => Components.createProductCard(b)).join('')}
+                    </div>
+                </div>
+            </section>
+            ` : ''}
+            
+            <!-- Sticky Mobile CTA -->
+            <div class="mobile-sticky-cta">
+                <div class="sticky-price-row">
+                    <span>Total:</span>
+                    <strong>₹${bouquet.price}</strong>
+                </div>
+                <button class="btn btn-primary" onclick="document.getElementById('bouquet-order-form').scrollIntoView({behavior: 'smooth', block: 'start'})">
+                    Order this bouquet
+                </button>
+            </div>
+        `;
+
+        container.innerHTML = html;
+
+        // Initialize WhatsApp form listener
+        WhatsApp.initFormListener();
+    },
+
+    // Helper to handle client-side filtering via chip clicks
+    setupChipListeners(baseUrl) {
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                const filterValue = e.target.getAttribute('data-filter');
+                window.location.hash = baseUrl + encodeURIComponent(filterValue);
+            });
+        });
+    }
+};

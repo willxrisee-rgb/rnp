@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+test_csv.csv
+test_img.html
+test_parse.js
+test_bestseller.js
