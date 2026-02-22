@@ -47,6 +47,11 @@ window.Pages = {
                 </div>
             </section>
             
+            <!-- Custom Bouquet Banner -->
+            <section class="section container" style="padding-top: 0;">
+                ${Components.createCustomBouquetBanner()}
+            </section>
+            
             <!-- How it works -->
             <section id="how-it-works" class="section container">
                 <h2 class="section-title">How it works</h2>
@@ -108,6 +113,9 @@ window.Pages = {
                 : '<div class="empty-state"><p>No bouquets found for this occasion. Please try another filter.</p></div>'
             }
                 </div>
+                
+                <!-- Custom Bouquet Banner -->
+                ${Components.createCustomBouquetBanner()}
             </section>
         `;
 
