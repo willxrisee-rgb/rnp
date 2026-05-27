@@ -12,12 +12,12 @@ window.Components = {
 
         return `
             <div class="product-card">
-                <a href="#/bouquet/${bouquet.id}" class="card-image-link">
+                <a href="#/bouquet/${bouquet.id}" class="card-image-link" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${bouquet.name.replace(/'/g, \\"\\\\'\\")}' });">
                     ${imageHtml}
                     ${badgeHTML}
                 </a>
                 <div class="card-content">
-                    <h3 class="card-title"><a href="#/bouquet/${bouquet.id}">${bouquet.name}</a></h3>
+                    <h3 class="card-title"><a href="#/bouquet/${bouquet.id}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${bouquet.name.replace(/'/g, \\"\\\\'\\")}' });">${bouquet.name}</a></h3>
                     <p class="card-desc">${bouquet.shortDescription}</p>
                     <div class="card-footer">
                         <span class="card-price">₹${bouquet.price}</span>
@@ -143,7 +143,7 @@ window.Components = {
                     <li style="margin-bottom: var(--spacing-sm); display: flex; align-items: flex-start;"><span style="color: var(--primary-color); font-weight: bold; margin-right: var(--spacing-sm);">✓</span> We'll arrange a fresh bouquet just for you</li>
                     <li style="display: flex; align-items: flex-start;"><span style="color: var(--primary-color); font-weight: bold; margin-right: var(--spacing-sm);">✓</span> Same local delivery in Kavi Nagar & Raj Nagar</li>
                 </ul>
-                <a href="https://api.whatsapp.com/send?phone=917289996804&text=Hi%2C%20I%20want%20to%20order%20a%20custom%20bouquet.%20Can%20you%20help%20me%3F" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg" style="display: inline-block;">Order a Custom Bouquet on WhatsApp</a>
+                <a href="https://api.whatsapp.com/send?phone=917289996804&text=Hi%2C%20I%20want%20to%20order%20a%20custom%20bouquet.%20Can%20you%20help%20me%3F" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg" style="display: inline-block;" onclick="if(window.gtag) gtag('event', 'whatsapp_order_click', { event_category: 'Order Intent', bouquet_name: 'Custom' });">Order a Custom Bouquet on WhatsApp</a>
             </div>
         `;
     }

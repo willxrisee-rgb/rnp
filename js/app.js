@@ -5,6 +5,24 @@ const App = {
         // Init Mobile Menu
         this.initMobileMenu();
 
+        // Hidden Admin Entrance
+        const logo = document.querySelector('.logo');
+        if (logo) {
+            let clickCount = 0;
+            let clickTimer = null;
+            logo.addEventListener('click', (e) => {
+                clickCount++;
+                if (clickCount === 3) {
+                    e.preventDefault();
+                    window.location.href = '/admin/login';
+                }
+                clearTimeout(clickTimer);
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 2000);
+            });
+        }
+
         // Handle route changes
         window.addEventListener('hashchange', this.handleRouting.bind(this));
 

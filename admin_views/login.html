@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Rose n Petals</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: var(--spacing-2xl);
+            background: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+        }
+        .login-title {
+            margin-bottom: var(--spacing-lg);
+            color: var(--primary-color);
+        }
+        .error-message {
+            color: #d32f2f;
+            margin-bottom: var(--spacing-md);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="bg-surface">
+    <header class="global-header">
+        <div class="header-container" style="justify-content: center;">
+            <a href="/" class="logo">
+                <span class="logo-text">Rose n Petals Admin</span>
+            </a>
+        </div>
+    </header>
+    <main class="container">
+        <div class="login-container">
+            <h1 class="login-title">Secure Access</h1>
+            <p id="error-msg" class="error-message" style="display: none;">Invalid password.</p>
+            <form id="login-form" action="/admin/login" method="POST">
+                <div class="form-group" style="text-align: left;">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autofocus placeholder="Enter admin password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+        </div>
+    </main>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error')) {
+            document.getElementById('error-msg').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

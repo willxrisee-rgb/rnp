@@ -52,6 +52,10 @@ Payment method: ${paymentMethod}`;
         // Standard WhatsApp click-to-chat URL
         const whatsappUrl = `https://api.whatsapp.com/send?phone=${this.SHOP_PHONE}&text=${encodedMessage}`;
 
+        if (window.gtag) {
+            window.gtag('event', 'whatsapp_order_click', { event_category: 'Order Intent', bouquet_name: bouquetName });
+        }
+
         // Redirect browser
         window.location.href = whatsappUrl;
     }

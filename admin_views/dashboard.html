@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Rose n Petals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 var(--spacing-md);
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        .table-responsive {
+            overflow-x: auto;
+            background: var(--bg-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background-color: var(--accent-light);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .product-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: var(--border-radius-sm);
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-surface">
+    <header class="global-header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <span class="logo-text">Admin Panel</span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="/admin/logout" class="nav-link">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>Manage Catalog</h2>
+            <button id="save-btn" class="btn btn-primary">Save Changes</button>
+        </div>
+
+        <div id="loader" style="text-align:center; padding: 40px;">
+            <div class="spinner"></div>
+            <p>Loading products...</p>
+        </div>
+
+        <div class="table-responsive">
+            <table id="products-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price (₹)</th>
+                        <th>Status</th>
+                        <th>Occasion Tags</th>
+                        <th>Description</th>
+                        <th>Best Seller</th>
+                    </tr>
+                </thead>
+                <tbody id="products-body">
+                    <!-- Dynamic rows -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="toast" class="toast">Changes saved successfully!</div>
+
+    <!-- Need to load store.js to fetch from sheet -->
+    <script src="/js/store.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const tbody = document.getElementById('products-body');
+            const table = document.getElementById('products-table');
+            const loader = document.getElementById('loader');
+            const saveBtn = document.getElementById('save-btn');
+            
+            try {
+                const products = await window.Store.fetchProducts();
+                
+                products.forEach(p => {
+                    const row = document.createElement('tr');
+                    row.dataset.id = p.id;
+                    
+                    row.innerHTML = `
+                        <td>${p.id}</td>
+                        <td>
+                            <input type="text" class="edit-img" value="${p.image_url}" placeholder="Image URL">
+                        </td>
+                        <td>${p.name}</td>
+                        <td>
+                            <input type="number" class="edit-price" value="${p.price}">
+                        </td>
+                        <td>
+                            <select class="edit-status">
+                                <option value="in-stock" ${p.status.includes('in') ? 'selected' : ''}>In-stock</option>
+                                <option value="out-of-stock" ${!p.status.includes('in') ? 'selected' : ''}>Out-of-stock</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="edit-tags" value="${p.occasionTags.join(', ')}" placeholder="Comma separated">
+                        </td>
+                        <td>
+                            <input type="text" class="edit-desc" value="${p.shortDescription}">
+                        </td>
+                        <td>
+                            <select class="edit-bestseller">
+                                <option value="true" ${p.isBestSeller ? 'selected' : ''}>Yes</option>
+                                <option value="false" ${!p.isBestSeller ? 'selected' : ''}>No</option>
+                            </select>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                loader.style.display = 'none';
+                table.style.display = 'table';
+            } catch (error) {
+                loader.innerHTML = '<p style="color:red">Failed to load catalog.</p>';
+            }
+            
+            saveBtn.addEventListener('click', async () => {
+                const rows = tbody.querySelectorAll('tr');
+                const payload = [];
+                
+                rows.forEach(row => {
+                    payload.push({
+                        id: row.dataset.id,
+                        image_url: row.querySelector('.edit-img').value,
+                        price: parseFloat(row.querySelector('.edit-price').value),
+                        status: row.querySelector('.edit-status').value,
+                        occasionTags: row.querySelector('.edit-tags').value,
+                        description: row.querySelector('.edit-desc').value,
+                        isBestSeller: row.querySelector('.edit-bestseller').value === 'true'
+                    });
+                });
+                
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+                
+                try {
+                    const response = await fetch('/api/admin/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (response.ok) {
+                        showToast();
+                    } else {
+                        alert('Failed to save changes.');
+                    }
+                } catch (e) {
+                    alert('Error saving changes.');
+                }
+                
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Changes';
+            });
+        });
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
