@@ -151,15 +151,15 @@
                             </select>
                         </td>
                         <td>
-                            <input type="text" class="edit-tags" value="${p.occasionTags.join(', ')}" placeholder="Comma separated">
+                            <input type="text" class="edit-tags" value="${p.occasion_tags.join(', ')}" placeholder="Comma separated">
                         </td>
                         <td>
-                            <input type="text" class="edit-desc" value="${p.shortDescription}">
+                            <input type="text" class="edit-desc" value="${p.short_description}">
                         </td>
                         <td>
                             <select class="edit-bestseller">
-                                <option value="true" ${p.isBestSeller ? 'selected' : ''}>Yes</option>
-                                <option value="false" ${!p.isBestSeller ? 'selected' : ''}>No</option>
+                                <option value="true" ${p.is_best_seller ? 'selected' : ''}>Yes</option>
+                                <option value="false" ${!p.is_best_seller ? 'selected' : ''}>No</option>
                             </select>
                         </td>
                     `;
@@ -182,9 +182,9 @@
                         image_url: row.querySelector('.edit-img').value,
                         price: parseFloat(row.querySelector('.edit-price').value),
                         status: row.querySelector('.edit-status').value,
-                        occasionTags: row.querySelector('.edit-tags').value,
-                        description: row.querySelector('.edit-desc').value,
-                        isBestSeller: row.querySelector('.edit-bestseller').value === 'true'
+                        occasion_tags: row.querySelector('.edit-tags').value,
+                        short_description: row.querySelector('.edit-desc').value,
+                        is_best_seller: row.querySelector('.edit-bestseller').value === 'true'
                     });
                 });
                 

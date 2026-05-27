@@ -5,7 +5,7 @@ window.Pages = {
         document.title = "Rose n Petals - Home";
 
         const bouquets = Store.getAllProducts();
-        const bestSellers = bouquets.filter(b => b.isBestSeller).slice(0, 8);
+        const bestSellers = bouquets.filter(b => b.is_best_seller).slice(0, 8);
         const occasionTags = ["All", ...Store.getAllOccasionTags(), "Under ₹499"];
 
         const stepsData = [
@@ -136,7 +136,7 @@ window.Pages = {
 
         // Pick 4 related bouquets
         const related = Store.getAllProducts()
-            .filter(p => p.id !== id && p.occasionTags.some(t => bouquet.occasionTags.includes(t)))
+            .filter(p => p.id !== id && p.occasion_tags.some(t => bouquet.occasion_tags.includes(t)))
             .slice(0, 4);
 
         // Fallback to any 4 if not enough related tags
@@ -145,7 +145,7 @@ window.Pages = {
             related.push(...others.slice(0, 4 - related.length));
         }
 
-        const tagsHtml = bouquet.occasionTags.map(t => `<span class="badge detail-badge">${t}</span>`).join('');
+        const tagsHtml = bouquet.occasion_tags.map(t => `<span class="badge detail-badge">${t}</span>`).join('');
 
         const detailImageHtml = bouquet.image_url
             ? `<img src="${bouquet.image_url}" alt="${bouquet.name}" class="detail-image">`
@@ -164,7 +164,7 @@ window.Pages = {
                         <p class="detail-price mt-2 mb-4">₹${bouquet.price}</p>
                         
                         <div class="detail-desc mb-4">
-                            <p>${bouquet.shortDescription}</p>
+                            <p>${bouquet.short_description}</p>
                         </div>
                         
                         <div class="local-promise-box mb-4">

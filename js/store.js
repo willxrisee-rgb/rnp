@@ -90,9 +90,9 @@ window.Store = {
                     price: parseFloat(priceVal) || 0,
                     image_url: finalImageUrl,
                     status: statusVal ? statusVal.toLowerCase() : 'out-of-stock',
-                    occasionTags: occasionTags,
-                    shortDescription: descVal || '',
-                    isBestSeller: isBestSeller
+                    occasion_tags: occasionTags,
+                    short_description: descVal || '',
+                    is_best_seller: isBestSeller
                 };
 
                 // Only expose in-stock products
@@ -128,7 +128,7 @@ window.Store = {
     },
 
     getBestSellers() {
-        return this.products.filter(p => p.isBestSeller);
+        return this.products.filter(p => p.is_best_seller);
     },
 
     getProductById(id) {
@@ -143,14 +143,14 @@ window.Store = {
         }
 
         return this.products.filter(p =>
-            p.occasionTags.some(tag => tag.toLowerCase() === occasion.toLowerCase())
+            p.occasion_tags.some(tag => tag.toLowerCase() === occasion.toLowerCase())
         );
     },
 
     getAllOccasionTags() {
         const tags = new Set();
         this.products.forEach(p => {
-            p.occasionTags.forEach(tag => tags.add(tag));
+            p.occasion_tags.forEach(tag => tags.add(tag));
         });
         return Array.from(tags).sort();
     }

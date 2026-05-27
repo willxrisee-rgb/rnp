@@ -3,8 +3,8 @@
 window.Components = {
     createProductCard(bouquet) {
         // Tag to show: first occasion tag, fallback if empty
-        const primaryTag = bouquet.occasionTags.length > 0 ? bouquet.occasionTags[0] : '';
-        const badgeHTML = bouquet.isBestSeller ? '<span class="card-badge bestseller">BEST SELLER</span>' : (primaryTag ? `<span class="card-badge occasion">${primaryTag}</span>` : '');
+        const primaryTag = bouquet.occasion_tags.length > 0 ? bouquet.occasion_tags[0] : '';
+        const badgeHTML = bouquet.is_best_seller ? '<span class="card-badge bestseller">BEST SELLER</span>' : (primaryTag ? `<span class="card-badge occasion">${primaryTag}</span>` : '');
 
         const imageHtml = bouquet.image_url
             ? `<img src="${bouquet.image_url}" alt="${bouquet.name}" class="card-image" loading="lazy">`
@@ -18,7 +18,7 @@ window.Components = {
                 </a>
                 <div class="card-content">
                     <h3 class="card-title"><a href="#/bouquet/${bouquet.id}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${bouquet.name.replace(/'/g, \\"\\\\'\\")}' });">${bouquet.name}</a></h3>
-                    <p class="card-desc">${bouquet.shortDescription}</p>
+                    <p class="card-desc">${bouquet.short_description}</p>
                     <div class="card-footer">
                         <span class="card-price">₹${bouquet.price}</span>
                         <a href="#/bouquet/${bouquet.id}" class="btn btn-primary btn-sm">Order now</a>
