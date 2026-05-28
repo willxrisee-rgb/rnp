@@ -28,6 +28,64 @@ const App = {
 
         // Load data then trigger initial route
         this.loadDataAndStart();
+
+        // Check for Promo QR
+        this.checkPromoPopup();
+    },
+
+    checkPromoPopup() {
+        if (window.location.href.includes('promo=QR')) {
+            // Build popup HTML
+            const popupHtml = `
+                <div class="voucher-overlay" id="voucherPopup">
+                    <div class="voucher-card">
+                        <div class="voucher-title">Thanks for visiting our shop! 🌸</div>
+                        <div class="voucher-subtitle">Here is ₹50 OFF your first online order.</div>
+                        <div class="voucher-code-box">ROSE50</div>
+                        <button class="btn btn-primary btn-block btn-lg" id="voucherCopyBtn">Copy Code & Browse Bouquets</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', popupHtml);
+            
+            const overlay = document.getElementById('voucherPopup');
+            const copyBtn = document.getElementById('voucherCopyBtn');
+            
+            // Show it smoothly
+            setTimeout(() => {
+                overlay.classList.add('show');
+            }, 100);
+            
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText("ROSE50").then(() => {
+                    copyBtn.textContent = "Copied! Taking you to shop...";
+                    
+                    // Confetti burst
+                    if (window.confetti) {
+                        confetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { y: 0.6 }
+                        });
+                    }
+                    
+                    // Wait 1.5s, then close and navigate to catalog
+                    setTimeout(() => {
+                        overlay.classList.remove('show');
+                        
+                        // Navigate to catalog
+                        window.location.hash = '#/catalog';
+                        
+                        setTimeout(() => {
+                            overlay.remove();
+                        }, 400); // Clean up after transition
+                    }, 1500);
+                }).catch(err => {
+                    console.error('Could not copy text: ', err);
+                });
+            });
+        }
     },
 
     initMobileMenu() {
