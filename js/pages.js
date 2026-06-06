@@ -222,5 +222,115 @@ window.Pages = {
                 window.location.hash = baseUrl + encodeURIComponent(filterValue);
             });
         });
+    },
+    // New SEO page: "flower delivery Ghaziabad"
+    renderFlowerDeliveryGhaziabad(container) {
+        document.title = "Flower Delivery in Ghaziabad | Rose n Petals";
+
+        container.innerHTML = `
+            <section class="section container">
+                <div class="section-title">
+                    <h1>Fresh Flower Delivery in Ghaziabad – Starting ₹200</h1>
+                    <p class="text-muted">
+                        Handmade bouquets with same-day delivery across Ghaziabad.
+                        Order in 2 minutes on WhatsApp.
+                    </p>
+                    <a
+                      href="https://api.whatsapp.com/send?phone=917289996804&text=${encodeURIComponent(
+            "Hi, I want to order a bouquet for delivery in Ghaziabad."
+        )}"
+                      target="_blank"
+                      class="btn btn-primary mt-3"
+                    >
+                      Order on WhatsApp
+                    </a>
+                </div>
+            </section>
+
+            <section class="section container">
+                <h2 class="section-title">Why order from Rose n Petals?</h2>
+                <ul class="feature-list">
+                    <li><strong>Fresh handmade bouquets</strong><br/>Every order is made to order from our Kavi Nagar & Raj Nagar units.</li>
+                    <li><strong>Same‑day delivery</strong><br/>Order before 6 PM for same‑day delivery in most parts of Ghaziabad.</li>
+                    <li><strong>Starting at ₹200</strong><br/>Options for every budget and occasion.</li>
+                    <li><strong>Easy WhatsApp ordering</strong><br/>No complex checkout – just message and confirm.</li>
+                </ul>
+            </section>
+
+            <section class="section section-light">
+                <div class="container">
+                    <h2 class="section-title">Areas we deliver in Ghaziabad</h2>
+                    <p class="text-muted">
+                        We currently cover these areas for regular and same‑day deliveries:
+                    </p>
+                    <ul class="pill-list">
+                        <li>Kavi Nagar</li>
+                        <li>Raj Nagar</li>
+                        <li>Indirapuram</li>
+                        <li>Vaishali</li>
+                        <li>Vasundhara</li>
+                        <li>Mohan Nagar</li>
+                        <li>Vijay Nagar</li>
+                        <li>Crossing Republik</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="section container">
+                <h2 class="section-title">How to order in 3 steps</h2>
+                <ol class="steps-list">
+                    <li>
+                        <strong>Step 1 – Choose a bouquet</strong><br/>
+                        Browse our catalog or ask us for suggestions on WhatsApp.
+                    </li>
+                    <li>
+                        <strong>Step 2 – Send details</strong><br/>
+                        Share bouquet name, delivery address, date, time and message card text.
+                    </li>
+                    <li>
+                        <strong>Step 3 – We deliver</strong><br/>
+                        We confirm on WhatsApp and deliver your bouquet fresh in Ghaziabad.
+                    </li>
+                </ol>
+            </section>
+
+            <section class="section container">
+                <h2 class="section-title">Frequently asked questions</h2>
+                <details>
+                    <summary>Do you offer same‑day flower delivery in Ghaziabad?</summary>
+                    <p>Yes, for most areas we offer same‑day delivery if you place the order before 6 PM.</p>
+                </details>
+                <details>
+                    <summary>Which areas in Ghaziabad do you cover?</summary>
+                    <p>We cover Kavi Nagar, Raj Nagar, Indirapuram, Vaishali, Vasundhara and nearby localities. Message us if you are not sure.</p>
+                </details>
+                <details>
+                    <summary>How can I place an order?</summary>
+                    <p>Tap the WhatsApp button on this page, send us your bouquet choice and address, and we will confirm your slot.</p>
+                </details>
+                <details>
+                    <summary>What payment methods do you accept?</summary>
+                    <p>We currently accept UPI and bank transfer. No cash‑on‑delivery at the moment.</p>
+                </details>
+            </section>
+
+            <section class="section section-light">
+                <div class="container section-title">
+                    <h2>Ready to order flowers in Ghaziabad?</h2>
+                    <p class="text-muted">
+                        Tap the button below to chat with us on WhatsApp and confirm your bouquet.
+                    </p>
+                    <a
+                      href="https://api.whatsapp.com/send?phone=917289996804&text=${encodeURIComponent(
+            "Hi, I want to order a bouquet for delivery in Ghaziabad."
+        )}"
+                      target="_blank"
+                      class="btn btn-primary btn-lg mt-3"
+                    >
+                      Order on WhatsApp
+                    </a>
+                </div>
+            </section>
+        `;
     }
 };

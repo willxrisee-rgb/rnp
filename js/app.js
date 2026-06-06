@@ -46,21 +46,21 @@ const App = {
                     </div>
                 </div>
             `;
-            
+
             document.body.insertAdjacentHTML('beforeend', popupHtml);
-            
+
             const overlay = document.getElementById('voucherPopup');
             const copyBtn = document.getElementById('voucherCopyBtn');
-            
+
             // Show it smoothly
             setTimeout(() => {
                 overlay.classList.add('show');
             }, 100);
-            
+
             copyBtn.addEventListener('click', () => {
                 navigator.clipboard.writeText("ROSE50").then(() => {
                     copyBtn.textContent = "Copied! Taking you to shop...";
-                    
+
                     // Confetti burst
                     if (window.confetti) {
                         confetti({
@@ -69,14 +69,14 @@ const App = {
                             origin: { y: 0.6 }
                         });
                     }
-                    
+
                     // Wait 1.5s, then close and navigate to catalog
                     setTimeout(() => {
                         overlay.classList.remove('show');
-                        
+
                         // Navigate to catalog
                         window.location.hash = '#/catalog';
-                        
+
                         setTimeout(() => {
                             overlay.remove();
                         }, 400); // Clean up after transition
@@ -121,11 +121,8 @@ const App = {
             this.handleRouting();
         } catch (error) {
             console.error('Failed to load data', error);
-            appEl.innerHTML = `
-                <div class="loader-container">
-                    <p style="color: red;">Failed to load bouquet catalog. Please check your internet connection and reload the page.</p>
-                </div>
-            `;
+            // Even if products fail to load, we still route so SEO pages can render without products
+            this.handleRouting();
         }
     },
 
@@ -134,6 +131,7 @@ const App = {
         const paramsStr = hash.split('?')[1] || '';
         const urlParams = new URLSearchParams(paramsStr);
         const path = hash.split('?')[0];
+        const slug = path.replace('#/', ''); // e.g. "#/flower-delivery-ghaziabad" -> "flower-delivery-ghaziabad"
 
         const appEl = document.getElementById('app');
         appEl.innerHTML = ''; // clear current view
@@ -167,8 +165,14 @@ const App = {
             window.Pages.renderBouquetDetailPage(appEl, id);
         }
         else {
-            // 404
-            appEl.innerHTML = `<div class="container section"><div class="section-title"><h2>Page Not Found</h2><a href="#/" class="btn btn-primary">Go Home</a></div></div>`;
+            // ── Core Service SEO pages (dynamic slug matching) ──
+            const slug = path.replace('#/', '');
+            if (window.CoreServiceRoutes && window.CoreServiceRoutes.isCorePage(slug)) {
+                window.CoreServiceRoutes.render(appEl, slug);
+            } else {
+                // 404
+                appEl.innerHTML = `<div class="container section"><div class="section-title"><h2>Page Not Found</h2><a href="#/" class="btn btn-primary">Go Home</a></div></div>`;
+            }
         }
     }
 };
