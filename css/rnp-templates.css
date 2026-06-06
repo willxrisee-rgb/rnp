@@ -31,9 +31,26 @@
 }
 
 /* ── RESET / BASE ───────────────────────────────────────────────────────────── */
+.rnp-page,
 .rnp-page *,
 .rnp-page *::before,
-.rnp-page *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.rnp-page *::after { box-sizing: border-box; }
+
+/* Reset default margins/paddings on typography and layout elements, excluding product card components */
+.rnp-page :not(.product-card):not(.product-card *) h1,
+.rnp-page :not(.product-card):not(.product-card *) h2,
+.rnp-page :not(.product-card):not(.product-card *) h3,
+.rnp-page :not(.product-card):not(.product-card *) p,
+.rnp-page :not(.product-card):not(.product-card *) ul,
+.rnp-page :not(.product-card):not(.product-card *) ol,
+.rnp-page :not(.product-card):not(.product-card *) li,
+.rnp-page :not(.product-card):not(.product-card *) dl,
+.rnp-page :not(.product-card):not(.product-card *) dd,
+.rnp-page :not(.product-card):not(.product-card *) details,
+.rnp-page :not(.product-card):not(.product-card *) summary {
+  margin: 0;
+  padding: 0;
+}
 
 .rnp-page {
   background: var(--rnp-bg);
@@ -147,13 +164,14 @@
 .rnp-hero__media {
   border-radius: var(--rnp-radius);
   overflow: hidden;
+  aspect-ratio: 4/3;
   background: var(--rnp-pink-light);
 }
 
 .rnp-hero__media img {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ── BUTTONS ────────────────────────────────────────────────────────────────── */

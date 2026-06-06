@@ -68,17 +68,9 @@ window.CoreServiceRoutes = {
 
         const waLink = `https://api.whatsapp.com/send?phone=${data.whatsappNumber}&text=${encodeURIComponent(data.whatsappMessage || 'Hi! I want to order a bouquet.')}`;
 
-        // Pick random hero image from catalog
-        let heroImageUrl = '';
-        let heroImageAlt = '';
-        if (window.Store && window.Store.getAllProducts) {
-            const productsWithImages = window.Store.getAllProducts().filter(p => p.image_url);
-            if (productsWithImages.length > 0) {
-                const randomProduct = productsWithImages[Math.floor(Math.random() * productsWithImages.length)];
-                heroImageUrl = randomProduct.image_url;
-                heroImageAlt = `${randomProduct.name} bouquet in Ghaziabad`;
-            }
-        }
+        // Use a fixed hero image for layout stability
+        const heroImageUrl = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAEW48qBneYjNMParSmerbqRQoG4twMYQMmHwXgNRh8iKHJFpZRf4Vj6HYbBNELIbp-JV_z39ui-tOHQEtkTWYdyJd5Udavbo_7JHDRrgAIlTPeURIZyQud8a-DVIAgnwhv5Vrmle-FYPBAIf9hJs0GV3uAoxbbOh_rWtsrevK5ETtcOZ7iY-JDDz0noBz3wCx1GiHBcP97yNVbwbWKHgISN4pALbA15ltVKMoXBnAFg6rpBqKby4biVlx35mi-pVJ2haxCz4MzgjY';
+        const heroImageAlt = 'Fresh flower bouquet from Rose n Petals Ghaziabad';
 
         // Build best-sellers grid if Store has products loaded
         let productsHtml = '';
@@ -86,14 +78,11 @@ window.CoreServiceRoutes = {
             const bestSellers = window.Store.getAllProducts().filter(b => b.is_best_seller).slice(0, 6);
             if (bestSellers.length > 0 && window.Components) {
                 productsHtml = `
-                    <section class="section section-light rnp-products" aria-labelledby="products-h2">
+                    <section class="section section-light">
                         <div class="container">
-                            <h2 id="products-h2" class="section-title">Our Most-Loved Bouquets in Ghaziabad</h2>
+                            <h2 class="section-title">Our Most-Loved Bouquets in Ghaziabad</h2>
                             <div class="product-grid">
                                 ${bestSellers.map(b => window.Components.createProductCard(b)).join('')}
-                            </div>
-                            <div class="text-center" style="margin-top: 2rem;">
-                                <a class="btn btn-outline" href="#/catalog">View All Bouquets →</a>
                             </div>
                         </div>
                     </section>
@@ -146,11 +135,8 @@ window.CoreServiceRoutes = {
                             ${data.ctaText}
                         </a>
                     </div>
-                    <div class="rnp-hero__media" aria-hidden="${heroImageUrl ? 'false' : 'true'}">
-                        ${heroImageUrl 
-                            ? `<img class="rnp-hero__img" src="${heroImageUrl}" alt="${heroImageAlt}" loading="lazy">` 
-                            : `<div class="rnp-placeholder rnp-placeholder--hero">🌸 Fresh Bouquets</div>`
-                        }
+                    <div class="rnp-hero__media" aria-hidden="false">
+                        <img class="rnp-hero__img" src="${heroImageUrl}" alt="${heroImageAlt}" loading="lazy">
                     </div>
                 </section>
 
