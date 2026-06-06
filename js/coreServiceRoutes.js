@@ -86,13 +86,15 @@ window.CoreServiceRoutes = {
             const bestSellers = window.Store.getAllProducts().filter(b => b.is_best_seller).slice(0, 6);
             if (bestSellers.length > 0 && window.Components) {
                 productsHtml = `
-                    <section class="rnp-section rnp-products" aria-labelledby="products-h2">
-                        <h2 id="products-h2" class="rnp-section__h2">Our Most-Loved Bouquets in Ghaziabad</h2>
-                        <div class="rnp-products__grid">
-                            ${bestSellers.map(b => window.Components.createProductCard(b)).join('')}
-                        </div>
-                        <div class="rnp-section__footer">
-                            <a class="rnp-btn rnp-btn--ghost" href="#/catalog">View All Bouquets →</a>
+                    <section class="section section-light rnp-products" aria-labelledby="products-h2">
+                        <div class="container">
+                            <h2 id="products-h2" class="section-title">Our Most-Loved Bouquets in Ghaziabad</h2>
+                            <div class="product-grid">
+                                ${bestSellers.map(b => window.Components.createProductCard(b)).join('')}
+                            </div>
+                            <div class="text-center" style="margin-top: 2rem;">
+                                <a class="btn btn-outline" href="#/catalog">View All Bouquets →</a>
+                            </div>
                         </div>
                     </section>
                 `;
