@@ -498,3 +498,66 @@ details[open] .rnp-faqs__q::after { content: '−'; }
   align-items: center;
   justify-content: center;
 }
+
+/* ── TEMPLATE 4 — URGENCY PAGE MODIFIERS ───────────────────────────────────── */
+
+/* Page modifier — sets a slightly warmer urgency tone */
+.rnp-page--urgency {
+  --rnp-bg: #FFFDF9;
+}
+
+/* Hero modifier — deeper gradient for urgency pages */
+.rnp-hero--urgency {
+  background: linear-gradient(135deg, #1a0a10 0%, #3b0f1e 50%, #5c1a30 100%);
+}
+
+/* White text overrides for dark urgency hero */
+.rnp-hero--urgency .rnp-hero__h1,
+.rnp-hero--urgency .rnp-hero__sub,
+.rnp-hero--urgency .rnp-hero__price {
+  color: #ffffff;
+}
+
+.rnp-hero--urgency .rnp-hero__price strong {
+  color: #FFD700;
+}
+
+.rnp-hero--urgency .rnp-hero__cutoff {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Time badge shown under each step */
+.rnp-steps__time-badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  background: #fff3e0;
+  color: #7b4e00;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  border: 1px solid #ffd08a;
+  letter-spacing: 0.02em;
+}
+
+/* Related urgency cross-links strip */
+.rnp-related__list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+}
+
+.rnp-related__list a.rnp-btn--ghost {
+  border-color: var(--rnp-border);
+  color: var(--rnp-pink);
+  font-weight: 600;
+}
+
+.rnp-related__list a.rnp-btn--ghost:hover {
+  background: var(--rnp-pink-light);
+  border-color: var(--rnp-pink);
+}
+

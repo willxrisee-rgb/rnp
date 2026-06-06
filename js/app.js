@@ -169,6 +169,8 @@ const App = {
             const slug = path.replace('#/', '');
             if (window.CoreServiceRoutes && window.CoreServiceRoutes.isCorePage(slug)) {
                 window.CoreServiceRoutes.render(appEl, slug);
+            } else if (window.UrgencyServiceRoutes && window.UrgencyServiceRoutes.isUrgencyPage(slug)) {
+                window.UrgencyServiceRoutes.render(appEl, slug);
             } else {
                 // 404
                 appEl.innerHTML = `<div class="container section"><div class="section-title"><h2>Page Not Found</h2><a href="#/" class="btn btn-primary">Go Home</a></div></div>`;
