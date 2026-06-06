@@ -247,6 +247,8 @@ window.OccasionPagesData = {
         mainKeyword: 'romantic flowers Ghaziabad',
         occasionName: 'Romance',
         occasionEmoji: '💘',
+        heroImage: '/images/heroes/romance-bouquet.jpg',
+        heroImageAlt: 'Romantic rose bouquet in Ghaziabad',
         headline: 'Send Romantic Flowers in Ghaziabad',
         subheadline: 'Just because they are on your mind. Order before 8 PM to get under 1 hour delivery from confirmation. Starting ₹200.',
         startingPrice: '₹200',
@@ -273,9 +275,9 @@ window.OccasionPagesData = {
             { number: '03', title: 'Surprise Delivered', text: 'Fresh flowers reach their door in under 1 hour from confirmation.' }
         ],
         featuredProducts: [
-            { name: 'Deep Red Roses Bouquet', desc: 'The classic symbol of romance and deep love.' },
-            { name: 'Elegant Pink Carnations', desc: 'Soft and romantic blooms for a gentle surprise.' },
-            { name: 'Luxury Orchid Arrangement', desc: 'Exotic and premium orchids for someone truly special.' }
+            { name: 'Deep Red Roses Bouquet', desc: 'The classic symbol of romance and deep love.', image: '/images/products/romance-deep-red-roses.jpg' },
+            { name: 'Elegant Pink Carnations', desc: 'Soft and romantic blooms for a gentle surprise.', image: '/images/products/romance-soft-pastel.jpg' },
+            { name: 'Luxury Orchid Arrangement', desc: 'Exotic and premium orchids for someone truly special.', image: '/images/products/romance-luxury-orchid.jpg' }
         ],
         faqs: [
             { q: 'How quickly can I send a surprise bouquet?', a: 'Order before 8 PM to get under 1 hour delivery from confirmation.' },
