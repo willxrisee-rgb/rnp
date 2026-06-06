@@ -68,9 +68,17 @@ window.CoreServiceRoutes = {
 
         const waLink = `https://api.whatsapp.com/send?phone=${data.whatsappNumber}&text=${encodeURIComponent(data.whatsappMessage || 'Hi! I want to order a bouquet.')}`;
 
-        // Use a fixed hero image for layout stability
-        const heroImageUrl = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAEW48qBneYjNMParSmerbqRQoG4twMYQMmHwXgNRh8iKHJFpZRf4Vj6HYbBNELIbp-JV_z39ui-tOHQEtkTWYdyJd5Udavbo_7JHDRrgAIlTPeURIZyQud8a-DVIAgnwhv5Vrmle-FYPBAIf9hJs0GV3uAoxbbOh_rWtsrevK5ETtcOZ7iY-JDDz0noBz3wCx1GiHBcP97yNVbwbWKHgISN4pALbA15ltVKMoXBnAFg6rpBqKby4biVlx35mi-pVJ2haxCz4MzgjY';
-        const heroImageAlt = 'Fresh flower bouquet from Rose n Petals Ghaziabad';
+        // Pick random hero image from catalog
+        let heroImageUrl = '';
+        let heroImageAlt = '';
+        if (window.Store && window.Store.getAllProducts) {
+            const productsWithImages = window.Store.getAllProducts().filter(p => p.image_url);
+            if (productsWithImages.length > 0) {
+                const randomProduct = productsWithImages[Math.floor(Math.random() * productsWithImages.length)];
+                heroImageUrl = randomProduct.image_url;
+                heroImageAlt = `${randomProduct.name} bouquet in Ghaziabad`;
+            }
+        }
 
         // Build best-sellers grid if Store has products loaded
         let productsHtml = '';
@@ -135,8 +143,11 @@ window.CoreServiceRoutes = {
                             ${data.ctaText}
                         </a>
                     </div>
-                    <div class="rnp-hero__media" aria-hidden="false">
-                        <img class="rnp-hero__img" src="${heroImageUrl}" alt="${heroImageAlt}" loading="lazy">
+                    <div class="rnp-hero__media" aria-hidden="${heroImageUrl ? 'false' : 'true'}">
+                        ${heroImageUrl 
+                            ? `<img class="rnp-hero__img" src="${heroImageUrl}" alt="${heroImageAlt}" loading="lazy">` 
+                            : `<div class="rnp-placeholder rnp-placeholder--hero">🌸 Fresh Bouquets</div>`
+                        }
                     </div>
                 </section>
 
