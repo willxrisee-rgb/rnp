@@ -4,8 +4,8 @@ window.Components = {
     createProductCard(bouquet) {
         const primaryTag = bouquet.occasion_tags.length > 0 ? bouquet.occasion_tags[0] : '';
         const badgeHTML = bouquet.is_best_seller
-            ? '<span class="card-badge bestseller">BEST SELLER</span>'
-            : (primaryTag ? `<span class="card-badge occasion">${primaryTag}</span>` : '');
+            ? '<span class="product-card__badge bestseller">BEST SELLER</span>'
+            : (primaryTag ? `<span class="product-card__badge occasion">${primaryTag}</span>` : '');
 
         const imageHtml = bouquet.image_url
             ? `<img src="${bouquet.image_url}" alt="${bouquet.name}" class="card-image" loading="lazy">`
@@ -14,24 +14,24 @@ window.Components = {
         const safeBouquetName = (bouquet.name || '').replace(/'/g, "\\'");
 
         return `
-            <div class="product-card">
-                <a href="#/bouquet/${bouquet.id}" class="card-image-link" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
+            <article class="product-card">
+                <a href="#/bouquet/${bouquet.id}" class="product-card__image" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
                     ${imageHtml}
                     ${badgeHTML}
                 </a>
-                <div class="card-content">
-                    <h3 class="card-title">
+                <div class="product-card__content">
+                    <h3 class="product-card__title">
                         <a href="#/bouquet/${bouquet.id}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
                             ${bouquet.name}
                         </a>
                     </h3>
-                    <p class="card-desc">${bouquet.short_description}</p>
-                    <div class="card-footer">
-                        <span class="card-price">₹${bouquet.price}</span>
-                        <a href="#/bouquet/${bouquet.id}" class="btn btn-primary btn-sm">Order now</a>
+                    <p class="product-card__desc">${bouquet.short_description}</p>
+                    <div class="product-card__price-row">
+                        <span class="product-card__price">₹${bouquet.price}</span>
+                        <a href="https://api.whatsapp.com/send?phone=917289996804&text=${encodeURIComponent(`Hi! I'd like to order the ${bouquet.name} bouquet.`)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm product-card__btn" onclick="if(window.gtag) gtag('event', 'whatsapp_order_click', { event_category: 'Order Intent', bouquet_name: '${safeBouquetName}' });">Order now</a>
                     </div>
                 </div>
-            </div>
+            </article>
         `;
     },
 
