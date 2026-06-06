@@ -34,9 +34,15 @@ window.OccasionRoutes = {
         if (data.featuredProducts && data.featuredProducts.length > 0) {
             productsHtml = data.featuredProducts.map(p => `
                 <article class="product-card">
+                    ${p.image ? `
+                    <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="product-card__image">
+                        <img src="${p.image}" alt="${p.name}" class="card-image" loading="lazy">
+                    </a>
+                    ` : `
                     <div class="product-card__image" style="background: var(--rnp-bg-secondary, #fff5f8); display: flex; align-items: center; justify-content: center; min-height: 200px;">
                         <span style="font-size: 3rem;">${data.occasionEmoji}</span>
                     </div>
+                    `}
                     <div class="product-card__content" style="flex: 1; display: flex; flex-direction: column;">
                         <h3 class="product-card__title">${p.name}</h3>
                         <p class="product-card__desc" style="flex: 1; margin-bottom: 1rem;">${p.desc}</p>
@@ -121,7 +127,11 @@ window.OccasionRoutes = {
                         ${data.deliveryNote ? `<p class="rnp-hero__delivery-note">📦 ${data.deliveryNote}</p>` : ''}
                     </div>
                     <div class="rnp-hero__media" aria-hidden="true">
+                        ${data.heroImage ? `
+                        <img src="${data.heroImage}" alt="${data.heroImageAlt || data.occasionName}" style="width: 100%; height: auto; object-fit: contain;">
+                        ` : `
                         <div class="rnp-placeholder rnp-placeholder--hero" style="background: var(--rnp-bg-dark); color: var(--rnp-pink); font-weight: 600;">${data.occasionName.toUpperCase()} BOUQUETS</div>
+                        `}
                     </div>
                 </section>
 

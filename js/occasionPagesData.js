@@ -199,6 +199,8 @@ window.OccasionPagesData = {
         mainKeyword: 'sorry flowers Ghaziabad',
         occasionName: 'Apology',
         occasionEmoji: '🙏',
+        heroImage: '/images/heroes/apology-hero.jpg',
+        heroImageAlt: 'Elegant apology flower bouquet in Ghaziabad',
         headline: 'Say "I am Sorry" with Flowers in Ghaziabad',
         subheadline: 'Mend the bridge with a sincere bouquet. Order before 8 PM to get under 1 hour delivery from confirmation. Starting ₹200.',
         startingPrice: '₹200',
@@ -225,9 +227,9 @@ window.OccasionPagesData = {
             { number: '03', title: 'Apology Delivered', text: 'Fresh flowers reach their door in under 1 hour from confirmation.' }
         ],
         featuredProducts: [
-            { name: 'Peaceful White Lilies', desc: 'Calming white lilies to show sincere apologies.' },
-            { name: 'Soft Pastel Mix', desc: 'Gentle pastel hues for a tender "I\'m sorry".' },
-            { name: 'Classic Yellow Roses', desc: 'Symbolizing friendship and new beginnings.' }
+            { name: 'Peaceful White Lilies', desc: 'Calming white lilies to show sincere apologies.', image: '/images/products/apology-white-lilies.jpg' },
+            { name: 'Soft Pastel Mix', desc: 'Gentle pastel hues for a tender "I\'m sorry".', image: '/images/products/apology-soft-pastel.jpg' },
+            { name: 'Classic Yellow Roses', desc: 'Symbolizing friendship and new beginnings.', image: '/images/products/apology-yellow-roses.jpg' }
         ],
         faqs: [
             { q: 'What are the best flowers for an apology?', a: 'White lilies, yellow roses (for friendship), and soft pastel mixed bouquets are ideal for saying sorry.' },
