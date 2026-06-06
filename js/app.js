@@ -171,6 +171,8 @@ const App = {
                 window.CoreServiceRoutes.render(appEl, slug);
             } else if (window.UrgencyServiceRoutes && window.UrgencyServiceRoutes.isUrgencyPage(slug)) {
                 window.UrgencyServiceRoutes.render(appEl, slug);
+            } else if (window.OccasionRoutes && window.OccasionRoutes.isOccasionPage(slug)) {
+                window.OccasionRoutes.render(appEl, slug);
             } else {
                 // 404
                 appEl.innerHTML = `<div class="container section"><div class="section-title"><h2>Page Not Found</h2><a href="#/" class="btn btn-primary">Go Home</a></div></div>`;
