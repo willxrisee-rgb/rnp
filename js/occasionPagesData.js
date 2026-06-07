@@ -71,7 +71,7 @@ window.OccasionPagesData = {
             {
                 "name": "Red Roses Delight",
                 "desc": "A classic arrangement of fresh red roses, perfect for birthdays.",
-                "image": "https://drive.google.com/uc?export=view&id=1cpJMck3YEYANy_4uBPE2Ej1t8K68b-4N"
+                "image": "https://lh3.googleusercontent.com/d/1cpJMck3YEYANy_4uBPE2Ej1t8K68b-4N"
             },
             {
                 "name": "Mixed Vibrant Blooms",
@@ -81,7 +81,7 @@ window.OccasionPagesData = {
             {
                 "name": "Orchid Elegance",
                 "desc": "Premium purple orchids for a sophisticated birthday surprise.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://lh3.googleusercontent.com/d/1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
             }
         ],
         "faqs": [
@@ -181,12 +181,12 @@ window.OccasionPagesData = {
             {
                 "name": "100 Red Roses Premium Box",
                 "desc": "The ultimate romantic gesture with handpicked premium red roses.",
-                "image": "https://drive.google.com/uc?export=view&id=1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V"
+                "image": "https://lh3.googleusercontent.com/d/1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V"
             },
             {
                 "name": "Pink Lily & Rose Combo",
                 "desc": "A soft, romantic blend of pink lilies and elegant roses.",
-                "image": "https://drive.google.com/uc?export=view&id=1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
+                "image": "https://lh3.googleusercontent.com/d/1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
             },
             {
                 "name": "Classic Love Bouquet",
@@ -222,7 +222,7 @@ window.OccasionPagesData = {
                 "href": "#/birthday-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V",
+        "heroImage": "https://lh3.googleusercontent.com/d/1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V",
         "heroImageAlt": "Romantic red rose bouquet in Ghaziabad"
     },
     "get-well-soon-flowers-ghaziabad": {
@@ -292,7 +292,7 @@ window.OccasionPagesData = {
             {
                 "name": "Vibrant Mix Bouquet",
                 "desc": "A colorful assortment of fresh, mood-lifting flowers.",
-                "image": "https://drive.google.com/uc?export=view&id=1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
+                "image": "https://lh3.googleusercontent.com/d/1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
             },
             {
                 "name": "Elegant White Lilies",
@@ -398,7 +398,7 @@ window.OccasionPagesData = {
             {
                 "name": "Premium Pink Orchids",
                 "desc": "Elegant and long-lasting orchids for a classy congratulation.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://lh3.googleusercontent.com/d/1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
             },
             {
                 "name": "Bright Sunflower Assortment",
@@ -434,7 +434,7 @@ window.OccasionPagesData = {
                 "href": "#/new-baby-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1owFZSTGRXuKYAEdTZkpZtFh_rAg2mqVV",
+        "heroImage": "https://lh3.googleusercontent.com/d/1owFZSTGRXuKYAEdTZkpZtFh_rAg2mqVV",
         "heroImageAlt": "Premium celebration bouquet in Ghaziabad"
     },
     "sorry-flowers-ghaziabad": {
@@ -506,7 +506,7 @@ window.OccasionPagesData = {
             {
                 "name": "Soft Pastel Mix",
                 "desc": "Gentle pastel hues for a tender \"I'm sorry\".",
-                "image": "https://drive.google.com/uc?export=view&id=1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27"
+                "image": "https://lh3.googleusercontent.com/d/1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27"
             },
             {
                 "name": "Classic Yellow Roses",
@@ -548,7 +548,7 @@ window.OccasionPagesData = {
         "mainKeyword": "romantic flowers Ghaziabad",
         "occasionName": "Romance",
         "occasionEmoji": "💘",
-        "heroImage": "https://drive.google.com/uc?export=view&id=1cpJMck3YEYANy_4uBPE2Ej1t8K68b-4N",
+        "heroImage": "https://lh3.googleusercontent.com/d/1cpJMck3YEYANy_4uBPE2Ej1t8K68b-4N",
         "heroImageAlt": "Romantic red roses in Ghaziabad",
         "headline": "Send Romantic Flowers in Ghaziabad",
         "subheadline": "Just because they are on your mind. Order before 8 PM to get under 1 hour delivery from confirmation. Starting ₹200.",
@@ -607,7 +607,7 @@ window.OccasionPagesData = {
             {
                 "name": "Deep Red Roses Bouquet",
                 "desc": "The classic symbol of romance and deep love.",
-                "image": "https://drive.google.com/uc?export=view&id=1cpJMck3YEYANy_4uBPE2Ej1t8K68b-4N"
+                "image": "https://lh3.googleusercontent.com/d/1cpJMck3YEYANy_4uBPE2Ej1t8K68b-4N"
             },
             {
                 "name": "Elegant Pink Carnations",
@@ -617,7 +617,7 @@ window.OccasionPagesData = {
             {
                 "name": "Luxury Orchid Arrangement",
                 "desc": "Exotic and premium orchids for someone truly special.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://lh3.googleusercontent.com/d/1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
             }
         ],
         "faqs": [
@@ -716,7 +716,7 @@ window.OccasionPagesData = {
             {
                 "name": "Delicate Pink Roses",
                 "desc": "Sweet pink blooms to celebrate a beautiful baby girl.",
-                "image": "https://drive.google.com/uc?export=view&id=1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27"
+                "image": "https://lh3.googleusercontent.com/d/1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27"
             },
             {
                 "name": "Joyful Yellow & Green Mix",
@@ -752,7 +752,7 @@ window.OccasionPagesData = {
                 "href": "#/get-well-soon-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1JTTaBprDopk8V8ws6rpg2VvGRt-GS5wB",
+        "heroImage": "https://lh3.googleusercontent.com/d/1JTTaBprDopk8V8ws6rpg2VvGRt-GS5wB",
         "heroImageAlt": "Soft new baby bouquet in Ghaziabad"
     },
     "housewarming-flowers-ghaziabad": {
@@ -817,7 +817,7 @@ window.OccasionPagesData = {
             {
                 "name": "Elegant Lily Centerpiece",
                 "desc": "A sophisticated arrangement to grace their new dining table.",
-                "image": "https://drive.google.com/uc?export=view&id=1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
+                "image": "https://lh3.googleusercontent.com/d/1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
             },
             {
                 "name": "Bright Mixed Garden",
@@ -827,7 +827,7 @@ window.OccasionPagesData = {
             {
                 "name": "Premium Orchid Pot",
                 "desc": "A long-lasting, luxury orchid arrangement for their new space.",
-                "image": "https://drive.google.com/uc?export=view&id=1owFZSTGRXuKYAEdTZkpZtFh_rAg2mqVV"
+                "image": "https://lh3.googleusercontent.com/d/1owFZSTGRXuKYAEdTZkpZtFh_rAg2mqVV"
             }
         ],
         "faqs": [
@@ -1029,17 +1029,17 @@ window.OccasionPagesData = {
             {
                 "name": "Vibrant Yellow & Orange Mix",
                 "desc": "Marigolds and roses that capture the essence of Diwali.",
-                "image": "https://drive.google.com/uc?export=view&id=1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
+                "image": "https://lh3.googleusercontent.com/d/1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
             },
             {
                 "name": "Premium Festive Orchids",
                 "desc": "A sophisticated and long-lasting gift for festival greetings.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://lh3.googleusercontent.com/d/1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
             },
             {
                 "name": "Classic Red & Gold Arrangement",
                 "desc": "Rich, luxurious blooms perfect for festive celebrations.",
-                "image": "https://drive.google.com/uc?export=view&id=1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V"
+                "image": "https://lh3.googleusercontent.com/d/1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V"
             }
         ],
         "faqs": [
