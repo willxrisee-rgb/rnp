@@ -1,102 +1,220 @@
-require('dotenv').config();
-const express = require('express');
-const path = require('path');
+# Rose n Petals — CHUNK 5: Landing Pages Routing Fix
+# File: ~/Documents/rnp/CHUNK5_LANDING_PAGES.md
 
-const app = express();
-// Render automatically provides the PORT environment variable
-const PORT = process.env.PORT || 8080;
-// Must bind to 0.0.0.0 for Render deployments instead of localhost
-const HOST = '0.0.0.0';
+---
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+## CRITICAL RULES
 
-// Helper to parse cookies manually
-const parseCookies = (req) => {
-    const list = {};
-    const rc = req.headers.cookie;
-    rc && rc.split(';').forEach((cookie) => {
-        const parts = cookie.split('=');
-        list[parts.shift().trim()] = decodeURI(parts.join('='));
-    });
-    return list;
-};
+1. Read this entire document before doing anything.
+2. Write a PLAN first — list every file you will
+   change and exactly what you will change.
+3. Do NOT implement until plan is confirmed.
+4. After implementing verify every checklist item.
+5. Do NOT change the homepage, catalog page,
+   policies page, or any other existing page.
+6. Do NOT change any existing hash routes that
+   the SPA currently uses for navigation.
+7. Only add new server-side routes for the
+   36 landing pages listed below.
 
-// Protect admin views from being served statically
-app.use('/admin_views', (req, res) => res.status(403).send('Forbidden'));
+---
 
-// Serve all static assets from the current directory (index.html, css, js, etc.)
-app.use(express.static(path.join(__dirname)));
+## PROJECT CONTEXT
 
-// Admin Auth Middleware
-const requireAdmin = (req, res, next) => {
-    const cookies = parseCookies(req);
-    if (cookies.admin_session === 'authenticated') {
-        next();
-    } else {
-        res.redirect('/admin/login');
-    }
-};
+Project: Rose n Petals — local flower shop, Ghaziabad
+Live URL: https://rosenpetals.com
+Stack: HTML, CSS, JS, Node.js, Express
+The site is a SPA using hash routing (#/).
+The 36 landing pages currently exist as hash routes
+like /#/flower-delivery-ghaziabad but Google cannot
+index them because they are hash URLs.
+The fix is to add real Express server routes that
+serve each landing page as a real URL path.
 
-// Admin Routes
-app.get('/admin/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin_views', 'login.html'));
-});
+---
 
-app.post('/admin/login', (req, res) => {
-    const password = req.body.password;
-    const correctPassword = process.env.ADMIN_PASSWORD || 'admin123';
+## THE PROBLEM
+
+Currently:
+rosenpetals.com/#/flower-delivery-ghaziabad
+→ Google sees this as rosenpetals.com only
+→ The landing page is invisible to Google
+
+After this fix:
+rosenpetals.com/flower-delivery-ghaziabad
+→ Google sees this as a real unique URL
+→ The landing page gets indexed
+
+---
+
+## HOW THE FIX WORKS
+
+Each of the 36 landing pages already has its
+content defined in the JS files:
+- js/coreServiceRoutes.js (Batch 1 pages)
+- js/localAreaRoutes.js (Batch 2 pages)
+- js/urgencyServiceRoutes.js (Batch 3 pages)
+- js/occasionRoutes.js (Batch 4 pages)
+
+Each page already has HTML content, title, H1,
+FAQ section, and bouquet listings.
+
+The fix requires:
+1. For each of the 36 landing pages, add an
+   Express route in server.js that serves a
+   new HTML file specific to that page
+2. Each HTML file must include:
+   - Unique title tag for that page
+   - Unique meta description for that page
+   - Unique H1 for that page
+   - Canonical tag pointing to the real URL
+   - BreadcrumbList JSON-LD schema
+   - The existing page content already built
+     in the JS route files
+   - Same navbar and footer as main site
+
+IMPORTANT: The simplest correct approach is to
+create a single landing-page-template.html file
+that the server uses for all 36 pages, injecting
+the unique meta data per page via the server route.
+This avoids creating 36 separate HTML files.
+
+---
+
+## RECOMMENDED APPROACH
+
+Create ONE template HTML file: landing-page.html
+
+In server.js, create a route handler function
+that accepts page data and renders the template
+with unique values injected.
+
+The template uses placeholder tokens that the
+server replaces before sending:
+
+{{PAGE_TITLE}} — unique title per page
+{{META_DESCRIPTION}} — unique description per page
+{{H1}} — unique H1 per page
+{{CANONICAL_URL}} — unique canonical per page
+{{BREADCRUMB_SCHEMA}} — unique schema per page
+{{PAGE_SLUG}} — the URL slug for this page
+
+---
+
+## LANDING PAGE TEMPLATE FILE
+
+Create file: landing-page.html in project root
+
+Content:
+
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+  content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <meta name="description"
+  content="{{META_DESCRIPTION}}">
+  >
+  /png"
+  href="/assets/favicon.png">
+  <meta property="og:title"
+  content="{{PAGE_TITLE}}">
+  <meta property="og:description"
+  content="{{META_DESCRIPTION}}">
+  <meta property="og:url"
+  content="{{CANONICAL_URL}}">
+  <meta property="og:type"
+  content="business.business">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:site_name"
+  content="Rose n Petals">
+  <script type="application/ld+json">
+  {{BREADCRUMB_SCHEMA}}
+  </script>
+  /css/styles.css">
+  
+  href="/css/rnp-templates.css">
+  
+  href="https://fonts.googleapis.com">
+  
+  href="https://fonts.gstatic.com" crossorigin>
+  //fonts.googleapis.com/css2?
+  family=Outfit:wght@300;400;500;600;700&
+  display=swap" rel="stylesheet">
+</head>
+<body>
+  [COPY EXACT NAVBAR FROM index.html HERE]
+  <main id="app" class="app-main"></main>
+  [COPY EXACT FOOTER FROM index.html HERE]
+  <script src="/js/store.js"></script>
+  <script src="/js/whatsapp.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/corePagesData.js"></script>
+  <script src="/js/coreServiceRoutes.js"></script>
+  <script src="/js/urgencyPagesData.js"></script>
+  <script src="/js/urgencyServiceRoutes.js"></script>
+  <script src="/js/occasionPagesData.js"></script>
+  <script src="/js/occasionRoutes.js"></script>
+  <script src="/js/localAreaPagesData.js"></script>
+  <script src="/js/localAreaRoutes.js"></script>
+  <script src="/js/pages.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    // Set the current year in footer
+    document.getElementById('current-year')
+    .textContent = new Date().getFullYear();
     
-    if (password === correctPassword) {
-        res.cookie('admin_session', 'authenticated', { httpOnly: true });
-        res.redirect('/admin');
-    } else {
-        res.redirect('/admin/login?error=1');
+    // Navigate to the correct hash route
+    // so the SPA loads the right page content
+    if (window.location.hash === '' ||
+        window.location.hash === '#') {
+      window.location.hash =
+      '#/{{PAGE_SLUG}}';
     }
-});
+  </script>
+</body>
+</html>
 
-app.get('/admin/logout', (req, res) => {
-    res.clearCookie('admin_session');
-    res.redirect('/admin/login');
-});
+---
 
-app.get('/admin', requireAdmin, (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin_views', 'dashboard.html'));
-});
+## SERVER ROUTE HANDLER
 
-app.post('/api/admin/update', requireAdmin, (req, res) => {
-    console.log("Received admin update payload:", JSON.stringify(req.body, null, 2));
-    res.status(200).json({ success: true });
-});
+In server.js add this function BEFORE all the
+landing page routes:
 
-// API endpoint to securely pass environment variables to the frontend dynamically
-app.get('/api/config', (req, res) => {
-    res.json({
-        sheetUrl: process.env.SHEET_URL || ''
-    });
-});
-
-// Policies page route
-app.get('/policies', (req, res) => {
-  res.sendFile(path.join(__dirname, 'policies.html'));
-});
-
-// Landing page template handler
-const fs = require('fs');
 function serveLandingPage(res, data) {
-  const templatePath = path.join(__dirname, 'landing-page.html');
+  const fs = require('fs');
+  const templatePath =
+    path.join(__dirname, 'landing-page.html');
   let html = fs.readFileSync(templatePath, 'utf8');
-  html = html.replace(/\{\{PAGE_TITLE\}\}/g, data.title);
-  html = html.replace(/\{\{META_DESCRIPTION\}\}/g, data.description);
-  html = html.replace(/\{\{CANONICAL_URL\}\}/g, data.canonical);
-  html = html.replace(/\{\{BREADCRUMB_SCHEMA\}\}/g, data.breadcrumb);
-  html = html.replace(/\{\{PAGE_SLUG\}\}/g, data.slug);
+  html = html.replace(/{{PAGE_TITLE}}/g,
+    data.title);
+  html = html.replace(/{{META_DESCRIPTION}}/g,
+    data.description);
+  html = html.replace(/{{CANONICAL_URL}}/g,
+    data.canonical);
+  html = html.replace(/{{BREADCRUMB_SCHEMA}}/g,
+    data.breadcrumb);
+  html = html.replace(/{{PAGE_SLUG}}/g,
+    data.slug);
   res.send(html);
 }
 
-// --- BATCH 1: GENERAL PAGES ---
+---
 
-app.get('/flower-delivery-ghaziabad', (req, res) => {
+## ALL 36 ROUTES — Add to server.js
+
+Add ALL of these routes BEFORE the SPA catch-all
+route (app.get('*', ...)).
+
+Each route calls serveLandingPage with unique data.
+
+--- BATCH 1: GENERAL PAGES ---
+
+app.get('/flower-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery in Ghaziabad | Same Day – Rose n Petals',
     description: 'Order fresh flower bouquets in Ghaziabad with 1-hour delivery. Starting ₹200. Serving all of Ghaziabad. Order on WhatsApp +91 7289996804.',
@@ -106,7 +224,8 @@ app.get('/flower-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/online-flower-delivery-ghaziabad', (req, res) => {
+app.get('/online-flower-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Online Flower Delivery Ghaziabad | 1-Hour – Rose n Petals',
     description: 'Order flowers online in Ghaziabad. Fresh handmade bouquets delivered in 1 hour. Starting ₹200. WhatsApp +91 7289996804. No app needed.',
@@ -116,7 +235,8 @@ app.get('/online-flower-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/bouquet-delivery-ghaziabad', (req, res) => {
+app.get('/bouquet-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Bouquet Delivery in Ghaziabad | Fresh – Rose n Petals',
     description: 'Fresh handmade bouquets delivered across Ghaziabad in 1 hour. Starting ₹200. Order on WhatsApp — fast, easy, personal.',
@@ -126,7 +246,8 @@ app.get('/bouquet-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/send-flowers-ghaziabad', (req, res) => {
+app.get('/send-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Send Flowers in Ghaziabad | 1-Hour Delivery – Rose n Petals',
     description: 'Send fresh flowers anywhere in Ghaziabad in 1 hour. Handmade bouquets from ₹200. WhatsApp us to order — +91 7289996804.',
@@ -136,7 +257,8 @@ app.get('/send-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/order-flowers-online-ghaziabad', (req, res) => {
+app.get('/order-flowers-online-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Order Flowers Online Ghaziabad | Rose n Petals',
     description: 'Order fresh flowers online in Ghaziabad. Delivered in 1 hour. Bouquets from ₹200. Simple WhatsApp ordering — no app or account needed.',
@@ -146,7 +268,8 @@ app.get('/order-flowers-online-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/florist-ghaziabad', (req, res) => {
+app.get('/florist-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Florist in Ghaziabad | Fresh Bouquets – Rose n Petals',
     description: 'Looking for a florist in Ghaziabad? Rose n Petals offers fresh handmade bouquets with 1-hour delivery. Starting ₹200. WhatsApp +91 7289996804.',
@@ -156,7 +279,8 @@ app.get('/florist-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/flower-shop-ghaziabad', (req, res) => {
+app.get('/flower-shop-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Shop in Ghaziabad | Rose n Petals',
     description: 'Rose n Petals is Ghaziabads local flower shop. Fresh handmade bouquets from ₹200. 1-hour delivery across all of Ghaziabad. Order on WhatsApp.',
@@ -166,7 +290,8 @@ app.get('/flower-shop-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/fresh-flowers-ghaziabad', (req, res) => {
+app.get('/fresh-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Fresh Flowers Ghaziabad | Daily Delivery – Rose n Petals',
     description: 'Get fresh flowers delivered daily across Ghaziabad. Handmade bouquets starting Rs.200. 1-hour delivery. Order on WhatsApp +91 7289996804.',
@@ -176,7 +301,8 @@ app.get('/fresh-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/rose-bouquet-delivery-ghaziabad', (req, res) => {
+app.get('/rose-bouquet-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Rose Bouquet Delivery Ghaziabad | Rose n Petals',
     description: 'Order rose bouquets in Ghaziabad with 1-hour delivery. Red roses, pink roses, mixed rose bouquets from Rs.200. WhatsApp +91 7289996804.',
@@ -186,7 +312,8 @@ app.get('/rose-bouquet-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/mixed-flower-bouquet-ghaziabad', (req, res) => {
+app.get('/mixed-flower-bouquet-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Mixed Flower Bouquet Ghaziabad | Rose n Petals',
     description: 'Order mixed flower bouquets in Ghaziabad. Colourful handmade arrangements from Rs.200. Delivered in 1 hour. WhatsApp +91 7289996804.',
@@ -196,9 +323,10 @@ app.get('/mixed-flower-bouquet-ghaziabad', (req, res) => {
   });
 });
 
-// --- BATCH 2: LOCAL AREA PAGES ---
+--- BATCH 2: LOCAL AREA PAGES ---
 
-app.get('/flower-delivery-indirapuram', (req, res) => {
+app.get('/flower-delivery-indirapuram',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery in Indirapuram | 1-Hour – Rose n Petals',
     description: 'Fresh bouquets delivered in Indirapuram, Ghaziabad in 1 hour. Near Shipra Mall and Gyan Khand. Starting Rs.200. WhatsApp +91 7289996804.',
@@ -208,7 +336,8 @@ app.get('/flower-delivery-indirapuram', (req, res) => {
   });
 });
 
-app.get('/flower-delivery-vaishali-ghaziabad', (req, res) => {
+app.get('/flower-delivery-vaishali-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery in Vaishali Ghaziabad | Rose n Petals',
     description: 'Order fresh flowers in Vaishali, Ghaziabad. Delivered in 1 hour. Bouquets from Rs.200. Near Vaishali Metro. WhatsApp +91 7289996804.',
@@ -218,7 +347,8 @@ app.get('/flower-delivery-vaishali-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/flower-delivery-vasundhara-ghaziabad', (req, res) => {
+app.get('/flower-delivery-vasundhara-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery in Vasundhara Ghaziabad | Rose n Petals',
     description: 'Fresh bouquets delivered in Vasundhara, Ghaziabad in 1 hour. Starting Rs.200. Handmade with care. Order on WhatsApp +91 7289996804.',
@@ -228,7 +358,8 @@ app.get('/flower-delivery-vasundhara-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/flower-delivery-raj-nagar-ghaziabad', (req, res) => {
+app.get('/flower-delivery-raj-nagar-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery in Raj Nagar Ghaziabad | Rose n Petals',
     description: 'Order fresh flowers in Raj Nagar, Ghaziabad. Delivered in 1 hour. Near RDC Zone. Bouquets from Rs.200. WhatsApp +91 7289996804.',
@@ -238,7 +369,8 @@ app.get('/flower-delivery-raj-nagar-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/flower-delivery-kavi-nagar-ghaziabad', (req, res) => {
+app.get('/flower-delivery-kavi-nagar-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery in Kavi Nagar Ghaziabad | Rose n Petals',
     description: 'Rose n Petals is based in Kavi Nagar, Ghaziabad. Fresh bouquets delivered in 1 hour. Starting Rs.200. WhatsApp +91 7289996804.',
@@ -248,7 +380,8 @@ app.get('/flower-delivery-kavi-nagar-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/flower-delivery-mohan-nagar-ghaziabad', (req, res) => {
+app.get('/flower-delivery-mohan-nagar-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery in Mohan Nagar Ghaziabad | Rose n Petals',
     description: 'Fresh flowers delivered in Mohan Nagar, Ghaziabad in 1 hour. Handmade bouquets from Rs.200. Order on WhatsApp +91 7289996804.',
@@ -258,7 +391,8 @@ app.get('/flower-delivery-mohan-nagar-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/flower-delivery-vijay-nagar-ghaziabad', (req, res) => {
+app.get('/flower-delivery-vijay-nagar-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery in Vijay Nagar Ghaziabad | Rose n Petals',
     description: 'Order fresh flowers in Vijay Nagar, Ghaziabad. Delivered in 1 hour. Bouquets from Rs.200. Handmade daily. WhatsApp +91 7289996804.',
@@ -268,7 +402,8 @@ app.get('/flower-delivery-vijay-nagar-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/flower-delivery-crossing-republik-ghaziabad', (req, res) => {
+app.get('/flower-delivery-crossing-republik-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery Crossing Republik Ghaziabad | Rose n Petals',
     description: 'Fresh bouquets delivered in Crossing Republik, Ghaziabad in 1 hour. Starting Rs.200. Order on WhatsApp +91 7289996804.',
@@ -278,9 +413,10 @@ app.get('/flower-delivery-crossing-republik-ghaziabad', (req, res) => {
   });
 });
 
-// --- BATCH 3: URGENCY PAGES ---
+--- BATCH 3: URGENCY PAGES ---
 
-app.get('/same-day-flower-delivery-ghaziabad', (req, res) => {
+app.get('/same-day-flower-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Same Day Flower Delivery Ghaziabad | Rose n Petals',
     description: 'Same-day flower delivery across Ghaziabad. Order before 9 PM. Fresh bouquets from Rs.200. WhatsApp us now — +91 7289996804.',
@@ -290,7 +426,8 @@ app.get('/same-day-flower-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/express-flower-delivery-ghaziabad', (req, res) => {
+app.get('/express-flower-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Express Flower Delivery Ghaziabad | 1-Hour – Rose n Petals',
     description: 'Express flower delivery in Ghaziabad in just 1 hour. Fresh handmade bouquets from Rs.200. WhatsApp +91 7289996804 to order now.',
@@ -300,7 +437,8 @@ app.get('/express-flower-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/2-hour-flower-delivery-ghaziabad', (req, res) => {
+app.get('/2-hour-flower-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: '2 Hour Flower Delivery Ghaziabad | Rose n Petals',
     description: 'Need flowers fast? We deliver across Ghaziabad within 1-2 hours. Fresh bouquets from Rs.200. WhatsApp +91 7289996804 right now.',
@@ -310,7 +448,8 @@ app.get('/2-hour-flower-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/midnight-flower-delivery-ghaziabad', (req, res) => {
+app.get('/midnight-flower-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Midnight Flower Delivery Ghaziabad | Rose n Petals',
     description: 'Midnight flower delivery in Ghaziabad for surprise moments. Fresh bouquets from Rs.200. WhatsApp us to check availability — +91 7289996804.',
@@ -320,7 +459,8 @@ app.get('/midnight-flower-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/urgent-flower-delivery-ghaziabad', (req, res) => {
+app.get('/urgent-flower-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Urgent Flower Delivery Ghaziabad | Rose n Petals',
     description: 'Urgent flower delivery in Ghaziabad. WhatsApp us now and we will deliver within 1 hour. Fresh bouquets from Rs.200. +91 7289996804.',
@@ -330,7 +470,8 @@ app.get('/urgent-flower-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/last-minute-flower-delivery-ghaziabad', (req, res) => {
+app.get('/last-minute-flower-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Last Minute Flower Delivery Ghaziabad | Rose n Petals',
     description: 'Forgot a special occasion? We do last-minute flower delivery in Ghaziabad in 1 hour. From Rs.200. WhatsApp +91 7289996804 now.',
@@ -340,7 +481,8 @@ app.get('/last-minute-flower-delivery-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/flower-delivery-today-ghaziabad', (req, res) => {
+app.get('/flower-delivery-today-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Flower Delivery Today in Ghaziabad | Rose n Petals',
     description: 'Need flowers delivered today in Ghaziabad? We deliver in 1 hour. Fresh bouquets from Rs.200. WhatsApp +91 7289996804 right now.',
@@ -350,7 +492,8 @@ app.get('/flower-delivery-today-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/emergency-flower-delivery-ghaziabad', (req, res) => {
+app.get('/emergency-flower-delivery-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Emergency Flower Delivery Ghaziabad | Rose n Petals',
     description: 'Emergency flower delivery in Ghaziabad. WhatsApp us instantly and we will deliver within 1 hour. Bouquets from Rs.200. +91 7289996804.',
@@ -360,9 +503,10 @@ app.get('/emergency-flower-delivery-ghaziabad', (req, res) => {
   });
 });
 
-// --- BATCH 4: OCCASION PAGES ---
+--- BATCH 4: OCCASION PAGES ---
 
-app.get('/birthday-flowers-ghaziabad', (req, res) => {
+app.get('/birthday-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Birthday Flowers in Ghaziabad | 1-Hour – Rose n Petals',
     description: 'Surprise someone with birthday flowers in Ghaziabad. Fresh bouquets delivered in 1 hour. Starting Rs.200. WhatsApp +91 7289996804.',
@@ -372,7 +516,8 @@ app.get('/birthday-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/anniversary-flowers-ghaziabad', (req, res) => {
+app.get('/anniversary-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Anniversary Flowers in Ghaziabad | Rose n Petals',
     description: 'Celebrate your anniversary with fresh flowers in Ghaziabad. Handmade bouquets from Rs.200. 1-hour delivery. WhatsApp +91 7289996804.',
@@ -382,7 +527,8 @@ app.get('/anniversary-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/get-well-soon-flowers-ghaziabad', (req, res) => {
+app.get('/get-well-soon-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Get Well Soon Flowers Ghaziabad | Rose n Petals',
     description: 'Send get well soon flowers in Ghaziabad. Cheerful fresh bouquets from Rs.200. Delivered in 1 hour. WhatsApp +91 7289996804.',
@@ -392,7 +538,8 @@ app.get('/get-well-soon-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/congratulations-flowers-ghaziabad', (req, res) => {
+app.get('/congratulations-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Congratulations Flowers Ghaziabad | Rose n Petals',
     description: 'Celebrate achievements with congratulations flowers in Ghaziabad. Fresh bouquets from Rs.200. 1-hour delivery. WhatsApp +91 7289996804.',
@@ -402,7 +549,8 @@ app.get('/congratulations-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/sorry-flowers-ghaziabad', (req, res) => {
+app.get('/sorry-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Sorry Flowers in Ghaziabad | Rose n Petals',
     description: 'Say sorry with fresh flowers in Ghaziabad. Heartfelt bouquets from Rs.200. Delivered in 1 hour. WhatsApp +91 7289996804 to order now.',
@@ -412,7 +560,8 @@ app.get('/sorry-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/romantic-flowers-ghaziabad', (req, res) => {
+app.get('/romantic-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Romantic Flowers in Ghaziabad | Rose n Petals',
     description: 'Surprise your partner with romantic flowers in Ghaziabad. Red roses and love bouquets from Rs.200. 1-hour delivery. WhatsApp +91 7289996804.',
@@ -422,7 +571,8 @@ app.get('/romantic-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/new-baby-flowers-ghaziabad', (req, res) => {
+app.get('/new-baby-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'New Baby Flowers in Ghaziabad | Rose n Petals',
     description: 'Welcome a new baby with fresh flowers in Ghaziabad. Soft pastel bouquets from Rs.200. Delivered in 1 hour. WhatsApp +91 7289996804.',
@@ -432,7 +582,8 @@ app.get('/new-baby-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/housewarming-flowers-ghaziabad', (req, res) => {
+app.get('/housewarming-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Housewarming Flowers in Ghaziabad | Rose n Petals',
     description: 'Send housewarming flowers in Ghaziabad. Beautiful fresh bouquets from Rs.200. Delivered in 1 hour. WhatsApp +91 7289996804 to order.',
@@ -442,7 +593,8 @@ app.get('/housewarming-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/sympathy-flowers-ghaziabad', (req, res) => {
+app.get('/sympathy-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Sympathy Flowers in Ghaziabad | Rose n Petals',
     description: 'Send sympathy flowers in Ghaziabad with care and respect. Thoughtful bouquets from Rs.200. 1-hour delivery. WhatsApp +91 7289996804.',
@@ -452,7 +604,8 @@ app.get('/sympathy-flowers-ghaziabad', (req, res) => {
   });
 });
 
-app.get('/diwali-flowers-ghaziabad', (req, res) => {
+app.get('/diwali-flowers-ghaziabad',
+(req, res) => {
   serveLandingPage(res, {
     title: 'Diwali Flowers in Ghaziabad | Rose n Petals',
     description: 'Celebrate Diwali with fresh flowers in Ghaziabad. Festive bouquets from Rs.200. 1-hour delivery. WhatsApp +91 7289996804 to order now.',
@@ -462,12 +615,41 @@ app.get('/diwali-flowers-ghaziabad', (req, res) => {
   });
 });
 
-// SPA Fallback: Any other route returns index.html for client-side routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+---
 
-app.listen(PORT, HOST, () => {
-    console.log(`Server is running on http://${HOST}:${PORT}`);
-    console.log(`Configured Google Sheet URL: ${process.env.SHEET_URL ? 'Detected' : 'Not Provided'}`);
-});
+## VERIFICATION CHECKLIST
+
+After implementing confirm every item:
+
+[ ] 1. landing-page.html template file exists 
+       in project root
+[ ] 2. serveLandingPage function exists in server.js
+[ ] 3. All 36 routes exist in server.js
+[ ] 4. All 36 routes are BEFORE the catch-all route
+[ ] 5. Test these 5 URLs load correctly on localhost:
+       /flower-delivery-ghaziabad
+       /flower-delivery-indirapuram
+       /same-day-flower-delivery-ghaziabad
+       /birthday-flowers-ghaziabad
+       /diwali-flowers-ghaziabad
+[ ] 6. Each page shows correct unique title in 
+       browser tab
+[ ] 7. Each page loads the correct landing page 
+       content from the existing JS routes
+[ ] 8. Canonical tag on each page points to its 
+       own real URL
+[ ] 9. BreadcrumbList schema present on each page
+[ ] 10. Navbar and footer display correctly on 
+        all landing pages
+[ ] 11. No existing pages or routes were changed
+[ ] 12. The SPA hash routes still work normally
+        e.g. /#/flower-delivery-ghaziabad still 
+        works for internal navigation
+
+---
+
+## FINAL REMINDER
+
+Show plan first. Wait for confirmation.
+Then implement. Verify all 12 items when done.
+Do not touch anything not listed here.
