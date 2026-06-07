@@ -2,7 +2,7 @@
 
 window.Pages = {
     renderHomePage(container) {
-        document.title = "Rose n Petals - Home";
+        document.title = "Flower Delivery in Ghaziabad | Fresh Bouquets – Rose n Petals";
 
         const bouquets = Store.getAllProducts();
         const bestSellers = bouquets.filter(b => b.is_best_seller).slice(0, 8);
