@@ -18,13 +18,53 @@ window.Pages = {
             <!-- Hero Section -->
             <section class="hero-section">
                 <div class="hero-content container">
-                    <h1 class="hero-title">Fresh Flower Delivery in Ghaziabad</h1>
-                    <p class="hero-subtitle">Handmade bouquets delivered to your door in under 1 hour.<br>Serving all of Ghaziabad — Kavi Nagar, Raj Nagar, Indirapuram, Vaishali & more.</p>
-                    <p style="font-size: 1.1rem; margin-bottom: 24px; font-weight: 500;">Starting from ₹200 · Order on WhatsApp · No app needed</p>
-                    <div class="hero-actions">
-                        <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank" class="btn btn-primary btn-lg">Order on WhatsApp</a>
-                        <a href="#/catalog" class="btn btn-outline btn-lg" style="background-color: white;">Browse Bouquets</a>
+                    <span class="hero-label">🌹 Ghaziabad's Best Florist</span>
+                    <h1 class="hero-title" style="color: #1A1A1A;">Fresh Flower Delivery in Ghaziabad</h1>
+                    <p class="hero-subtitle" style="color: #555555; font-size: 16px;">Handmade bouquets delivered to your door in under 1 hour.<br>Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali & more.</p>
+                    <p style="font-size: 14px; color: #CC0000; margin-bottom: 28px; font-weight: 500;">Starting from ₹200 · No app needed · Easy WhatsApp order</p>
+                    <div class="hero-buttons">
+                        <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank" class="hero-btn-primary" style="background: #CC0000; color: white; border-radius: 8px; padding: 14px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Order on WhatsApp</a>
+                        <a href="#/catalog" class="hero-btn-secondary" style="background: white; color: #CC0000; border: 2px solid #CC0000; border-radius: 8px; padding: 12px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Browse Bouquets</a>
                     </div>
+                </div>
+            </section>
+            
+            <!-- Category Strip -->
+            <section class="category-strip">
+                <h2>Shop by Occasion</h2>
+                <div class="category-cards">
+                    <a href="#/catalog?filter=Birthday" class="category-card">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779475822/Carnival_Mix_d2c4cl.png" alt="Birthday">
+                        <span>Birthday</span>
+                    </a>
+                    <a href="#/catalog?filter=Anniversary" class="category-card">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779516704/Harmony_Blush_bpdbwl.png" alt="Anniversary">
+                        <span>Anniversary</span>
+                    </a>
+                    <a href="#/catalog?filter=Celebration" class="category-card">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png" alt="Celebration">
+                        <span>Celebration</span>
+                    </a>
+                    <a href="#/catalog?filter=Romantic" class="category-card">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505954/blush_carnation_jecbzq.png" alt="Romantic">
+                        <span>Romantic</span>
+                    </a>
+                    <a href="#/catalog?filter=Get%20Well%20Soon" class="category-card">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779504779/Tulip_Charm_qi8hg1.png" alt="Get Well Soon">
+                        <span>Get Well Soon</span>
+                    </a>
+                    <a href="#/catalog?filter=Sorry" class="category-card">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779506580/Vitage_Tale_n6pxuo.png" alt="Sorry">
+                        <span>Sorry</span>
+                    </a>
+                    <a href="#/catalog?filter=Same%20Day" class="category-card">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779467296/Sunflower_Burst_Bouquet_rkp5xf.png" alt="Same Day">
+                        <span>Same Day</span>
+                    </a>
+                    <a href="#/catalog?filter=Sympathy" class="category-card">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779476670/Ocean_MIst_vcnm4j.png" alt="Sympathy">
+                        <span>Sympathy</span>
+                    </a>
                 </div>
             </section>
             
@@ -39,24 +79,22 @@ window.Pages = {
             </div>
             
             <!-- Delivery Area -->
-            <section class="section section-light" style="padding-bottom: 0;">
-                <div class="container text-center">
-                    <h2 class="section-title">We Deliver Across All of Ghaziabad</h2>
-                    <p class="mb-4">Rose n Petals delivers fresh bouquets to every corner of Ghaziabad in under 1 hour of order confirmation.</p>
-                    <div class="area-tags-container mb-4">
-                        <span class="area-pill">Kavi Nagar</span>
-                        <span class="area-pill">Raj Nagar</span>
-                        <span class="area-pill">Indirapuram</span>
-                        <span class="area-pill">Vaishali</span>
-                        <span class="area-pill">Vasundhara</span>
-                        <span class="area-pill">Mohan Nagar</span>
-                        <span class="area-pill">Vijay Nagar</span>
-                        <span class="area-pill">Crossing Republik</span>
-                        <span class="area-pill">and all surrounding areas</span>
-                    </div>
-                    <p class="mb-2">Not sure if we deliver to your area?<br>Just WhatsApp us — if we can reach you, we will.</p>
-                    <p style="color: #CC0000; font-weight: 600;">Same-day delivery available for orders placed before 9 PM.</p>
+            <section class="delivery-area-section">
+                <span style="font-size: 12px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: block;">📍 Where We Deliver</span>
+                <h2 style="font-size: 28px; color: white; font-weight: 700; margin-bottom: 8px;">We Deliver Across All of Ghaziabad</h2>
+                <p style="font-size: 15px; color: rgba(255,255,255,0.85); margin-bottom: 32px;">Fresh bouquets to your door in under 1 hour</p>
+                <div class="area-cards-grid">
+                    <div class="area-card"><span class="area-emoji">🏡</span>Kavi Nagar</div>
+                    <div class="area-card"><span class="area-emoji">🌿</span>Raj Nagar</div>
+                    <div class="area-card"><span class="area-emoji">🏙️</span>Indirapuram</div>
+                    <div class="area-card"><span class="area-emoji">🌸</span>Vaishali</div>
+                    <div class="area-card"><span class="area-emoji">🌳</span>Vasundhara</div>
+                    <div class="area-card"><span class="area-emoji">🏘️</span>Mohan Nagar</div>
+                    <div class="area-card"><span class="area-emoji">🌻</span>Vijay Nagar</div>
+                    <div class="area-card"><span class="area-emoji">🏗️</span>Crossing Republik</div>
                 </div>
+                <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 20px;">Not sure if we deliver to your area?<br>Just WhatsApp us — we will reach you!</p>
+                <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank" class="hero-btn-primary" style="background: white; color: #CC0000; border-radius: 8px; padding: 14px 32px; font-size: 15px; font-weight: 700; box-shadow: 0 4px 16px rgba(0,0,0,0.2); display: inline-block; transition: all 0.2s ease;">Order on WhatsApp Now</a>
             </section>
             
             <!-- Shop by Occasion -->
