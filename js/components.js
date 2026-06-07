@@ -133,6 +133,13 @@ window.Components = {
                         </div>
                     </div>
                     
+                    <div class="delivery-info-block">
+                        <p>🕐 Delivered in under 1 hour after confirmation</p>
+                        <p>📦 Delivered by our third-party delivery partner</p>
+                        <p>💬 WhatsApp reply within 15–30 minutes (8 AM–10 PM)</p>
+                        <p>✅ Same-day delivery available before 9 PM</p>
+                    </div>
+                    
                     <button type="submit" class="btn btn-primary btn-block btn-lg">Confirm on WhatsApp</button>
                     <p class="form-note">Next step opens WhatsApp with your order details.</p>
                 </form>
@@ -143,13 +150,8 @@ window.Components = {
     createCustomBouquetBanner() {
         return `
             <div class="custom-bouquet-banner" style="background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent-gray) 100%); border-radius: var(--border-radius-lg); padding: var(--spacing-2xl) var(--spacing-lg); text-align: center; margin-top: var(--spacing-2xl); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
-                <h2 style="color: var(--primary-color); margin-bottom: var(--spacing-sm);">Can't find what you're looking for?</h2>
-                <p style="font-size: 1.1rem; color: var(--text-main); margin-bottom: var(--spacing-lg);">Get your custom bouquet, handcrafted just for you — starting from just ₹200.</p>
-                <ul style="list-style: none; padding: 0; margin: 0 auto var(--spacing-lg) auto; max-width: 400px; text-align: left; color: var(--text-muted);">
-                    <li style="margin-bottom: var(--spacing-sm); display: flex; align-items: flex-start;"><span style="color: var(--primary-color); font-weight: bold; margin-right: var(--spacing-sm);">✓</span> Tell us your budget, occasion, and preferred flowers</li>
-                    <li style="margin-bottom: var(--spacing-sm); display: flex; align-items: flex-start;"><span style="color: var(--primary-color); font-weight: bold; margin-right: var(--spacing-sm);">✓</span> We'll arrange a fresh bouquet just for you</li>
-                    <li style="display: flex; align-items: flex-start;"><span style="color: var(--primary-color); font-weight: bold; margin-right: var(--spacing-sm);">✓</span> Same local delivery in Kavi Nagar & Raj Nagar</li>
-                </ul>
+                <h2 style="color: var(--primary-color); margin-bottom: var(--spacing-sm);">Can't Find What You're Looking For?</h2>
+                <p style="font-size: 1.1rem; color: var(--text-main); margin-bottom: var(--spacing-lg); max-width: 600px; margin-left: auto; margin-right: auto;">We make custom bouquets starting from ₹200.<br>Tell us your occasion, preferred flowers, colour, and budget — and we will create something beautiful just for you.</p>
                 <a href="https://api.whatsapp.com/send?phone=917289996804&text=Hi%2C%20I%20want%20to%20order%20a%20custom%20bouquet.%20Can%20you%20help%20me%3F" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg" style="display: inline-block;" onclick="if(window.gtag) gtag('event', 'whatsapp_order_click', { event_category: 'Order Intent', bouquet_name: 'Custom' });">Order a Custom Bouquet on WhatsApp</a>
             </div>
         `;

@@ -9,24 +9,53 @@ window.Pages = {
         const occasionTags = ["All", ...Store.getAllOccasionTags(), "Under ₹499"];
 
         const stepsData = [
-            { title: "Choose a bouquet", description: "Browse our curated collections for every occasion." },
-            { title: "Fill your details", description: "Enter delivery address, date, time, and message card text." },
-            { title: "Confirm on WhatsApp", description: "We confirm availability and payment via UPI or bank transfer, then deliver." }
+            { title: "Browse Bouquets", description: "Explore our fresh handmade arrangements online or WhatsApp us your idea." },
+            { title: "WhatsApp Your Order", description: "Send us your bouquet choice, delivery address in Ghaziabad, and preferred time." },
+            { title: "Delivered in Under 1 Hour", description: "We confirm your order and deliver fresh to your door — anywhere in Ghaziabad." }
         ];
 
         let html = `
             <!-- Hero Section -->
             <section class="hero-section">
                 <div class="hero-content container">
-                    <h1 class="hero-title">Fresh bouquets in Kavi Nagar & Raj Nagar</h1>
-                    <p class="hero-subtitle">Hand‑picked premium flowers for your special moments. Local delivery available.</p>
+                    <h1 class="hero-title">Fresh Flower Delivery in Ghaziabad</h1>
+                    <p class="hero-subtitle">Handmade bouquets delivered to your door in under 1 hour.<br>Serving all of Ghaziabad — Kavi Nagar, Raj Nagar, Indirapuram, Vaishali & more.</p>
+                    <p style="font-size: 1.1rem; margin-bottom: 24px; font-weight: 500;">Starting from ₹200 · Order on WhatsApp · No app needed</p>
                     <div class="hero-actions">
-                        <a href="#/catalog" class="btn btn-primary btn-lg">View Bouquets</a>
+                        <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank" class="btn btn-primary btn-lg">Order on WhatsApp</a>
+                        <a href="#/catalog" class="btn btn-outline btn-lg" style="background-color: white;">Browse Bouquets</a>
                     </div>
-                    <div class="hero-badges">
-                        <span class="badge">✓ 2‑hour delivery available (where possible)</span>
-                        <span class="badge">✓ Loved by locals in Ghaziabad</span>
+                </div>
+            </section>
+            
+            <!-- Trust Signals Bar -->
+            <div class="trust-bar">
+                <div class="trust-container">
+                    <div class="trust-item">✦ Delivered in Under 1 Hour</div>
+                    <div class="trust-item">✦ Fresh Handmade Bouquets Daily</div>
+                    <div class="trust-item">✦ Starting from ₹200</div>
+                    <div class="trust-item">✦ Order on WhatsApp — No App Needed</div>
+                </div>
+            </div>
+            
+            <!-- Delivery Area -->
+            <section class="section section-light" style="padding-bottom: 0;">
+                <div class="container text-center">
+                    <h2 class="section-title">We Deliver Across All of Ghaziabad</h2>
+                    <p class="mb-4">Rose n Petals delivers fresh bouquets to every corner of Ghaziabad in under 1 hour of order confirmation.</p>
+                    <div class="area-tags-container mb-4">
+                        <span class="area-pill">Kavi Nagar</span>
+                        <span class="area-pill">Raj Nagar</span>
+                        <span class="area-pill">Indirapuram</span>
+                        <span class="area-pill">Vaishali</span>
+                        <span class="area-pill">Vasundhara</span>
+                        <span class="area-pill">Mohan Nagar</span>
+                        <span class="area-pill">Vijay Nagar</span>
+                        <span class="area-pill">Crossing Republik</span>
+                        <span class="area-pill">and all surrounding areas</span>
                     </div>
+                    <p class="mb-2">Not sure if we deliver to your area?<br>Just WhatsApp us — if we can reach you, we will.</p>
+                    <p style="color: #CC0000; font-weight: 600;">Same-day delivery available for orders placed before 9 PM.</p>
                 </div>
             </section>
             
@@ -58,24 +87,64 @@ window.Pages = {
                 ${Components.createSteps(stepsData)}
             </section>
             
-            <!-- About & Contact Strip -->
+            <!-- About Us -->
             <section class="section section-light">
-                <div class="container about-contact-container">
-                    <div class="about-card">
-                        <h3>About our shop</h3>
-                        <p>Rose n Petals is a local family‑run florist in Kavi Nagar & Raj Nagar, dedicated to making your special moments bloom with carefully selected fresh flowers.</p>
-                        <ul class="highlight-stats">
-                            <li><strong>✓</strong> Years of local experience</li>
-                            <li><strong>✓</strong> Hundreds of happy customers</li>
-                        </ul>
-                    </div>
-                    <div class="contact-card" id="contact">
-                        <h3>Contact Rose n Petals</h3>
-                        <p class="mb-4">Need help choosing? Reach out to us directly.</p>
-                        <div class="contact-buttons">
-                            <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank" class="btn btn-primary mb-2">Chat on WhatsApp</a>
-                            <a href="tel:+919810244455" class="btn btn-outline">Call now (+91 9810244455)</a>
+                <div class="container">
+                    <div class="about-card p-4" style="background: white; padding: 32px;">
+                        <h2 class="section-title text-left mb-4" style="text-align: left;">About Rose n Petals</h2>
+                        <p>Rose n Petals is a local flower shop based in Kavi Nagar, Ghaziabad — run with love and a genuine passion for fresh flowers.</p>
+                        <p>We are not a big national brand with a call centre. We are your neighbourhood florist. Every bouquet we make is handcrafted fresh — not pre-packaged, not mass-produced. When you order from us, a real person reads your WhatsApp message, makes your bouquet, and sends it out to you in under 1 hour.</p>
+                        <p>Our shop is located at KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad. We deliver across all of Ghaziabad — from Indirapuram and Vaishali to Raj Nagar, Vasundhara, Crossing Republik, and every neighbourhood in between.</p>
+                        <p>Whether it is a last-minute birthday bouquet, a romantic anniversary surprise, a farewell for a friend, or simply a bunch of flowers to brighten someone's day — we are here, open from 8 AM to 10 PM, every single day.</p>
+                        <p>Bouquets start at ₹200. Orders are placed on WhatsApp — simple, fast, and personal.</p>
+                        
+                        <div class="mt-4" style="border-top: 1px solid #eee; padding-top: 16px;">
+                            <p>📍 KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad – 201002</p>
+                            <p>📞 +91 9810244455</p>
+                            <p>💬 WhatsApp: <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank">+91 7289996804</a></p>
+                            <p>📸 <a href="https://www.instagram.com/_rosenpetals_" target="_blank">@_rosenpetals_</a></p>
                         </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- FAQ Section -->
+            <section class="section">
+                <div class="container">
+                    <h2 class="section-title">Frequently Asked Questions</h2>
+                    <div class="faq-accordion" style="max-width: 800px; margin: 0 auto;">
+                        <details>
+                            <summary>Do you deliver flowers to all areas of Ghaziabad?</summary>
+                            <div class="faq-answer">Yes. Rose n Petals delivers across all of Ghaziabad including Kavi Nagar, Raj Nagar, Indirapuram, Vaishali, Vasundhara, Mohan Nagar, Vijay Nagar, Crossing Republik and surrounding areas.</div>
+                        </details>
+                        <details>
+                            <summary>How long does delivery take?</summary>
+                            <div class="faq-answer">We deliver in under 1 hour of order confirmation. Same-day delivery is available for orders placed before 9 PM.</div>
+                        </details>
+                        <details>
+                            <summary>What is the minimum order price?</summary>
+                            <div class="faq-answer">Bouquets start from ₹200. We have options for every budget including premium arrangements.</div>
+                        </details>
+                        <details>
+                            <summary>How do I place an order?</summary>
+                            <div class="faq-answer">WhatsApp us at +91 7289996804. No app download, no complicated form. Just message us your bouquet choice, delivery address, and preferred time.</div>
+                        </details>
+                        <details>
+                            <summary>Do you accept Cash on Delivery?</summary>
+                            <div class="faq-answer">No. We accept UPI and Bank Transfer only. Payment is made after order confirmation on WhatsApp.</div>
+                        </details>
+                        <details>
+                            <summary>Can I get a custom bouquet?</summary>
+                            <div class="faq-answer">Yes. WhatsApp us with your idea — flowers, colours, budget, occasion — and we will create it for you starting from ₹200.</div>
+                        </details>
+                        <details>
+                            <summary>What are your shop hours?</summary>
+                            <div class="faq-answer">We are open every day from 8 AM to 10 PM. WhatsApp orders are accepted during shop hours.</div>
+                        </details>
+                        <details>
+                            <summary>How quickly do you respond on WhatsApp?</summary>
+                            <div class="faq-answer">We respond within 15–30 minutes during shop hours. For urgent orders write URGENT in your first message and we will prioritise your order immediately.</div>
+                        </details>
                     </div>
                 </div>
             </section>
