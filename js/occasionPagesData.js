@@ -76,7 +76,7 @@ window.OccasionPagesData = {
             {
                 "name": "Mixed Vibrant Blooms",
                 "desc": "A colourful mix of seasonal flowers to brighten their day.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779475822/Carnival_Mix_d2c4cl.png"
             },
             {
                 "name": "Orchid Elegance",
@@ -116,8 +116,8 @@ window.OccasionPagesData = {
                 "href": "#/romantic-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1",
-        "heroImageAlt": "Birthday Flower Delivery in Ghaziabad | Rose n Petals"
+        "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779475822/Carnival_Mix_d2c4cl.png",
+        "heroImageAlt": "Birthday bouquet in Ghaziabad"
     },
     "anniversary-flowers-ghaziabad": {
         "pageTitle": "Anniversary Flower Delivery in Ghaziabad | Rose n Petals",
@@ -181,7 +181,7 @@ window.OccasionPagesData = {
             {
                 "name": "100 Red Roses Premium Box",
                 "desc": "The ultimate romantic gesture with handpicked premium red roses.",
-                "image": "https://drive.google.com/uc?export=view&id=1cpJMck3YEYANy_4uBPE2Ej1t8K68b-4N"
+                "image": "https://drive.google.com/uc?export=view&id=1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V"
             },
             {
                 "name": "Pink Lily & Rose Combo",
@@ -191,7 +191,7 @@ window.OccasionPagesData = {
             {
                 "name": "Classic Love Bouquet",
                 "desc": "A timeless arrangement of mixed romantic blooms and foliage.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505954/blush_carnation_jecbzq.png"
             }
         ],
         "faqs": [
@@ -223,7 +223,7 @@ window.OccasionPagesData = {
             }
         ],
         "heroImage": "https://drive.google.com/uc?export=view&id=1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V",
-        "heroImageAlt": "Anniversary Flower Delivery in Ghaziabad | Rose n Petals"
+        "heroImageAlt": "Romantic red rose bouquet in Ghaziabad"
     },
     "get-well-soon-flowers-ghaziabad": {
         "pageTitle": "Get Well Soon Flowers Delivery in Ghaziabad | Rose n Petals",
@@ -287,17 +287,17 @@ window.OccasionPagesData = {
             {
                 "name": "Sunshine Yellow Daisies",
                 "desc": "Bright yellow blooms guaranteed to bring a smile.",
-                "image": "https://drive.google.com/uc?export=view&id=1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779467296/Sunflower_Burst_Bouquet_rkp5xf.png"
             },
             {
                 "name": "Vibrant Mix Bouquet",
                 "desc": "A colorful assortment of fresh, mood-lifting flowers.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://drive.google.com/uc?export=view&id=1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
             },
             {
                 "name": "Elegant White Lilies",
                 "desc": "Calming and elegant lilies for a peaceful recovery.",
-                "image": "https://drive.google.com/uc?export=view&id=1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779506580/Vitage_Tale_n6pxuo.png"
             }
         ],
         "faqs": [
@@ -328,8 +328,8 @@ window.OccasionPagesData = {
                 "href": "#/romantic-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27",
-        "heroImageAlt": "Get Well Soon Flowers Delivery in Ghaziabad | Rose n Petals"
+        "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779467296/Sunflower_Burst_Bouquet_rkp5xf.png",
+        "heroImageAlt": "Cheerful sunflower bouquet in Ghaziabad"
     },
     "congratulations-flowers-ghaziabad": {
         "pageTitle": "Congratulations Flowers Delivery in Ghaziabad | Rose n Petals",
@@ -393,7 +393,7 @@ window.OccasionPagesData = {
             {
                 "name": "Vibrant Celebration Mix",
                 "desc": "A lively, colorful bouquet that screams success.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779475822/Carnival_Mix_d2c4cl.png"
             },
             {
                 "name": "Premium Pink Orchids",
@@ -403,7 +403,7 @@ window.OccasionPagesData = {
             {
                 "name": "Bright Sunflower Assortment",
                 "desc": "Joyful sunflowers to match their happy moment.",
-                "image": "https://drive.google.com/uc?export=view&id=1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png"
             }
         ],
         "faqs": [
@@ -434,16 +434,16 @@ window.OccasionPagesData = {
                 "href": "#/new-baby-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1",
-        "heroImageAlt": "Congratulations Flowers Delivery in Ghaziabad | Rose n Petals"
+        "heroImage": "https://drive.google.com/uc?export=view&id=1owFZSTGRXuKYAEdTZkpZtFh_rAg2mqVV",
+        "heroImageAlt": "Premium celebration bouquet in Ghaziabad"
     },
     "sorry-flowers-ghaziabad": {
         "pageTitle": "Apology & Sorry Flowers Delivery in Ghaziabad | Rose n Petals",
         "mainKeyword": "sorry flowers Ghaziabad",
         "occasionName": "Apology",
         "occasionEmoji": "🙏",
-        "heroImage": "https://drive.google.com/uc?export=view&id=1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27",
-        "heroImageAlt": "Elegant apology flower bouquet in Ghaziabad",
+        "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779506580/Vitage_Tale_n6pxuo.png",
+        "heroImageAlt": "Peaceful apology bouquet in Ghaziabad",
         "headline": "Say \"I am Sorry\" with Flowers in Ghaziabad",
         "subheadline": "Mend the bridge with a sincere bouquet. Order before 8 PM to get under 1 hour delivery from confirmation. Starting ₹200.",
         "startingPrice": "₹200",
@@ -501,7 +501,7 @@ window.OccasionPagesData = {
             {
                 "name": "Peaceful White Lilies",
                 "desc": "Calming white lilies to show sincere apologies.",
-                "image": "https://drive.google.com/uc?export=view&id=1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779476670/Ocean_MIst_vcnm4j.png"
             },
             {
                 "name": "Soft Pastel Mix",
@@ -511,7 +511,7 @@ window.OccasionPagesData = {
             {
                 "name": "Classic Yellow Roses",
                 "desc": "Symbolizing friendship and new beginnings.",
-                "image": "https://drive.google.com/uc?export=view&id=1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779467296/Sunflower_Burst_Bouquet_rkp5xf.png"
             }
         ],
         "faqs": [
@@ -548,8 +548,8 @@ window.OccasionPagesData = {
         "mainKeyword": "romantic flowers Ghaziabad",
         "occasionName": "Romance",
         "occasionEmoji": "💘",
-        "heroImage": "https://drive.google.com/uc?export=view&id=1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V",
-        "heroImageAlt": "Romantic rose bouquet in Ghaziabad",
+        "heroImage": "https://drive.google.com/uc?export=view&id=1cpJMck3YEYANy_4uBPE2Ej1t8K68b-4N",
+        "heroImageAlt": "Romantic red roses in Ghaziabad",
         "headline": "Send Romantic Flowers in Ghaziabad",
         "subheadline": "Just because they are on your mind. Order before 8 PM to get under 1 hour delivery from confirmation. Starting ₹200.",
         "startingPrice": "₹200",
@@ -612,7 +612,7 @@ window.OccasionPagesData = {
             {
                 "name": "Elegant Pink Carnations",
                 "desc": "Soft and romantic blooms for a gentle surprise.",
-                "image": "https://drive.google.com/uc?export=view&id=1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505954/blush_carnation_jecbzq.png"
             },
             {
                 "name": "Luxury Orchid Arrangement",
@@ -711,17 +711,17 @@ window.OccasionPagesData = {
             {
                 "name": "Soft Blue & White Mix",
                 "desc": "A gentle arrangement perfect for welcoming a baby boy.",
-                "image": "https://drive.google.com/uc?export=view&id=1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779476670/Ocean_MIst_vcnm4j.png"
             },
             {
                 "name": "Delicate Pink Roses",
                 "desc": "Sweet pink blooms to celebrate a beautiful baby girl.",
-                "image": "https://drive.google.com/uc?export=view&id=1JTTaBprDopk8V8ws6rpg2VvGRt-GS5wB"
+                "image": "https://drive.google.com/uc?export=view&id=1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27"
             },
             {
                 "name": "Joyful Yellow & Green Mix",
                 "desc": "A gender-neutral, vibrant bouquet of joy.",
-                "image": "https://drive.google.com/uc?export=view&id=1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png"
             }
         ],
         "faqs": [
@@ -752,8 +752,8 @@ window.OccasionPagesData = {
                 "href": "#/get-well-soon-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27",
-        "heroImageAlt": "New Baby Flowers Delivery in Ghaziabad | Rose n Petals"
+        "heroImage": "https://drive.google.com/uc?export=view&id=1JTTaBprDopk8V8ws6rpg2VvGRt-GS5wB",
+        "heroImageAlt": "Soft new baby bouquet in Ghaziabad"
     },
     "housewarming-flowers-ghaziabad": {
         "pageTitle": "Housewarming Flowers Delivery in Ghaziabad | Rose n Petals",
@@ -822,12 +822,12 @@ window.OccasionPagesData = {
             {
                 "name": "Bright Mixed Garden",
                 "desc": "Colorful and vibrant flowers to bring joy to any room.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779475822/Carnival_Mix_d2c4cl.png"
             },
             {
                 "name": "Premium Orchid Pot",
                 "desc": "A long-lasting, luxury orchid arrangement for their new space.",
-                "image": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1"
+                "image": "https://drive.google.com/uc?export=view&id=1owFZSTGRXuKYAEdTZkpZtFh_rAg2mqVV"
             }
         ],
         "faqs": [
@@ -858,8 +858,8 @@ window.OccasionPagesData = {
                 "href": "#/diwali-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R",
-        "heroImageAlt": "Housewarming Flowers Delivery in Ghaziabad | Rose n Petals"
+        "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779504779/Tulip_Charm_qi8hg1.png",
+        "heroImageAlt": "Elegant housewarming bouquet in Ghaziabad"
     },
     "sympathy-flowers-ghaziabad": {
         "pageTitle": "Sympathy & Condolence Flowers Ghaziabad | Rose n Petals",
@@ -923,17 +923,17 @@ window.OccasionPagesData = {
             {
                 "name": "Serene White Lilies",
                 "desc": "A classic and peaceful arrangement representing purity and sympathy.",
-                "image": "https://drive.google.com/uc?export=view&id=1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779506580/Vitage_Tale_n6pxuo.png"
             },
             {
                 "name": "Gentle White Roses",
                 "desc": "Soft white roses arranged respectfully for condolences.",
-                "image": "https://drive.google.com/uc?export=view&id=1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779516704/Harmony_Blush_bpdbwl.png"
             },
             {
                 "name": "Peaceful White & Green Mix",
                 "desc": "A calming assortment of white blooms and fresh greens.",
-                "image": "https://drive.google.com/uc?export=view&id=1V48ZJQ1Q0y39kubUK3Z3dzGXCx-5Lx0k"
+                "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779476670/Ocean_MIst_vcnm4j.png"
             }
         ],
         "faqs": [
@@ -964,8 +964,8 @@ window.OccasionPagesData = {
                 "href": "#/sorry-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1Zq_aPUFhFTMSij7OmpAUboS89w2CGR27",
-        "heroImageAlt": "Sympathy & Condolence Flowers Ghaziabad | Rose n Petals"
+        "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779476670/Ocean_MIst_vcnm4j.png",
+        "heroImageAlt": "Serene sympathy bouquet in Ghaziabad"
     },
     "diwali-flowers-ghaziabad": {
         "pageTitle": "Diwali & Festival Flowers Delivery Ghaziabad | Rose n Petals",
@@ -1039,7 +1039,7 @@ window.OccasionPagesData = {
             {
                 "name": "Classic Red & Gold Arrangement",
                 "desc": "Rich, luxurious blooms perfect for festive celebrations.",
-                "image": "https://drive.google.com/uc?export=view&id=1edFTn-jyEQVOujkgEP7bzWB-ipbAB--R"
+                "image": "https://drive.google.com/uc?export=view&id=1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V"
             }
         ],
         "faqs": [
@@ -1070,7 +1070,7 @@ window.OccasionPagesData = {
                 "href": "#/congratulations-flowers-ghaziabad"
             }
         ],
-        "heroImage": "https://drive.google.com/uc?export=view&id=1bu6hIhMX4d-IHIjnmFVG7OkNz6Dx74t1",
-        "heroImageAlt": "Diwali & Festival Flowers Delivery Ghaziabad | Rose n Petals"
+        "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png",
+        "heroImageAlt": "Vibrant festive bouquet in Ghaziabad"
     }
 };

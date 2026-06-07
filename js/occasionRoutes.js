@@ -36,7 +36,7 @@ window.OccasionRoutes = {
                 <article class="product-card">
                     ${p.image ? `
                     <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="product-card__image">
-                        <img src="${p.image}" alt="${p.name}" class="card-image" loading="lazy">
+                        <img src="${p.image}" alt="${p.name}" class="rnp-product-card-image" loading="lazy">
                     </a>
                     ` : `
                     <div class="product-card__image" style="background: var(--rnp-bg-secondary, #fff5f8); display: flex; align-items: center; justify-content: center; min-height: 200px;">

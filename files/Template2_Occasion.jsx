@@ -137,8 +137,15 @@ function OccasionPage(props) {
           </div>
           {/* ── Plug in occasion-specific bouquet image here ── */}
           <div className="rnp-hero__media" aria-hidden="true">
-            {/* <img src={p.heroImage} alt={`${p.occasionName} bouquet Ghaziabad`} /> */}
-            <div className="rnp-placeholder rnp-placeholder--hero">[OCCASION HERO IMAGE]</div>
+            {p.heroImage && (
+              <img
+                src={p.heroImage}
+                alt={p.heroImageAlt || p.occasionName}
+              />
+            )}
+            {!p.heroImage && (
+              <div className="rnp-placeholder rnp-placeholder--hero">[OCCASION HERO IMAGE]</div>
+            )}
           </div>
         </section>
 
