@@ -155,3 +155,70 @@ window.Store = {
         return Array.from(tags).sort();
     }
 };
+
+window.CartStore = {
+    cartKey: 'rnp_cart',
+    
+    getCart() {
+        const data = localStorage.getItem(this.cartKey);
+        return data ? JSON.parse(data) : [];
+    },
+
+    saveCart(cart) {
+        localStorage.setItem(this.cartKey, JSON.stringify(cart));
+        // Dispatch custom event to notify components that cart changed
+        window.dispatchEvent(new Event('cartUpdated'));
+    },
+
+    addToCart(product) {
+        const cart = this.getCart();
+        const existing = cart.find(item => item.id === product.id);
+        
+        if (existing) {
+            existing.quantity = Math.min(existing.quantity + 1, 10);
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                imageUrl: product.image_url,
+                quantity: 1
+            });
+        }
+        
+        this.saveCart(cart);
+    },
+
+    updateQuantity(id, quantity) {
+        let cart = this.getCart();
+        const existing = cart.find(item => item.id === id);
+        
+        if (existing) {
+            if (quantity <= 0) {
+                this.removeFromCart(id);
+            } else {
+                existing.quantity = Math.min(quantity, 10);
+                this.saveCart(cart);
+            }
+        }
+    },
+
+    removeFromCart(id) {
+        let cart = this.getCart();
+        cart = cart.filter(item => item.id !== id);
+        this.saveCart(cart);
+    },
+
+    clearCart() {
+        localStorage.removeItem(this.cartKey);
+        window.dispatchEvent(new Event('cartUpdated'));
+    },
+
+    getTotalItems() {
+        return this.getCart().reduce((sum, item) => sum + item.quantity, 0);
+    },
+
+    getSubtotal() {
+        return this.getCart().reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    }
+};

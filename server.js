@@ -13,13 +13,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Helper to parse cookies manually
 const parseCookies = (req) => {
-    const list = {};
-    const rc = req.headers.cookie;
-    rc && rc.split(';').forEach((cookie) => {
-        const parts = cookie.split('=');
-        list[parts.shift().trim()] = decodeURI(parts.join('='));
-    });
-    return list;
+  const list = {};
+  const rc = req.headers.cookie;
+  rc && rc.split(';').forEach((cookie) => {
+    const parts = cookie.split('=');
+    list[parts.shift().trim()] = decodeURI(parts.join('='));
+  });
+  return list;
 };
 
 // Protect admin views from being served statically
@@ -30,50 +30,166 @@ app.use(express.static(path.join(__dirname)));
 
 // Admin Auth Middleware
 const requireAdmin = (req, res, next) => {
-    const cookies = parseCookies(req);
-    if (cookies.admin_session === 'authenticated') {
-        next();
-    } else {
-        res.redirect('/admin/login');
-    }
+  const cookies = parseCookies(req);
+  if (cookies.admin_session === 'authenticated') {
+    next();
+  } else {
+    res.redirect('/admin/login');
+  }
 };
 
 // Admin Routes
 app.get('/admin/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin_views', 'login.html'));
+  res.sendFile(path.join(__dirname, 'admin_views', 'login.html'));
 });
 
 app.post('/admin/login', (req, res) => {
-    const password = req.body.password;
-    const correctPassword = process.env.ADMIN_PASSWORD || 'admin123';
-    
-    if (password === correctPassword) {
-        res.cookie('admin_session', 'authenticated', { httpOnly: true });
-        res.redirect('/admin');
-    } else {
-        res.redirect('/admin/login?error=1');
-    }
+
+  const password = req.body.password;
+  const correctPassword = process.env.ADMINPASSWORD || 'admin123';
+
+  if (password === correctPassword) {
+    res.cookie('admin_session', 'authenticated', { httpOnly: true });
+    res.redirect('/admin');
+  } else {
+    res.redirect('/admin/login?error=1');
+  }
 });
 
 app.get('/admin/logout', (req, res) => {
-    res.clearCookie('admin_session');
-    res.redirect('/admin/login');
+  res.clearCookie('admin_session');
+  res.redirect('/admin/login');
 });
 
 app.get('/admin', requireAdmin, (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin_views', 'dashboard.html'));
+  res.sendFile(path.join(__dirname, 'admin_views', 'dashboard.html'));
 });
 
 app.post('/api/admin/update', requireAdmin, (req, res) => {
-    console.log("Received admin update payload:", JSON.stringify(req.body, null, 2));
-    res.status(200).json({ success: true });
+  console.log("Received admin update payload:", JSON.stringify(req.body, null, 2));
+  res.status(200).json({ success: true });
 });
 
 // API endpoint to securely pass environment variables to the frontend dynamically
 app.get('/api/config', (req, res) => {
-    res.json({
-        sheetUrl: process.env.SHEET_URL || ''
-    });
+  res.json({
+    sheetUrl: process.env.SHEET_URL || ''
+  });
+});
+
+// --- COUPON API ROUTES ---
+const couponsFilePath = path.join(__dirname, 'coupons.json');
+
+// Helper to read coupons
+const getCoupons = () => {
+  try {
+    if (!fs.existsSync(couponsFilePath)) return [];
+    return JSON.parse(fs.readFileSync(couponsFilePath, 'utf8'));
+  } catch (error) {
+    console.error("Error reading coupons:", error);
+    return [];
+  }
+};
+
+// Helper to write coupons
+const saveCoupons = (coupons) => {
+  fs.writeFileSync(couponsFilePath, JSON.stringify(coupons, null, 2));
+};
+
+// Public Validation Route
+app.post('/api/coupons/validate', (req, res) => {
+  const { code, cartTotal } = req.body;
+  if (!code || cartTotal == null) {
+    return res.json({ valid: false, message: "Invalid request." });
+  }
+
+  const coupons = getCoupons();
+  const coupon = coupons.find(c => c.code.toUpperCase() === code.toUpperCase());
+
+  if (!coupon) {
+    return res.json({ valid: false, message: "Invalid coupon code. Please check and try again." });
+  }
+  if (coupon.status !== 'active') {
+    return res.json({ valid: false, message: "This coupon is no longer active." });
+  }
+
+  const minOrder = Number(coupon.minOrder) || 0;
+  if (cartTotal < minOrder) {
+    return res.json({ valid: false, message: `Minimum order of ₹${minOrder} required for this coupon.` });
+  }
+
+  let discountAmount = 0;
+  if (coupon.type === 'fixed') {
+    discountAmount = Number(coupon.value);
+  } else if (coupon.type === 'percentage') {
+    discountAmount = (cartTotal * Number(coupon.value)) / 100;
+    const maxCap = Number(coupon.maxDiscount);
+    if (maxCap && discountAmount > maxCap) {
+      discountAmount = maxCap;
+    }
+  }
+
+  discountAmount = Math.min(discountAmount, cartTotal);
+  discountAmount = Math.round(discountAmount); // Round to nearest integer
+
+  const finalTotal = cartTotal - discountAmount;
+
+  return res.json({
+    valid: true,
+    discountAmount,
+    finalTotal,
+    message: `Coupon applied! You save ₹${discountAmount}.`
+  });
+});
+
+// Admin Coupon Routes
+app.get('/api/admin/coupons', requireAdmin, (req, res) => {
+  res.json(getCoupons());
+});
+
+app.post('/api/admin/coupons', requireAdmin, (req, res) => {
+  const coupons = getCoupons();
+  const newCoupon = req.body;
+
+  // Auto-assign next ID
+  const maxId = coupons.reduce((max, c) => Math.max(max, c.id || 0), 0);
+  newCoupon.id = maxId + 1;
+  newCoupon.code = newCoupon.code.toUpperCase();
+
+  coupons.push(newCoupon);
+  saveCoupons(coupons);
+
+  res.status(201).json(newCoupon);
+});
+
+app.put('/api/admin/coupons/:id', requireAdmin, (req, res) => {
+  let coupons = getCoupons();
+  const id = parseInt(req.params.id);
+  const index = coupons.findIndex(c => c.id === id);
+
+  if (index !== -1) {
+    coupons[index] = { ...coupons[index], ...req.body, id };
+    coupons[index].code = coupons[index].code.toUpperCase();
+    saveCoupons(coupons);
+    res.json(coupons[index]);
+  } else {
+    res.status(404).json({ error: "Coupon not found" });
+  }
+});
+
+app.delete('/api/admin/coupons/:id', requireAdmin, (req, res) => {
+  let coupons = getCoupons();
+  const id = parseInt(req.params.id);
+  const initialLength = coupons.length;
+
+  coupons = coupons.filter(c => c.id !== id);
+
+  if (coupons.length < initialLength) {
+    saveCoupons(coupons);
+    res.json({ success: true });
+  } else {
+    res.status(404).json({ error: "Coupon not found" });
+  }
 });
 
 // Policies page route
@@ -464,10 +580,10 @@ app.get('/diwali-flowers-ghaziabad', (req, res) => {
 
 // SPA Fallback: Any other route returns index.html for client-side routing
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, HOST, () => {
-    console.log(`Server is running on http://${HOST}:${PORT}`);
-    console.log(`Configured Google Sheet URL: ${process.env.SHEET_URL ? 'Detected' : 'Not Provided'}`);
+  console.log(`Server is running on http://${HOST}:${PORT}`);
+  console.log(`Configured Google Sheet URL: ${process.env.SHEET_URL ? 'Detected' : 'Not Provided'}`);
 });

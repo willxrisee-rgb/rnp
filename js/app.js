@@ -119,10 +119,12 @@ const App = {
         try {
             await window.Store.fetchProducts();
             this.handleRouting();
+            if (window.CartUI) window.CartUI.init();
         } catch (error) {
             console.error('Failed to load data', error);
             // Even if products fail to load, we still route so SEO pages can render without products
             this.handleRouting();
+            if (window.CartUI) window.CartUI.init();
         }
     },
 

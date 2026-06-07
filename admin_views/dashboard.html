@@ -23,6 +23,7 @@
             background: var(--bg-surface);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow-sm);
+            margin-bottom: 40px;
         }
         table {
             width: 100%;
@@ -69,6 +70,106 @@
             transform: translateY(0);
             opacity: 1;
         }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        .tab-btn.active {
+            color: #CC0000;
+            border-bottom-color: #CC0000;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Coupons Table specific */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .badge.active { background: #e8f5e9; color: #2e7d32; }
+        .badge.inactive { background: #eeeeee; color: #757575; }
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-edit { background: #f0f0f0; color: #333; }
+        .btn-delete { background: #ffebee; color: #c62828; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            box-sizing: border-box;
+        }
+        .error-text {
+            color: #c62828;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
     </style>
 </head>
 <body class="bg-surface">
@@ -86,43 +187,154 @@
     </header>
 
     <main class="dashboard-container">
-        <div class="dashboard-header">
-            <h2>Manage Catalog</h2>
-            <button id="save-btn" class="btn btn-primary">Save Changes</button>
+        <div class="tabs">
+            <button class="tab-btn active" data-target="catalog-tab">Manage Catalog</button>
+            <button class="tab-btn" data-target="coupons-tab">Coupons & Discounts</button>
         </div>
 
-        <div id="loader" style="text-align:center; padding: 40px;">
-            <div class="spinner"></div>
-            <p>Loading products...</p>
+        <!-- Catalog Tab -->
+        <div id="catalog-tab" class="tab-pane active">
+            <div class="dashboard-header">
+                <h2>Manage Catalog</h2>
+                <button id="save-btn" class="btn btn-primary">Save Changes</button>
+            </div>
+
+            <div id="loader" style="text-align:center; padding: 40px;">
+                <div class="spinner"></div>
+                <p>Loading products...</p>
+            </div>
+
+            <div class="table-responsive">
+                <table id="products-table" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Price (₹)</th>
+                            <th>Status</th>
+                            <th>Occasion Tags</th>
+                            <th>Description</th>
+                            <th>Best Seller</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-body">
+                        <!-- Dynamic rows -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="table-responsive">
-            <table id="products-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Price (₹)</th>
-                        <th>Status</th>
-                        <th>Occasion Tags</th>
-                        <th>Description</th>
-                        <th>Best Seller</th>
-                    </tr>
-                </thead>
-                <tbody id="products-body">
-                    <!-- Dynamic rows -->
-                </tbody>
-            </table>
+        <!-- Coupons Tab -->
+        <div id="coupons-tab" class="tab-pane">
+            <div class="dashboard-header">
+                <h2>Coupons & Discounts</h2>
+                <button id="new-coupon-btn" class="btn btn-primary" style="background:#CC0000; color:white;">+ Create New Coupon</button>
+            </div>
+            
+            <div id="coupons-loader" style="text-align:center; padding: 40px; display: none;">
+                <div class="spinner"></div>
+            </div>
+
+            <div class="table-responsive" id="coupons-table-container">
+                <table id="coupons-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Type</th>
+                            <th>Value</th>
+                            <th>Min Order</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coupons-body">
+                        <!-- Dynamic rows -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="no-coupons-msg" style="display:none; text-align:center; padding: 40px; color: #666;">
+                No coupons yet. Create your first coupon.
+            </div>
         </div>
     </main>
 
+    <!-- Coupon Modal -->
+    <div class="modal-overlay" id="coupon-modal">
+        <div class="modal">
+            <div class="modal-header" id="modal-title">Create New Coupon</div>
+            <form id="coupon-form">
+                <input type="hidden" id="coupon-id">
+                
+                <div class="form-group">
+                    <label>Coupon Code</label>
+                    <input type="text" id="coupon-code" placeholder="e.g. WELCOME100" required>
+                    <div class="error-text" id="code-error">Code must be 3-20 characters, no spaces.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Discount Type</label>
+                    <select id="coupon-type">
+                        <option value="fixed">Fixed Amount (₹)</option>
+                        <option value="percentage">Percentage (%)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label id="value-label">Discount Amount (₹)</label>
+                    <input type="number" id="coupon-value" placeholder="e.g. 100" required min="1">
+                    <div class="error-text" id="value-error">Please enter a valid positive number.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Minimum Order (₹)</label>
+                    <input type="number" id="coupon-min" placeholder="Leave blank for no minimum" min="0">
+                </div>
+
+                <div class="form-group" id="max-cap-group" style="display: none;">
+                    <label>Maximum Discount Cap (₹)</label>
+                    <input type="number" id="coupon-max" placeholder="Leave blank for no cap" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="coupon-status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn" id="cancel-modal" style="background:#f0f0f0;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-coupon-btn" style="background:#CC0000; color:white;">Save Coupon</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="toast" class="toast">Changes saved successfully!</div>
 
-    <!-- Need to load store.js to fetch from sheet -->
     <script src="/js/store.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            // --- TABS LOGIC ---
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabPanes.forEach(p => p.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.target).classList.add('active');
+                    
+                    if (btn.dataset.target === 'coupons-tab') {
+                        loadCoupons();
+                    }
+                });
+            });
+
+            // --- CATALOG LOGIC ---
             const tbody = document.getElementById('products-body');
             const table = document.getElementById('products-table');
             const loader = document.getElementById('loader');
@@ -130,32 +342,22 @@
             
             try {
                 const products = await window.Store.fetchProducts();
-                
                 products.forEach(p => {
                     const row = document.createElement('tr');
                     row.dataset.id = p.id;
-                    
                     row.innerHTML = `
                         <td>${p.id}</td>
-                        <td>
-                            <input type="text" class="edit-img" value="${p.image_url}" placeholder="Image URL">
-                        </td>
+                        <td><input type="text" class="edit-img" value="${p.image_url}" placeholder="Image URL"></td>
                         <td>${p.name}</td>
-                        <td>
-                            <input type="number" class="edit-price" value="${p.price}">
-                        </td>
+                        <td><input type="number" class="edit-price" value="${p.price}"></td>
                         <td>
                             <select class="edit-status">
                                 <option value="in-stock" ${p.status.includes('in') ? 'selected' : ''}>In-stock</option>
                                 <option value="out-of-stock" ${!p.status.includes('in') ? 'selected' : ''}>Out-of-stock</option>
                             </select>
                         </td>
-                        <td>
-                            <input type="text" class="edit-tags" value="${p.occasion_tags.join(', ')}" placeholder="Comma separated">
-                        </td>
-                        <td>
-                            <input type="text" class="edit-desc" value="${p.short_description}">
-                        </td>
+                        <td><input type="text" class="edit-tags" value="${p.occasion_tags.join(', ')}" placeholder="Comma separated"></td>
+                        <td><input type="text" class="edit-desc" value="${p.short_description}"></td>
                         <td>
                             <select class="edit-bestseller">
                                 <option value="true" ${p.is_best_seller ? 'selected' : ''}>Yes</option>
@@ -165,7 +367,6 @@
                     `;
                     tbody.appendChild(row);
                 });
-                
                 loader.style.display = 'none';
                 table.style.display = 'table';
             } catch (error) {
@@ -175,7 +376,6 @@
             saveBtn.addEventListener('click', async () => {
                 const rows = tbody.querySelectorAll('tr');
                 const payload = [];
-                
                 rows.forEach(row => {
                     payload.push({
                         id: row.dataset.id,
@@ -194,14 +394,11 @@
                 try {
                     const response = await fetch('/api/admin/update', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    
                     if (response.ok) {
-                        showToast();
+                        showToast("Changes saved successfully!");
                     } else {
                         alert('Failed to save changes.');
                     }
@@ -212,10 +409,194 @@
                 saveBtn.disabled = false;
                 saveBtn.textContent = 'Save Changes';
             });
+
+            // --- COUPONS LOGIC ---
+            const couponsBody = document.getElementById('coupons-body');
+            const couponsLoader = document.getElementById('coupons-loader');
+            const couponsTable = document.getElementById('coupons-table-container');
+            const noCouponsMsg = document.getElementById('no-coupons-msg');
+
+            let allCoupons = [];
+
+            async function loadCoupons() {
+                couponsLoader.style.display = 'block';
+                couponsTable.style.display = 'none';
+                noCouponsMsg.style.display = 'none';
+
+                try {
+                    const res = await fetch('/api/admin/coupons');
+                    if (res.status === 401) {
+                        window.location.href = '/admin/login';
+                        return;
+                    }
+                    allCoupons = await res.json();
+                    renderCoupons();
+                } catch(e) {
+                    noCouponsMsg.textContent = "Error loading coupons.";
+                    noCouponsMsg.style.display = 'block';
+                } finally {
+                    couponsLoader.style.display = 'none';
+                }
+            }
+
+            function renderCoupons() {
+                couponsBody.innerHTML = '';
+                if (allCoupons.length === 0) {
+                    couponsTable.style.display = 'none';
+                    noCouponsMsg.style.display = 'block';
+                    return;
+                }
+                couponsTable.style.display = 'block';
+                noCouponsMsg.style.display = 'none';
+
+                allCoupons.forEach(c => {
+                    const tr = document.createElement('tr');
+                    const valDisplay = c.type === 'fixed' ? \`₹\${c.value}\` : \`\${c.value}%\`;
+                    const typeDisplay = c.type === 'fixed' ? 'Fixed (₹)' : 'Percentage (%)';
+                    const minOrder = c.minOrder ? \`₹\${c.minOrder}\` : 'None';
+                    const statusClass = c.status === 'active' ? 'active' : 'inactive';
+                    const statusText = c.status === 'active' ? 'Active' : 'Inactive';
+                    
+                    tr.innerHTML = \`
+                        <td><strong>\${c.code}</strong></td>
+                        <td>\${typeDisplay}</td>
+                        <td>\${valDisplay}</td>
+                        <td>\${minOrder}</td>
+                        <td><span class="badge \${statusClass}">\${statusText}</span></td>
+                        <td class="action-btns">
+                            <button class="btn-sm btn-edit" data-id="\${c.id}">Edit</button>
+                            <button class="btn-sm btn-delete" data-id="\${c.id}">Delete</button>
+                        </td>
+                    \`;
+                    couponsBody.appendChild(tr);
+                });
+            }
+
+            // --- COUPON MODAL LOGIC ---
+            const modal = document.getElementById('coupon-modal');
+            const cancelBtn = document.getElementById('cancel-modal');
+            const newCouponBtn = document.getElementById('new-coupon-btn');
+            const form = document.getElementById('coupon-form');
+            const typeSelect = document.getElementById('coupon-type');
+            const codeInput = document.getElementById('coupon-code');
+
+            newCouponBtn.addEventListener('click', () => {
+                form.reset();
+                document.getElementById('coupon-id').value = '';
+                document.getElementById('modal-title').textContent = 'Create New Coupon';
+                typeSelect.dispatchEvent(new Event('change'));
+                modal.classList.add('active');
+            });
+
+            cancelBtn.addEventListener('click', () => modal.classList.remove('active'));
+
+            codeInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.toUpperCase().replace(/\s/g, '');
+            });
+
+            typeSelect.addEventListener('change', (e) => {
+                const isFixed = e.target.value === 'fixed';
+                document.getElementById('value-label').textContent = isFixed ? 'Discount Amount (₹)' : 'Discount Percentage (%)';
+                document.getElementById('coupon-value').placeholder = isFixed ? 'e.g. 100' : 'e.g. 10';
+                document.getElementById('max-cap-group').style.display = isFixed ? 'none' : 'block';
+            });
+
+            // Edit / Delete handlers
+            couponsBody.addEventListener('click', async (e) => {
+                if (e.target.classList.contains('btn-edit')) {
+                    const id = parseInt(e.target.dataset.id);
+                    const c = allCoupons.find(x => x.id === id);
+                    if (!c) return;
+                    
+                    document.getElementById('modal-title').textContent = 'Edit Coupon';
+                    document.getElementById('coupon-id').value = c.id;
+                    document.getElementById('coupon-code').value = c.code;
+                    document.getElementById('coupon-type').value = c.type;
+                    typeSelect.dispatchEvent(new Event('change'));
+                    
+                    document.getElementById('coupon-value').value = c.value;
+                    document.getElementById('coupon-min').value = c.minOrder || '';
+                    document.getElementById('coupon-max').value = c.maxDiscount || '';
+                    document.getElementById('coupon-status').value = c.status;
+                    
+                    modal.classList.add('active');
+                }
+                
+                if (e.target.classList.contains('btn-delete')) {
+                    const id = parseInt(e.target.dataset.id);
+                    if(confirm("Are you sure you want to delete this coupon?")) {
+                        try {
+                            const res = await fetch(\`/api/admin/coupons/\${id}\`, { method: 'DELETE' });
+                            if (res.ok) {
+                                showToast("Coupon deleted.");
+                                loadCoupons();
+                            }
+                        } catch(e) { alert("Error deleting coupon"); }
+                    }
+                }
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                document.getElementById('code-error').style.display = 'none';
+                document.getElementById('value-error').style.display = 'none';
+                
+                const code = codeInput.value;
+                const value = parseFloat(document.getElementById('coupon-value').value);
+                
+                if (code.length < 3 || code.length > 20) {
+                    document.getElementById('code-error').style.display = 'block';
+                    return;
+                }
+                if (isNaN(value) || value <= 0) {
+                    document.getElementById('value-error').style.display = 'block';
+                    return;
+                }
+
+                const payload = {
+                    code,
+                    type: typeSelect.value,
+                    value,
+                    minOrder: document.getElementById('coupon-min').value ? parseFloat(document.getElementById('coupon-min').value) : null,
+                    maxDiscount: document.getElementById('coupon-max').value ? parseFloat(document.getElementById('coupon-max').value) : null,
+                    status: document.getElementById('coupon-status').value
+                };
+
+                const id = document.getElementById('coupon-id').value;
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? \`/api/admin/coupons/\${id}\` : '/api/admin/coupons';
+
+                const submitBtn = document.getElementById('save-coupon-btn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+
+                try {
+                    const res = await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (res.ok) {
+                        modal.classList.remove('active');
+                        showToast("Coupon saved successfully!");
+                        loadCoupons();
+                    } else {
+                        alert("Error saving coupon.");
+                    }
+                } catch(err) {
+                    alert("Network error saving coupon.");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Save Coupon';
+                }
+            });
+
         });
 
-        function showToast() {
+        function showToast(msg) {
             const toast = document.getElementById('toast');
+            if (msg) toast.textContent = msg;
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');

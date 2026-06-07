@@ -283,6 +283,21 @@ window.Pages = {
                             </ul>
                         </div>
                         
+                        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+                          <button 
+                            class="btn btn-primary" 
+                            style="width:100%;padding:14px;font-size:15px;font-weight:700;"
+                            onclick="document.getElementById('bouquet-order-form').scrollIntoView({behavior:'smooth',block:'start'})">
+                            Order this Bouquet
+                          </button>
+                          <button 
+                            class="btn-add-cart-detail"
+                            style="width:100%;padding:12px;font-size:14px;font-weight:600;background:white;color:#CC0000;border:2px solid #CC0000;border-radius:8px;cursor:pointer;"
+                            onclick="window.CartUI.addItem('${bouquet.id}')">
+                            + Add to Cart
+                          </button>
+                        </div>
+
                         <!-- Embedded Order Form -->
                         <div id="inline-order-form">
                             ${Components.createOrderForm(bouquet)}
@@ -309,9 +324,20 @@ window.Pages = {
                     <span>Total:</span>
                     <strong>₹${bouquet.price}</strong>
                 </div>
-                <button class="btn btn-primary" onclick="document.getElementById('bouquet-order-form').scrollIntoView({behavior: 'smooth', block: 'start'})">
-                    Order this bouquet
-                </button>
+                <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;width:100%;">
+                  <button 
+                    class="btn btn-primary" 
+                    style="width:100%;padding:14px;font-size:15px;font-weight:700;"
+                    onclick="document.getElementById('bouquet-order-form').scrollIntoView({behavior:'smooth',block:'start'})">
+                    Order this Bouquet
+                  </button>
+                  <button 
+                    class="btn-add-cart-detail"
+                    style="width:100%;padding:12px;font-size:14px;font-weight:600;background:white;color:#CC0000;border:2px solid #CC0000;border-radius:8px;cursor:pointer;"
+                    onclick="window.CartUI.addItem('${bouquet.id}')">
+                    + Add to Cart
+                  </button>
+                </div>
             </div>
         `;
 
