@@ -76,6 +76,11 @@ app.get('/api/config', (req, res) => {
     });
 });
 
+// Policies page route
+app.get('/policies', (req, res) => {
+  res.sendFile(path.join(__dirname, 'policies.html'));
+});
+
 // SPA Fallback: Any other route returns index.html for client-side routing
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
