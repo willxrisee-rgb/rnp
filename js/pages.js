@@ -23,7 +23,7 @@ window.Pages = {
                     <p class="hero-subtitle" style="color: #555555; font-size: 16px;">Handmade bouquets delivered to your door in under 1 hour.<br>Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali & more.</p>
                     <p style="font-size: 14px; color: #CC0000; margin-bottom: 28px; font-weight: 500;">Starting from ₹200 · No app needed · Easy WhatsApp order</p>
                     <div class="hero-buttons">
-                        <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank" class="hero-btn-primary" style="background: #CC0000; color: white; border-radius: 8px; padding: 14px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Order on WhatsApp</a>
+                        <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" class="hero-btn-primary" style="background: #CC0000; color: white; border-radius: 8px; padding: 14px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Order on WhatsApp</a>
                         <a href="#/catalog" class="hero-btn-secondary" style="background: white; color: #CC0000; border: 2px solid #CC0000; border-radius: 8px; padding: 12px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Browse Bouquets</a>
                     </div>
                 </div>
@@ -94,7 +94,7 @@ window.Pages = {
                     <div class="area-card"><span class="area-emoji">🏗️</span>Crossing Republik</div>
                 </div>
                 <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 20px;">Not sure if we deliver to your area?<br>Just WhatsApp us — we will reach you!</p>
-                <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank" class="hero-btn-primary" style="background: white; color: #CC0000; border-radius: 8px; padding: 14px 32px; font-size: 15px; font-weight: 700; box-shadow: 0 4px 16px rgba(0,0,0,0.2); display: inline-block; transition: all 0.2s ease;">Order on WhatsApp Now</a>
+                <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" class="hero-btn-primary" style="background: white; color: #CC0000; border-radius: 8px; padding: 14px 32px; font-size: 15px; font-weight: 700; box-shadow: 0 4px 16px rgba(0,0,0,0.2); display: inline-block; transition: all 0.2s ease;">Order on WhatsApp Now</a>
             </section>
             
             <!-- Shop by Occasion -->
@@ -139,7 +139,7 @@ window.Pages = {
                         <div class="mt-4" style="border-top: 1px solid #eee; padding-top: 16px;">
                             <p>📍 KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad – 201002</p>
                             <p>📞 +91 9810244455</p>
-                            <p>💬 WhatsApp: <a href="https://api.whatsapp.com/send?phone=917289996804" target="_blank">+91 7289996804</a></p>
+                            <p>💬 WhatsApp: <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank">+91 7289996804</a></p>
                             <p>📸 <a href="https://www.instagram.com/_rosenpetals_" target="_blank">@_rosenpetals_</a></p>
                         </div>
                     </div>
