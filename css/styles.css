@@ -1523,3 +1523,145 @@ textarea:focus {
     gap: 20px;
   }
 }
+
+.lp-static-intro {
+  background: #FFF5F5;
+  border-bottom: 1px solid #FDDEDE;
+  padding: 48px 20px 40px 20px;
+}
+
+.lp-static-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.lp-static-inner h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.lp-lead {
+  font-size: 16px;
+  color: #444444;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lp-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: #CC0000;
+  font-weight: 500;
+}
+
+.lp-whatsapp-btn {
+  display: inline-block;
+  background: #CC0000;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.lp-whatsapp-btn:hover {
+  background: #AA0000;
+}
+
+@media (max-width: 767px) {
+  .lp-static-inner h1 {
+    font-size: 24px;
+  }
+  .lp-lead {
+    font-size: 14px;
+  }
+  .lp-trust-row {
+    gap: 10px;
+    font-size: 12px;
+  }
+}
+
+/* --- BLOG POST CSS --- */
+.blog-post {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 20px 80px 20px;
+}
+
+.blog-post-header {
+  margin-bottom: 40px;
+  border-bottom: 1px solid #EEEEEE;
+  padding-bottom: 32px;
+}
+
+.blog-category {
+  font-size: 12px;
+  font-weight: 600;
+  color: #CC0000;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 12px;
+}
+
+.blog-post-header h1 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1A1A1A;
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+
+.blog-meta {
+  font-size: 13px;
+  color: #888888;
+}
+
+.blog-post-body h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin-top: 36px;
+  margin-bottom: 10px;
+}
+
+.blog-post-body p {
+  font-size: 15px;
+  color: #444444;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.blog-cta-box {
+  background: #FFF5F5;
+  border: 1px solid #FDDEDE;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 48px;
+  text-align: center;
+}
+
+.blog-cta-box p {
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 767px) {
+  .blog-post-header h1 {
+    font-size: 22px;
+  }
+  .blog-post-body h2 {
+    font-size: 18px;
+  }
+}
