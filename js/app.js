@@ -1,5 +1,14 @@
 // js/app.js
 
+function getCurrentRoute() {
+  if (window.INITIAL_PAGE) {
+    return '/' + window.INITIAL_PAGE;
+  }
+  var path = window.location.pathname;
+  var search = window.location.search;
+  return path + (search ? search : '');
+}
+
 const App = {
     init() {
         // Init Mobile Menu
@@ -23,8 +32,39 @@ const App = {
             });
         }
 
-        // Handle route changes
-        window.addEventListener('hashchange', this.handleRouting.bind(this));
+        // Handle route changes using History API
+        window.addEventListener('popstate', function() { App.handleRouting(); });
+
+        // Intercept local link clicks for SPA routing
+        document.body.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (!link) return;
+            
+            const href = link.getAttribute('href');
+            if (!href) return;
+
+            // Skip external links, tel, mailto, whatsapp, target="_blank", anchors, sitemap
+            if (link.getAttribute('target') === '_blank' || 
+                href.startsWith('http') || 
+                href.startsWith('tel:') || 
+                href.startsWith('mailto:') || 
+                href.startsWith('#') ||
+                href.endsWith('.xml')) {
+                return;
+            }
+
+            // Must be same origin
+            if (link.origin && link.origin !== window.location.origin) {
+                return;
+            }
+
+            // Only intercept internal paths (starting with /)
+            if (href.startsWith('/')) {
+                e.preventDefault();
+                window.history.pushState(null, '', href);
+                App.handleRouting();
+            }
+        });
 
         // Load data then trigger initial route
         this.loadDataAndStart();
@@ -75,7 +115,7 @@ const App = {
                         overlay.classList.remove('show');
 
                         // Navigate to catalog
-                        window.location.hash = '#/catalog';
+                        window.location.href = '/catalog';
 
                         setTimeout(() => {
                             overlay.remove();
@@ -129,28 +169,30 @@ const App = {
     },
 
     handleRouting() {
-        const hash = window.location.hash || '#/';
-        const paramsStr = hash.split('?')[1] || '';
-        const urlParams = new URLSearchParams(paramsStr);
-        const path = hash.split('?')[0];
-        const slug = path.replace('#/', ''); // e.g. "#/flower-delivery-ghaziabad" -> "flower-delivery-ghaziabad"
+        const route = getCurrentRoute();
+        const urlParams = new URLSearchParams(window.location.search);
+        const path = route.split('?')[0];
+        const slug = path.replace(/^\//, '');
 
         const appEl = document.getElementById('app');
         appEl.innerHTML = ''; // clear current view
-        window.scrollTo(0, 0); // scroll to top on nav
+        
+        const scrollTo = urlParams.get('scrollTo');
+        if (!scrollTo) {
+            window.scrollTo(0, 0); // scroll to top only if not jumping to a section
+        }
 
         // Update active nav link
         document.querySelectorAll('.nav-link').forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href') === hash || link.getAttribute('href').split('?')[0] === path) {
+            if (link.getAttribute('href') === route || link.getAttribute('href').split('?')[0] === path) {
                 link.classList.add('active');
             }
         });
 
-        // Simple hash-based router
-        if (path === '#/' || path === '') {
+        // Simple path-based router
+        if (path === '/' || path === '') {
             window.Pages.renderHomePage(appEl);
-            const scrollTo = urlParams.get('scrollTo');
             if (scrollTo) {
                 setTimeout(() => {
                     const el = document.getElementById(scrollTo);
@@ -158,17 +200,17 @@ const App = {
                 }, 100);
             }
         }
-        else if (path === '#/catalog') {
+        else if (path === '/catalog') {
             const filterParam = urlParams.get('filter') || 'All';
             window.Pages.renderCatalogPage(appEl, filterParam);
         }
-        else if (path.startsWith('#/bouquet/')) {
-            const id = path.replace('#/bouquet/', '');
+        else if (path.startsWith('/bouquet/')) {
+            const id = path.replace('/bouquet/', '');
             window.Pages.renderBouquetDetailPage(appEl, id);
         }
         else {
             // ── Core Service SEO pages (dynamic slug matching) ──
-            const slug = path.replace('#/', '');
+            const slug = path.replace(/^\//, '');
             if (window.CoreServiceRoutes && window.CoreServiceRoutes.isCorePage(slug)) {
                 window.CoreServiceRoutes.render(appEl, slug);
             } else if (window.UrgencyServiceRoutes && window.UrgencyServiceRoutes.isUrgencyPage(slug)) {
@@ -179,7 +221,7 @@ const App = {
                 window.LocalAreaRoutes.render(appEl, slug);
             } else {
                 // 404
-                appEl.innerHTML = `<div class="container section"><div class="section-title"><h2>Page Not Found</h2><a href="#/" class="btn btn-primary">Go Home</a></div></div>`;
+                appEl.innerHTML = `<div class="container section"><div class="section-title"><h2>Page Not Found</h2><a href="/" class="btn btn-primary">Go Home</a></div></div>`;
             }
         }
     }

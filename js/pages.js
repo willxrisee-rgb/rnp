@@ -24,7 +24,7 @@ window.Pages = {
                     <p style="font-size: 14px; color: #CC0000; margin-bottom: 28px; font-weight: 500;">Starting from ₹200 · No app needed · Easy WhatsApp order</p>
                     <div class="hero-buttons">
                         <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" class="hero-btn-primary" style="background: #CC0000; color: white; border-radius: 8px; padding: 14px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Order on WhatsApp</a>
-                        <a href="#/catalog" class="hero-btn-secondary" style="background: white; color: #CC0000; border: 2px solid #CC0000; border-radius: 8px; padding: 12px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Browse Bouquets</a>
+                        <a href="/catalog" class="hero-btn-secondary" style="background: white; color: #CC0000; border: 2px solid #CC0000; border-radius: 8px; padding: 12px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Browse Bouquets</a>
                     </div>
                 </div>
             </section>
@@ -33,35 +33,35 @@ window.Pages = {
             <section class="category-strip">
                 <h2>Shop by Occasion</h2>
                 <div class="category-cards">
-                    <a href="#/catalog?filter=Birthday" class="category-card">
+                    <a href="/catalog?filter=Birthday" class="category-card">
                         <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779475822/Carnival_Mix_d2c4cl.png" alt="Birthday">
                         <span>Birthday</span>
                     </a>
-                    <a href="#/catalog?filter=Anniversary" class="category-card">
+                    <a href="/catalog?filter=Anniversary" class="category-card">
                         <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779516704/Harmony_Blush_bpdbwl.png" alt="Anniversary">
                         <span>Anniversary</span>
                     </a>
-                    <a href="#/catalog?filter=Celebration" class="category-card">
+                    <a href="/catalog?filter=Celebration" class="category-card">
                         <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png" alt="Celebration">
                         <span>Celebration</span>
                     </a>
-                    <a href="#/catalog?filter=Romantic" class="category-card">
+                    <a href="/catalog?filter=Romantic" class="category-card">
                         <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505954/blush_carnation_jecbzq.png" alt="Romantic">
                         <span>Romantic</span>
                     </a>
-                    <a href="#/catalog?filter=Get%20Well%20Soon" class="category-card">
+                    <a href="/catalog?filter=Get%20Well%20Soon" class="category-card">
                         <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779504779/Tulip_Charm_qi8hg1.png" alt="Get Well Soon">
                         <span>Get Well Soon</span>
                     </a>
-                    <a href="#/catalog?filter=Sorry" class="category-card">
+                    <a href="/catalog?filter=Sorry" class="category-card">
                         <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779506580/Vitage_Tale_n6pxuo.png" alt="Sorry">
                         <span>Sorry</span>
                     </a>
-                    <a href="#/catalog?filter=Same%20Day" class="category-card">
+                    <a href="/catalog?filter=Same%20Day" class="category-card">
                         <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779467296/Sunflower_Burst_Bouquet_rkp5xf.png" alt="Same Day">
                         <span>Same Day</span>
                     </a>
-                    <a href="#/catalog?filter=Sympathy" class="category-card">
+                    <a href="/catalog?filter=Sympathy" class="category-card">
                         <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779476670/Ocean_MIst_vcnm4j.png" alt="Sympathy">
                         <span>Sympathy</span>
                     </a>
@@ -189,7 +189,7 @@ window.Pages = {
         `;
 
         container.innerHTML = html;
-        this.setupChipListeners('#/catalog?filter=');
+        this.setupChipListeners('/catalog?filter=');
     },
 
     renderCatalogPage(container, activeFilterParam) {
@@ -227,7 +227,7 @@ window.Pages = {
         `;
 
         container.innerHTML = html;
-        this.setupChipListeners('#/catalog?filter=');
+        this.setupChipListeners('/catalog?filter=');
     },
 
     renderBouquetDetailPage(container, id) {
@@ -235,7 +235,7 @@ window.Pages = {
         const bouquet = Store.getProductById(decodedId);
 
         if (!bouquet) {
-            container.innerHTML = `<div class="container section"><h2 class="text-center">Bouquet not found</h2><div class="text-center"><a href="#/catalog" class="btn btn-primary mt-4">Back to Catalog</a></div></div>`;
+            container.innerHTML = `<div class="container section"><h2 class="text-center">Bouquet not found</h2><div class="text-center"><a href="/catalog" class="btn btn-primary mt-4">Back to Catalog</a></div></div>`;
             return;
         }
 
@@ -352,7 +352,7 @@ window.Pages = {
         document.querySelectorAll('.filter-chip').forEach(chip => {
             chip.addEventListener('click', (e) => {
                 const filterValue = e.target.getAttribute('data-filter');
-                window.location.hash = baseUrl + encodeURIComponent(filterValue);
+                window.location.href = baseUrl + encodeURIComponent(filterValue);
             });
         });
     },

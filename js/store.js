@@ -24,11 +24,28 @@ window.Store = {
             const response = await fetch(this.sheetsUrl);
             const csvText = await response.text();
 
+            // Check if it's actually CSV or an HTML error page
+            if (csvText.trim().startsWith('<')) {
+                throw new Error("Received HTML instead of CSV from Google Sheets");
+            }
+
             this.products = this.parseCSVText(csvText);
+            
+            // Cache products for fallback
+            if (this.products.length > 0) {
+                localStorage.setItem('rnp_products_cache', JSON.stringify(this.products));
+            }
+            
             console.log(`Loaded ${this.products.length} active bouquets from Google Sheets.`);
             return this.products;
         } catch (error) {
             console.error("Error fetching data from Google Sheets:", error);
+            const cached = localStorage.getItem('rnp_products_cache');
+            if (cached) {
+                console.log("Using cached products due to fetch error.");
+                this.products = JSON.parse(cached);
+                return this.products;
+            }
             throw error;
         }
     },

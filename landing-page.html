@@ -205,19 +205,11 @@
     <script src="/js/localAreaPagesData.js"></script>
     <script src="/js/localAreaRoutes.js"></script>
     <script src="/js/pages.js"></script>
-    <script src="/js/app.js"></script>
     <script>
-      // Set the current year in footer
       document.getElementById('current-year')
       .textContent = new Date().getFullYear();
-
-      // Navigate to the correct hash route
-      // so the SPA loads the right page content
-      if (window.location.hash === '' ||
-          window.location.hash === '#') {
-        window.location.hash =
-        '#/{{PAGE_SLUG}}';
-      }
+      window.INITIAL_PAGE = '{{PAGE_SLUG}}';
     </script>
+    <script src="/js/app.js"></script>
 </body>
 </html>

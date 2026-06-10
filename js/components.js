@@ -15,13 +15,13 @@ window.Components = {
 
         return `
             <article class="product-card">
-                <a href="#/bouquet/${bouquet.id}" class="product-card__image" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
+                <a href="/bouquet/${bouquet.id}" class="product-card__image" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
                     ${imageHtml}
                     ${badgeHTML}
                 </a>
                 <div class="product-card__content">
                     <h3 class="product-card__title">
-                        <a href="#/bouquet/${bouquet.id}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
+                        <a href="/bouquet/${bouquet.id}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
                             ${bouquet.name}
                         </a>
                     </h3>
@@ -300,7 +300,7 @@ window.CartUI = {
             contentEl.innerHTML = `
                 <div style="text-align:center; padding: 40px 20px;">
                     <p style="margin-bottom: 20px; color:#666;">Your cart is empty.<br>Browse our bouquets and add something beautiful.</p>
-                    <a href="#/catalog" class="btn btn-primary" onclick="window.CartUI.close()">Browse Bouquets</a>
+                    <a href="/catalog" class="btn btn-primary" onclick="window.CartUI.close()">Browse Bouquets</a>
                 </div>
             `;
             footerEl.style.display = 'none';
@@ -403,12 +403,15 @@ window.CartUI = {
         };
 
         // Check if we are already on a detail page
-        if (window.location.hash.startsWith('#/bouquet/')) {
+        if (window.location.pathname.startsWith('/bouquet/')) {
             focusOnForm();
         } else {
             // Navigate to the detail page of the first item
             const firstItem = cart[0];
-            window.location.hash = `#/bouquet/${firstItem.id}`;
+            window.history.pushState(null, '', `/bouquet/${firstItem.id}`);
+            if (typeof App !== 'undefined') {
+                App.handleRouting();
+            }
             // Give the app time to render the new page
             setTimeout(focusOnForm, 300);
         }
