@@ -230,9 +230,9 @@ window.Pages = {
         this.setupChipListeners('/catalog?filter=');
     },
 
-    renderBouquetDetailPage(container, id) {
-        const decodedId = decodeURIComponent(id);
-        const bouquet = Store.getProductById(decodedId);
+    renderBouquetDetailPage(container, slug) {
+        const decodedSlug = decodeURIComponent(slug);
+        const bouquet = Store.getProductBySlug(decodedSlug);
 
         if (!bouquet) {
             container.innerHTML = `<div class="container section"><h2 class="text-center">Bouquet not found</h2><div class="text-center"><a href="/catalog" class="btn btn-primary mt-4">Back to Catalog</a></div></div>`;
@@ -243,12 +243,12 @@ window.Pages = {
 
         // Pick 4 related bouquets
         const related = Store.getAllProducts()
-            .filter(p => p.id !== id && p.occasion_tags.some(t => bouquet.occasion_tags.includes(t)))
+            .filter(p => p.id !== bouquet.id && p.occasion_tags.some(t => bouquet.occasion_tags.includes(t)))
             .slice(0, 4);
 
         // Fallback to any 4 if not enough related tags
         if (related.length < 4) {
-            const others = Store.getAllProducts().filter(p => p.id !== id && !related.find(r => r.id === p.id));
+            const others = Store.getAllProducts().filter(p => p.id !== bouquet.id && !related.find(r => r.id === p.id));
             related.push(...others.slice(0, 4 - related.length));
         }
 

@@ -68,6 +68,8 @@ window.Store = {
 
             // Map the parsed row to our app's Object model according to rnp.md
             const idVal = rowData['product no.'] || rowData['id'];
+            if (!idVal) continue;
+            const cleanSlug = idVal.toString().toLowerCase().replace(/\s+/g, '-');
             const nameVal = rowData['product name'] || rowData['name'];
             const priceVal = rowData['price (₹)'] || rowData['price'];
             const imgVal = rowData['image url'] || rowData['image_url'];
@@ -103,6 +105,7 @@ window.Store = {
 
                 const bouquet = {
                     id: idVal,
+                    slug: cleanSlug,
                     name: nameVal || '',
                     price: parseFloat(priceVal) || 0,
                     image_url: finalImageUrl,
@@ -150,6 +153,10 @@ window.Store = {
 
     getProductById(id) {
         return this.products.find(p => p.id === id);
+    },
+
+    getProductBySlug(slug) {
+        return this.products.find(p => p.slug === slug);
     },
 
     getProductsByOccasion(occasion) {

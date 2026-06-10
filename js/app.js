@@ -205,8 +205,8 @@ const App = {
             window.Pages.renderCatalogPage(appEl, filterParam);
         }
         else if (path.startsWith('/bouquet/')) {
-            const id = path.replace('/bouquet/', '');
-            window.Pages.renderBouquetDetailPage(appEl, id);
+            const slug = path.replace('/bouquet/', '');
+            window.Pages.renderBouquetDetailPage(appEl, slug);
         }
         else {
             // ── Core Service SEO pages (dynamic slug matching) ──

@@ -15,13 +15,13 @@ window.Components = {
 
         return `
             <article class="product-card">
-                <a href="/bouquet/${bouquet.id}" class="product-card__image" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
+                <a href="/bouquet/${bouquet.slug}" class="product-card__image" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
                     ${imageHtml}
                     ${badgeHTML}
                 </a>
                 <div class="product-card__content">
                     <h3 class="product-card__title">
-                        <a href="/bouquet/${bouquet.id}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
+                        <a href="/bouquet/${bouquet.slug}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
                             ${bouquet.name}
                         </a>
                     </h3>
@@ -408,7 +408,9 @@ window.CartUI = {
         } else {
             // Navigate to the detail page of the first item
             const firstItem = cart[0];
-            window.history.pushState(null, '', `/bouquet/${firstItem.id}`);
+            const product = window.Store ? window.Store.getProductById(firstItem.id) : null;
+            const targetSlug = product ? product.slug : firstItem.id;
+            window.history.pushState(null, '', `/bouquet/${targetSlug}`);
             if (typeof App !== 'undefined') {
                 App.handleRouting();
             }
