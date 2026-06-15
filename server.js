@@ -662,6 +662,11 @@ app.get(
   }
 );
 
+app.get('/site.webmanifest', (req, res) => {
+  res.setHeader('Content-Type', 'application/manifest+json');
+  res.sendFile(path.join(__dirname, 'site.webmanifest'));
+});
+
 // SPA Fallback: Any other route returns index.html for client-side routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
