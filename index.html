@@ -2,26 +2,6 @@
 <html lang="en-IN">
 
 <head>
-    <script>
-    (function() {
-      var hash = window.location.hash;
-      if (!hash || hash === '#' || hash === '#/') {
-        if (hash) {
-          window.history.replaceState(
-            null, '',
-            window.location.pathname +
-            window.location.search
-          );
-        }
-        return;
-      }
-      if (hash.startsWith('#/') && hash.length > 2) {
-        var cleanPath = hash.substring(1);
-        var search = window.location.search;
-        window.location.replace(cleanPath + search);
-      }
-    })();
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flower Delivery in Ghaziabad | Fresh Bouquets – Rose n Petals</title>
@@ -249,7 +229,11 @@
     </header>
 
     <!-- App Container (Dynamic Content) -->
-    <main id="app" class="app-main"></main>
+    <main id="app" class="app-main">
+        <div class="loader-container" style="display:none">
+            <p style="color:red">Failed to load bouquet catalog. Please check your internet connection and reload.</p>
+        </div>
+    </main>
 
     <!-- Footer -->
     <footer class="global-footer" id="global-footer">
@@ -355,6 +339,26 @@
     <script src="/js/localAreaRoutes.js"></script>
     <script src="/js/pages.js"></script>
     <script src="/js/app.js"></script>
+    <script>
+    (function() {
+      var hash = window.location.hash;
+      if (!hash || hash === '#' || hash === '#/') {
+        if (hash) {
+          window.history.replaceState(
+            null, '',
+            window.location.pathname +
+            window.location.search
+          );
+        }
+        return;
+      }
+      if (hash.startsWith('#/') && hash.length > 2) {
+        var cleanPath = hash.substring(1);
+        var search = window.location.search;
+        window.location.replace(cleanPath + search);
+      }
+    })();
+    </script>
 </body>
 
 </html>
