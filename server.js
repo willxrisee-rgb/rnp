@@ -968,9 +968,18 @@ app.get('/bouquet/:slug', async (req, res) => {
 });
 
 // Catch-all — all other routes (area pages, blog, policies, etc.)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+app.get('*', async (req, res) => {
+    try {
+      const products = await getProducts();
+      let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+      const hydrationScript = `<script>window.__SSR_PRODUCTS__=${JSON.stringify(products)};window.__SSR_HYDRATED__=false;</script>`;
+      html = html.replace('</body>', `${hydrationScript}</body>`);
+      res.send(html);
+    } catch (err) {
+      console.error('[SSR] Catch-all error:', err);
+      res.sendFile(path.join(__dirname, 'index.html'));
+    }
+  });
 
 // ─────────────────────────────────────────────────────────────────────────────
 

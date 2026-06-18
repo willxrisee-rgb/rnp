@@ -1,19 +1,19 @@
 // js/localAreaPagesData.js
 
-const SHARED_BENEFITS = [
+window.SHARED_BENEFITS = window.SHARED_BENEFITS || [
     { icon: '🌹', title: 'Fresh & Handmade', text: 'Every bouquet made to order' },
     { icon: '⚡', title: 'Fast Local Delivery', text: 'Delivered in under 1 hour' },
     { icon: '💰', title: 'Starting ₹200', text: 'Premium flowers at local prices' },
     { icon: '📲', title: 'Easy WhatsApp Order', text: 'Slot confirmed in 10 minutes' }
 ];
 
-const SHARED_STEPS = [
+window.SHARED_STEPS = window.SHARED_STEPS || [
     { number: '01', title: 'Browse Bouquets', text: 'Check out our fresh arrangements below.' },
     { number: '02', title: 'WhatsApp Us', text: 'Send us your address in {areaName}.' },
     { number: '03', title: 'Fast Delivery', text: 'We deliver fresh, on time, in under 1 hour.' }
 ];
 
-const SHARED_NEARBY_AREAS = [
+window.SHARED_NEARBY_AREAS = window.SHARED_NEARBY_AREAS || [
     { label: 'Indirapuram', href: '#/flower-delivery-indirapuram' },
     { label: 'Vaishali', href: '#/flower-delivery-vaishali-ghaziabad' },
     { label: 'Vasundhara', href: '#/flower-delivery-vasundhara-ghaziabad' },
@@ -26,7 +26,7 @@ const SHARED_NEARBY_AREAS = [
 
 // Helper to filter out the current area from nearby areas
 function getNearbyAreas(currentAreaName) {
-    return SHARED_NEARBY_AREAS.filter(area => area.label !== currentAreaName).slice(0, 5);
+    return window.SHARED_NEARBY_AREAS.filter(area => area.label !== currentAreaName).slice(0, 5);
 }
 
 window.LocalAreaPagesData = {
@@ -46,9 +46,9 @@ window.LocalAreaPagesData = {
             { icon: "⏱️", text: "Average delivery time: Under 1 hour to Indirapuram" },
             { icon: "📞", text: "Local WhatsApp support — call or chat anytime" }
         ],
-        benefits: SHARED_BENEFITS,
+        benefits: window.SHARED_BENEFITS,
         nearbyAreas: getNearbyAreas("Indirapuram"),
-        steps: SHARED_STEPS,
+        steps: window.SHARED_STEPS,
         faqs: [
             { q: "Do you deliver to all parts of Indirapuram?", a: "Yes, we deliver everywhere in Indirapuram, including Ahinsa Khand, Nyay Khand, Niti Khand, Shakti Khand, Vaibhav Khand, Abhay Khand and Gyan Khand." },
             { q: "How long does delivery take to Indirapuram?", a: "Delivery typically takes under 1 hour from order confirmation." },
@@ -72,9 +72,9 @@ window.LocalAreaPagesData = {
             { icon: "⏱️", text: "Average delivery time: Under 1 hour to Vaishali" },
             { icon: "📞", text: "Local WhatsApp support — call or chat anytime" }
         ],
-        benefits: SHARED_BENEFITS,
+        benefits: window.SHARED_BENEFITS,
         nearbyAreas: getNearbyAreas("Vaishali"),
-        steps: SHARED_STEPS,
+        steps: window.SHARED_STEPS,
         faqs: [
             { q: "Do you deliver to all sectors of Vaishali?", a: "Yes, we deliver to all sectors in Vaishali, Ghaziabad, and nearby localities." },
             { q: "How long does delivery take to Vaishali?", a: "Delivery typically takes under 1 hour from order confirmation." },
@@ -98,9 +98,9 @@ window.LocalAreaPagesData = {
             { icon: "⏱️", text: "Average delivery time: Under 1 hour to Vasundhara" },
             { icon: "📞", text: "Local WhatsApp support — call or chat anytime" }
         ],
-        benefits: SHARED_BENEFITS,
+        benefits: window.SHARED_BENEFITS,
         nearbyAreas: getNearbyAreas("Vasundhara"),
-        steps: SHARED_STEPS,
+        steps: window.SHARED_STEPS,
         faqs: [
             { q: "Do you deliver to all sectors of Vasundhara?", a: "Yes, we deliver to all sectors in Vasundhara, Ghaziabad, right to your doorstep." },
             { q: "How long does delivery take to Vasundhara?", a: "Delivery typically takes under 1 hour from order confirmation." },
@@ -124,9 +124,9 @@ window.LocalAreaPagesData = {
             { icon: "⏱️", text: "Average delivery time: Under 1 hour to Raj Nagar" },
             { icon: "📞", text: "Local WhatsApp support — call or chat anytime" }
         ],
-        benefits: SHARED_BENEFITS,
+        benefits: window.SHARED_BENEFITS,
         nearbyAreas: getNearbyAreas("Raj Nagar"),
-        steps: SHARED_STEPS,
+        steps: window.SHARED_STEPS,
         faqs: [
             { q: "Do you deliver to all parts of Raj Nagar?", a: "Yes, we deliver everywhere in Raj Nagar, Ghaziabad, and nearby areas." },
             { q: "How long does delivery take to Raj Nagar?", a: "Delivery typically takes under 1 hour from order confirmation." },
@@ -150,9 +150,9 @@ window.LocalAreaPagesData = {
             { icon: "⏱️", text: "Average delivery time: Under 1 hour to Kavi Nagar" },
             { icon: "📞", text: "Local WhatsApp support — call or chat anytime" }
         ],
-        benefits: SHARED_BENEFITS,
+        benefits: window.SHARED_BENEFITS,
         nearbyAreas: getNearbyAreas("Kavi Nagar"),
-        steps: SHARED_STEPS,
+        steps: window.SHARED_STEPS,
         faqs: [
             { q: "Do you deliver to all parts of Kavi Nagar?", a: "Yes, we deliver everywhere in Kavi Nagar, Ghaziabad, right to your doorstep." },
             { q: "How long does delivery take to Kavi Nagar?", a: "Delivery typically takes under 1 hour from order confirmation." },
@@ -176,9 +176,9 @@ window.LocalAreaPagesData = {
             { icon: "⏱️", text: "Average delivery time: Under 1 hour to Mohan Nagar" },
             { icon: "📞", text: "Local WhatsApp support — call or chat anytime" }
         ],
-        benefits: SHARED_BENEFITS,
+        benefits: window.SHARED_BENEFITS,
         nearbyAreas: getNearbyAreas("Mohan Nagar"),
-        steps: SHARED_STEPS,
+        steps: window.SHARED_STEPS,
         faqs: [
             { q: "Do you deliver to all parts of Mohan Nagar?", a: "Yes, we deliver everywhere in Mohan Nagar, Ghaziabad, and the surrounding regions." },
             { q: "How long does delivery take to Mohan Nagar?", a: "Delivery typically takes under 1 hour from order confirmation." },
@@ -202,9 +202,9 @@ window.LocalAreaPagesData = {
             { icon: "⏱️", text: "Average delivery time: Under 1 hour to Vijay Nagar" },
             { icon: "📞", text: "Local WhatsApp support — call or chat anytime" }
         ],
-        benefits: SHARED_BENEFITS,
+        benefits: window.SHARED_BENEFITS,
         nearbyAreas: getNearbyAreas("Vijay Nagar"),
-        steps: SHARED_STEPS,
+        steps: window.SHARED_STEPS,
         faqs: [
             { q: "Do you deliver to all sectors of Vijay Nagar?", a: "Yes, we deliver to all sectors in Vijay Nagar, Ghaziabad, right to your doorstep." },
             { q: "How long does delivery take to Vijay Nagar?", a: "Delivery typically takes under 1 hour from order confirmation." },
@@ -228,9 +228,9 @@ window.LocalAreaPagesData = {
             { icon: "⏱️", text: "Average delivery time: Under 1 hour to Crossing Republik" },
             { icon: "📞", text: "Local WhatsApp support — call or chat anytime" }
         ],
-        benefits: SHARED_BENEFITS,
+        benefits: window.SHARED_BENEFITS,
         nearbyAreas: getNearbyAreas("Crossing Republik"),
-        steps: SHARED_STEPS,
+        steps: window.SHARED_STEPS,
         faqs: [
             { q: "Do you deliver to all societies in Crossing Republik?", a: "Yes, we deliver to all residential societies and commercial areas in Crossing Republik, Ghaziabad." },
             { q: "How long does delivery take to Crossing Republik?", a: "Delivery typically takes under 1 hour from order confirmation." },

@@ -3,7 +3,7 @@
 // Content data for all 10 Occasion SEO pages (Template 2).
 // ─────────────────────────────────────────────────────────────────────────────
 
-const OCCASION_AREAS = [
+window.OCCASION_AREAS = window.OCCASION_AREAS || [
     'Kavi Nagar', 'Raj Nagar', 'Indirapuram', 'Vaishali',
     'Vasundhara', 'Mohan Nagar', 'Vijay Nagar', 'Crossing Republik',
 ];
@@ -49,7 +49,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",
@@ -159,7 +159,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",
@@ -265,7 +265,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",
@@ -371,7 +371,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",
@@ -479,7 +479,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",
@@ -585,7 +585,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",
@@ -689,7 +689,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",
@@ -795,7 +795,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",
@@ -901,7 +901,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",
@@ -1007,7 +1007,7 @@ window.OccasionPagesData = {
                 "text": "Slot confirmed in about 10 minutes"
             }
         ],
-        "areas": OCCASION_AREAS,
+        "areas": window.OCCASION_AREAS,
         "steps": [
             {
                 "number": "01",

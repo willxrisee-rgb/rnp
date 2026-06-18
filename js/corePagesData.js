@@ -7,25 +7,25 @@
 
 // ── SHARED DATA ──────────────────────────────────────────────────────────────
 
-const SHARED_BENEFITS = [
+window.SHARED_BENEFITS = window.SHARED_BENEFITS || [
     { icon: '🌹', title: 'Fresh & Handmade', text: 'Every bouquet made to order daily' },
     { icon: '⚡', title: 'Same-day Delivery', text: 'Order by 6 PM, delivered today' },
     { icon: '💰', title: 'Starting ₹200', text: 'Bouquets for every budget' },
     { icon: '📲', title: 'WhatsApp Order', text: 'Simple, personal, fast' },
 ];
 
-const SHARED_AREAS = [
+window.SHARED_AREAS = window.SHARED_AREAS || [
     'Kavi Nagar', 'Raj Nagar', 'Indirapuram', 'Vaishali',
     'Vasundhara', 'Mohan Nagar', 'Vijay Nagar', 'Crossing Republik',
 ];
 
-const SHARED_STEPS = [
+window.SHARED_STEPS = window.SHARED_STEPS || [
     { number: '01', title: 'Browse & Pick', text: 'Choose your bouquet from our catalog or Instagram' },
     { number: '02', title: 'WhatsApp Us', text: 'Send your choice + delivery address on WhatsApp' },
     { number: '03', title: 'We Deliver', text: 'Fresh bouquet delivered to your door, same day' },
 ];
 
-const WA_NUMBER = '917289996804';
+window.WA_NUMBER = window.WA_NUMBER || '917289996804';
 
 // ── PAGE DATA ────────────────────────────────────────────────────────────────
 
@@ -37,9 +37,9 @@ window.CorePagesData = {
         mainKeyword: 'flower delivery Ghaziabad',
         headline: 'Fresh Flower Delivery in Ghaziabad – Starting ₹200',
         subheadline: 'Handmade bouquets with same-day delivery across Ghaziabad. Order in 2 minutes on WhatsApp.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'Which areas in Ghaziabad do you deliver to?',
@@ -59,7 +59,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Order on WhatsApp',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I want to order a bouquet for delivery in Ghaziabad.'
     },
 
@@ -69,9 +69,9 @@ window.CorePagesData = {
         mainKeyword: 'online flower delivery Ghaziabad',
         headline: 'Online Flower Delivery in Ghaziabad – Order from Home',
         subheadline: 'Skip the traffic. Browse bouquets online, order on WhatsApp, and we deliver fresh flowers to any address in Ghaziabad.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'How does online flower delivery work in Ghaziabad?',
@@ -91,7 +91,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Order Online via WhatsApp',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I want to order flowers online for delivery in Ghaziabad.'
     },
 
@@ -101,9 +101,9 @@ window.CorePagesData = {
         mainKeyword: 'bouquet delivery Ghaziabad',
         headline: 'Beautiful Bouquet Delivery in Ghaziabad – From ₹200',
         subheadline: 'Hand-arranged bouquets for birthdays, anniversaries, or just because. Same-day delivery across Ghaziabad.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'What types of bouquets can I get delivered in Ghaziabad?',
@@ -123,7 +123,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Order a Bouquet on WhatsApp',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I want to get a bouquet delivered in Ghaziabad.'
     },
 
@@ -133,9 +133,9 @@ window.CorePagesData = {
         mainKeyword: 'send flowers to Ghaziabad',
         headline: 'Send Flowers to Ghaziabad – Delivered Fresh, Same Day',
         subheadline: 'Living outside Ghaziabad? Send a stunning bouquet to your loved ones — we handle the delivery while you handle the surprise.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'Can I send flowers to Ghaziabad from another city?',
@@ -155,7 +155,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Send Flowers via WhatsApp',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I want to send flowers to someone in Ghaziabad.'
     },
 
@@ -165,9 +165,9 @@ window.CorePagesData = {
         mainKeyword: 'order flowers online Ghaziabad',
         headline: 'Order Flowers Online in Ghaziabad – Quick & Easy',
         subheadline: 'No app downloads, no complicated checkout. Pick a bouquet, WhatsApp us, and your flowers are on the way.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'How quickly can I get flowers after ordering online?',
@@ -187,7 +187,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Order Flowers on WhatsApp',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I want to order flowers online in Ghaziabad.'
     },
 
@@ -197,9 +197,9 @@ window.CorePagesData = {
         mainKeyword: 'florist in Ghaziabad',
         headline: 'Your Trusted Local Florist in Ghaziabad',
         subheadline: 'Rose n Petals is a family-run florist in Kavi Nagar, serving all of Ghaziabad with fresh, handmade bouquets starting at ₹200.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'Where is Rose n Petals located in Ghaziabad?',
@@ -219,7 +219,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Chat with Your Florist',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I am looking for a florist in Ghaziabad. Can you help?'
     },
 
@@ -229,9 +229,9 @@ window.CorePagesData = {
         mainKeyword: 'flower shop in Ghaziabad',
         headline: 'Rose n Petals – Your Go-To Flower Shop in Ghaziabad',
         subheadline: 'Fresh flowers, beautiful arrangements, and same-day delivery from our Kavi Nagar shop to anywhere in Ghaziabad.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'What are your shop timings?',
@@ -251,7 +251,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Order from Our Shop',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I found your flower shop online. I want to place an order.'
     },
 
@@ -261,9 +261,9 @@ window.CorePagesData = {
         mainKeyword: 'fresh flowers Ghaziabad',
         headline: 'Guaranteed Fresh Flowers in Ghaziabad – Made to Order',
         subheadline: 'No pre-made bouquets sitting in storage. Every arrangement is crafted fresh on the day you order, using hand-picked flowers.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'How do you ensure the flowers are fresh?',
@@ -283,7 +283,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Get Fresh Flowers Today',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I want fresh flowers delivered in Ghaziabad.'
     },
 
@@ -293,9 +293,9 @@ window.CorePagesData = {
         mainKeyword: 'rose bouquet delivery Ghaziabad',
         headline: 'Rose Bouquet Delivery in Ghaziabad – Handmade with Love',
         subheadline: 'Red, pink, yellow, or white — choose your favourite roses and we will craft a stunning bouquet delivered to your door in Ghaziabad.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'What types of rose bouquets do you offer?',
@@ -315,7 +315,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Order Rose Bouquet',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I want a rose bouquet delivered in Ghaziabad.'
     },
 
@@ -325,9 +325,9 @@ window.CorePagesData = {
         mainKeyword: 'mixed flower bouquet Ghaziabad',
         headline: 'Mixed Flower Bouquets in Ghaziabad – Colourful & Fresh',
         subheadline: 'A vibrant mix of roses, gerberas, carnations, and seasonal fillers — hand-arranged and delivered same day across Ghaziabad.',
-        benefits: SHARED_BENEFITS,
-        areas: SHARED_AREAS,
-        steps: SHARED_STEPS,
+        benefits: window.SHARED_BENEFITS,
+        areas: window.SHARED_AREAS,
+        steps: window.SHARED_STEPS,
         faqs: [
             {
                 q: 'What flowers are included in a mixed bouquet?',
@@ -347,7 +347,7 @@ window.CorePagesData = {
             }
         ],
         ctaText: 'Order Mixed Bouquet',
-        whatsappNumber: WA_NUMBER,
+        whatsappNumber: window.WA_NUMBER,
         whatsappMessage: 'Hi! I want a mixed flower bouquet delivered in Ghaziabad.'
     }
 

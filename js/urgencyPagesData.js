@@ -6,25 +6,25 @@
 
 // ── SHARED CONSTANTS ──────────────────────────────────────────────────────────
 
-const URGENCY_AREAS = [
+window.URGENCY_AREAS = window.URGENCY_AREAS || [
     'Kavi Nagar', 'Raj Nagar', 'Indirapuram', 'Vaishali',
     'Vasundhara', 'Mohan Nagar', 'Vijay Nagar', 'Crossing Republik',
 ];
 
-const URGENCY_BENEFITS = [
+window.URGENCY_BENEFITS = window.URGENCY_BENEFITS || [
     { icon: '🌹', title: 'Fresh, Not Pre-made',   text: 'Every bouquet arranged on the day of delivery' },
     { icon: '⚡', title: 'Priority Dispatch',      text: 'Urgent orders are our top priority' },
     { icon: '💰', title: 'No Express Surcharge',   text: 'Same price as standard — starting ₹200' },
     { icon: '📲', title: 'Confirm on WhatsApp',    text: 'Slot confirmed within 10 minutes of your message' },
 ];
 
-const URGENCY_SPEED_PROOF = [
+window.URGENCY_SPEED_PROOF = window.URGENCY_SPEED_PROOF || [
     { icon: '⚡', stat: 'Under 1 hr', label: 'Delivery from confirmation',  note: 'Across Ghaziabad' },
     { icon: '📦', stat: '8 PM',       label: 'Same-day order cut-off',      note: '7 days a week' },
     { icon: '🌙', stat: '10 PM',      label: 'Midnight delivery cut-off',   note: 'With advance booking' },
 ];
 
-const WA_NUMBER = '917289996804';
+window.WA_NUMBER = window.WA_NUMBER || '917289996804';
 
 // ── PAGE DATA ────────────────────────────────────────────────────────────────
 
@@ -40,9 +40,9 @@ window.UrgencyPagesData = {
         guaranteeText:   'If we cannot make your slot, we will call you immediately. No hidden delays.',
         headline:        'Same Day Flower Delivery in Ghaziabad',
         subheadline:     'Order by 8 PM and your fresh bouquet arrives today. Hand-arranged, not pre-packaged. Starting ₹200.',
-        benefits:        URGENCY_BENEFITS,
-        speedProof:      URGENCY_SPEED_PROOF,
-        areas:           URGENCY_AREAS,
+        benefits:        window.URGENCY_BENEFITS,
+        speedProof:      window.URGENCY_SPEED_PROOF,
+        areas:           window.URGENCY_AREAS,
         steps: [
             { number: '01', title: 'WhatsApp Your Order',    text: 'Send us your bouquet choice, delivery address, and preferred time slot on WhatsApp.',           time: 'Takes 2 minutes' },
             { number: '02', title: 'We Confirm Your Slot',   text: 'We confirm availability and freshness for your requested time and start preparing your bouquet.', time: 'Within 10 minutes' },
@@ -56,7 +56,7 @@ window.UrgencyPagesData = {
             { q: 'Which areas in Ghaziabad get same-day delivery?',                       a: 'We cover Kavi Nagar, Raj Nagar, Indirapuram, Vaishali, Vasundhara, Mohan Nagar, Vijay Nagar, and Crossing Republik. WhatsApp us if you are unsure about your area.' },
         ],
         ctaText:          'Order Same-Day on WhatsApp',
-        whatsappNumber:   WA_NUMBER,
+        whatsappNumber:   window.WA_NUMBER,
         whatsappMessage:  'Hi! I need same-day flower delivery in Ghaziabad today.',
         relatedUrgency: [
             { label: 'Under 1 Hour Delivery', href: '#/2-hour-flower-delivery-ghaziabad' },
@@ -75,9 +75,9 @@ window.UrgencyPagesData = {
         guaranteeText:   'We prioritise express orders. You get a WhatsApp confirmation within 10 minutes.',
         headline:        'Express Flower Delivery in Ghaziabad — Under 1 Hour',
         subheadline:     'No waiting. Order now, we prepare fresh, and your bouquet is at the door in under an hour of confirmation. Starting ₹200.',
-        benefits:        URGENCY_BENEFITS,
-        speedProof:      URGENCY_SPEED_PROOF,
-        areas:           URGENCY_AREAS,
+        benefits:        window.URGENCY_BENEFITS,
+        speedProof:      window.URGENCY_SPEED_PROOF,
+        areas:           window.URGENCY_AREAS,
         steps: [
             { number: '01', title: 'WhatsApp Us Now',         text: 'Share your bouquet choice, address, and the time by which you need it delivered.',               time: 'Takes 2 minutes' },
             { number: '02', title: 'Slot Confirmed Fast',     text: 'We confirm your express slot within 10 minutes and start arranging your bouquet immediately.',   time: 'Within 10 minutes' },
@@ -91,7 +91,7 @@ window.UrgencyPagesData = {
             { q: 'What if there is a delay in my express order?',            a: 'We will call you immediately if any delay looks likely. This is rare, but we believe in being upfront rather than surprising you.' },
         ],
         ctaText:          'Order Express Delivery on WhatsApp',
-        whatsappNumber:   WA_NUMBER,
+        whatsappNumber:   window.WA_NUMBER,
         whatsappMessage:  'Hi! I need express flower delivery in Ghaziabad — as fast as possible.',
         relatedUrgency: [
             { label: 'Same Day Delivery',       href: '#/same-day-flower-delivery-ghaziabad' },
@@ -135,7 +135,7 @@ window.UrgencyPagesData = {
             { q: 'Can I get this fast delivery for a surprise birthday or anniversary?', a: 'Absolutely. Many of our customers use this for last-minute surprises. Just message us and we will make it happen.' },
         ],
         ctaText:          'Book Your Fast Slot on WhatsApp',
-        whatsappNumber:   WA_NUMBER,
+        whatsappNumber:   window.WA_NUMBER,
         whatsappMessage:  'Hi! I need the fastest flower delivery in Ghaziabad — under 1 hour if possible.',
         relatedUrgency: [
             { label: 'Same Day Delivery',   href: '#/same-day-flower-delivery-ghaziabad' },
@@ -179,7 +179,7 @@ window.UrgencyPagesData = {
             { q: 'Can I get midnight delivery for birthdays and anniversaries?',         a: 'Yes — midnight delivery is most popular for birthdays and anniversaries. It makes for an unforgettable surprise. Book early to get your preferred slot.' },
         ],
         ctaText:          'Book Midnight Delivery on WhatsApp',
-        whatsappNumber:   WA_NUMBER,
+        whatsappNumber:   window.WA_NUMBER,
         whatsappMessage:  'Hi! I want to book midnight flower delivery in Ghaziabad.',
         relatedUrgency: [
             { label: 'Same Day Delivery',   href: '#/same-day-flower-delivery-ghaziabad' },
@@ -198,9 +198,9 @@ window.UrgencyPagesData = {
         guaranteeText:   'Urgent orders jump the queue. We confirm your slot within 10 minutes on WhatsApp.',
         headline:        'Urgent Flower Delivery in Ghaziabad — Handled on Priority',
         subheadline:     'No time to plan? No problem. WhatsApp us your urgent flower delivery request and we deliver in under 1 hour of confirmation. Starting ₹200.',
-        benefits:        URGENCY_BENEFITS,
-        speedProof:      URGENCY_SPEED_PROOF,
-        areas:           URGENCY_AREAS,
+        benefits:        window.URGENCY_BENEFITS,
+        speedProof:      window.URGENCY_SPEED_PROOF,
+        areas:           window.URGENCY_AREAS,
         steps: [
             { number: '01', title: 'Message Us Right Now',        text: 'Send your bouquet choice, address, and how urgently you need it — we respond within minutes.',         time: 'Response in 5–10 minutes' },
             { number: '02', title: 'Priority Slot Confirmed',     text: 'We prioritise urgent orders and confirm your delivery slot on WhatsApp before we start preparing.',   time: 'Within 10 minutes' },
@@ -214,7 +214,7 @@ window.UrgencyPagesData = {
             { q: 'Can I send an urgent flower delivery to someone else in Ghaziabad?',  a: 'Yes. Many urgent orders are sent by people outside Ghaziabad to someone in the city. Just share the recipient\'s address and we handle the rest.' },
         ],
         ctaText:          'Place Urgent Order on WhatsApp Now',
-        whatsappNumber:   WA_NUMBER,
+        whatsappNumber:   window.WA_NUMBER,
         whatsappMessage:  'Hi! I need urgent flower delivery in Ghaziabad — please help ASAP.',
         relatedUrgency: [
             { label: 'Same Day Delivery',       href: '#/same-day-flower-delivery-ghaziabad' },
@@ -239,8 +239,8 @@ window.UrgencyPagesData = {
             { icon: '💰', title: 'Starting ₹200',              text: 'No premium for last-minute bookings' },
             { icon: '📲', title: 'WhatsApp Ordering',          text: 'Quickest way to place a last-minute order' },
         ],
-        speedProof:      URGENCY_SPEED_PROOF,
-        areas:           URGENCY_AREAS,
+        speedProof:      window.URGENCY_SPEED_PROOF,
+        areas:           window.URGENCY_AREAS,
         steps: [
             { number: '01', title: 'WhatsApp Us Immediately', text: 'Tell us what you need, where it needs to go, and how urgently — we do not judge last-minute requests.',  time: 'Takes 2 minutes' },
             { number: '02', title: 'We Confirm Fast',         text: 'We check the fastest available slot for your area and confirm it on WhatsApp within 10 minutes.',        time: 'Within 10 minutes' },
@@ -254,7 +254,7 @@ window.UrgencyPagesData = {
             { q: 'What if the recipient is not home when the last-minute delivery arrives?', a: 'We coordinate delivery time with you on WhatsApp. If the recipient is unavailable, we will call you and reschedule at no extra cost.' },
         ],
         ctaText:          'Place Last-Minute Order on WhatsApp',
-        whatsappNumber:   WA_NUMBER,
+        whatsappNumber:   window.WA_NUMBER,
         whatsappMessage:  'Hi! I need last-minute flower delivery in Ghaziabad today — please help!',
         relatedUrgency: [
             { label: 'Same Day Delivery',   href: '#/same-day-flower-delivery-ghaziabad' },
@@ -273,9 +273,9 @@ window.UrgencyPagesData = {
         guaranteeText:   'If you order today before 8 PM, your bouquet is delivered today in under 1 hour of confirmation. That is our commitment.',
         headline:        'Flower Delivery Today in Ghaziabad — Order Now',
         subheadline:     'Need flowers delivered in Ghaziabad today? Order before 8 PM and we deliver in under 1 hour of confirmation. Fresh, handmade, starting ₹200.',
-        benefits:        URGENCY_BENEFITS,
-        speedProof:      URGENCY_SPEED_PROOF,
-        areas:           URGENCY_AREAS,
+        benefits:        window.URGENCY_BENEFITS,
+        speedProof:      window.URGENCY_SPEED_PROOF,
+        areas:           window.URGENCY_AREAS,
         steps: [
             { number: '01', title: 'WhatsApp Your Order Now',  text: 'Choose a bouquet from our catalog or describe what you want. Send it to us on WhatsApp with your delivery address.',  time: 'Takes 2 minutes' },
             { number: '02', title: 'We Confirm Today\'s Slot', text: 'We check same-day availability for your area and confirm your delivery slot within 10 minutes.',                       time: 'Within 10 minutes' },
@@ -289,7 +289,7 @@ window.UrgencyPagesData = {
             { q: 'Can someone else receive the flower delivery today on my behalf?',   a: 'Yes. Just share the recipient\'s name and address on WhatsApp. They do not need to know it is coming from you unless you want them to.' },
         ],
         ctaText:          'Order for Today\'s Delivery on WhatsApp',
-        whatsappNumber:   WA_NUMBER,
+        whatsappNumber:   window.WA_NUMBER,
         whatsappMessage:  'Hi! I need flower delivery in Ghaziabad today. Can you help?',
         relatedUrgency: [
             { label: 'Same Day Delivery',       href: '#/same-day-flower-delivery-ghaziabad' },
@@ -333,7 +333,7 @@ window.UrgencyPagesData = {
             { q: 'What if my emergency falls outside your business hours?',              a: 'For emergencies after 9 PM, please WhatsApp us anyway. For midnight slots (11 PM–1 AM), we may be able to help if you book in advance.' },
         ],
         ctaText:          'Send Emergency Order on WhatsApp Now',
-        whatsappNumber:   WA_NUMBER,
+        whatsappNumber:   window.WA_NUMBER,
         whatsappMessage:  'Hi! I have an emergency — I need flower delivery in Ghaziabad as soon as possible!',
         relatedUrgency: [
             { label: 'Same Day Delivery',   href: '#/same-day-flower-delivery-ghaziabad' },
