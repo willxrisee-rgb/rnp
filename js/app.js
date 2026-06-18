@@ -154,7 +154,15 @@ const App = {
 
     async loadDataAndStart() {
         const appEl = document.getElementById('app');
-        appEl.innerHTML = '<div class="loader-container"><div class="spinner"></div><p>Loading fresh bouquets...</p></div>';
+
+        // Do not wipe SSR content with spinner on first load
+        const ssrMarker = document.getElementById('ssr-marker');
+        if (!ssrMarker) {
+            appEl.innerHTML = `<div class="loader-container">
+                <div class="spinner"></div>
+                <p>Loading fresh bouquets...</p>
+            </div>`;
+        }
 
         try {
             await window.Store.fetchProducts();

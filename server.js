@@ -2,6 +2,217 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 
+// ─── SSR: Server-side product cache ───────────────────────────────────────
+const fs = require('fs');
+
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTHd0751qQ03HhhAmQhVE32BlLZXOO1g40tqB3XPv_9WZCUwW4iQwZ6mNWUnf0Pvf0aD1HkRBAuOQQu/pub?output=csv';
+const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
+let productsCache = null;
+let cacheTimestamp = 0;
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+    .replace(/\//g, '&#x2F;');
+}
+
+function csvToArray(str) {
+  const arr = [];
+  let quote = false;
+  for (let row = 0, col = 0, c = 0; c < str.length; c++) {
+    let cc = str[c], nc = str[c + 1];
+    arr[row] = arr[row] || [];
+    arr[row][col] = arr[row][col] || '';
+    if (cc === '"' && quote && nc === '"') {
+      arr[row][col] += cc; c++; continue;
+    }
+    if (cc === '"') { quote = !quote; continue; }
+    if (cc === ',' && !quote) { col++; continue; }
+    if (cc === '\r' && nc === '\n' && !quote) { row++; col = 0; c++; continue; }
+    if (cc === '\n' && !quote) { row++; col = 0; continue; }
+    if (cc === '\r' && !quote) { row++; col = 0; continue; }
+    arr[row][col] += cc;
+  }
+  return arr;
+}
+
+function parseProductsCSV(csvText) {
+  const rows = csvToArray(csvText);
+  if (rows.length < 2) return [];
+  const headers = rows[0].map(h => h.toLowerCase().trim());
+  const products = [];
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (row.length < headers.length) continue;
+    const rowData = {};
+    headers.forEach((h, idx) => { if (h) rowData[h] = row[idx] ? row[idx].trim() : ''; });
+
+    const idVal = rowData['product no.'] || rowData['id'];
+    if (!idVal) continue;
+
+    const statusVal = (rowData['status'] || '').toLowerCase();
+    if (!statusVal.includes('in') || !statusVal.includes('stock')) continue;
+
+    const cleanSlug = idVal.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const nameVal = rowData['product name'] || rowData['name'] || '';
+    const priceVal = rowData['price'] || '';
+    let imgVal = rowData['image url'] || rowData['imageurl'] || '';
+    const descVal = rowData['description'] || rowData['shortdescription'] || '';
+    const occVal = rowData['occasion'] || rowData['occasiontags'] || '';
+    const bestSellerVal = (rowData['isbestseller'] || rowData['is best seller'] || rowData['best seller'] || '').toLowerCase();
+
+    if (imgVal && imgVal.includes('drive.google.com')) {
+      const match = imgVal.match(/id=([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) imgVal = `https://lh3.googleusercontent.com/d/${match[1]}`;
+    }
+
+    const occasionTags = occVal ? occVal.split(',').map(t => t.trim()) : [];
+    const isBestSeller = bestSellerVal === 'true' || bestSellerVal === 'yes' || bestSellerVal === '1'
+      || occasionTags.some(tag => tag.toLowerCase() === 'best sellers');
+
+    products.push({
+      id: idVal,
+      slug: cleanSlug,
+      name: nameVal,
+      price: parseFloat(priceVal) || 0,
+      imageurl: imgVal,
+      shortdescription: descVal,
+      occasiontags: occasionTags,
+      isbestseller: isBestSeller,
+      status: statusVal
+    });
+  }
+  return products;
+}
+
+async function getProducts() {
+  const now = Date.now();
+  if (productsCache && (now - cacheTimestamp < CACHE_TTL_MS)) return productsCache;
+  try {
+    const res = await fetch(SHEET_CSV_URL);
+    const text = await res.text();
+    if (text.trim().startsWith('<')) throw new Error('Received HTML instead of CSV');
+    productsCache = parseProductsCSV(text);
+    cacheTimestamp = now;
+    console.log(`[SSR] Products refreshed: ${productsCache.length} items`);
+  } catch (err) {
+    console.error('[SSR] Failed to fetch products:', err.message);
+    if (!productsCache) productsCache = [];
+  }
+  return productsCache;
+}
+
+// Warm the cache on server start
+getProducts().catch(() => {});
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─── SSR: HTML builders ───────────────────────────────────────────────────
+function getIndexTemplate() {
+  return fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+}
+
+function productCardHTML(p) {
+  const href = `/bouquet/${p.slug}`;
+  const price = p.price ? `<p class="product-price">&#8377;${escapeHtml(String(p.price))}</p>` : '';
+  const img = p.imageurl
+    ? `<img src="${escapeHtml(p.imageurl)}" alt="${escapeHtml(p.name)}" class="product-image" loading="lazy">`
+    : `<div class="product-image-placeholder"></div>`;
+  const tags = p.occasiontags.map(t =>
+    `<span class="badge">${escapeHtml(t)}</span>`
+  ).join('');
+  return `
+    <div class="product-card" data-id="${escapeHtml(p.slug)}">
+      <a href="${href}" class="product-card-link">
+        <div class="product-image-wrapper">${img}</div>
+        <div class="product-info">
+          <h3 class="product-name">${escapeHtml(p.name)}</h3>
+          ${price}
+          <div class="product-tags">${tags}</div>
+        </div>
+      </a>
+      <button class="btn btn-primary btn-block add-to-cart-btn"
+        data-id="${escapeHtml(String(p.id))}">Order on WhatsApp</button>
+    </div>`;
+}
+
+function catalogGridHTML(products) {
+  if (!products.length) return '<p>No products available.</p>';
+  return `<div class="product-grid">${products.map(productCardHTML).join('')}</div>`;
+}
+
+function bouquetDetailHTML(p) {
+  const price = p.price ? `<p class="detail-price">&#8377;${escapeHtml(String(p.price))}</p>` : '';
+  const desc = p.shortdescription
+    ? `<p class="detail-desc">${escapeHtml(p.shortdescription)}</p>` : '';
+  const img = p.imageurl
+    ? `<img src="${escapeHtml(p.imageurl)}" alt="${escapeHtml(p.name)}" class="detail-image" loading="lazy">`
+    : '';
+  const waText = encodeURIComponent(`Hi, I want to order ${p.name} from Rose n Petals. Please help me.`);
+  const tags = p.occasiontags.map(t =>
+    `<span class="badge detail-badge">${escapeHtml(t)}</span>`
+  ).join('');
+  const jsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": p.name,
+    "description": p.shortdescription || '',
+    "image": p.imageurl || '',
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "INR",
+      "price": p.price,
+      "availability": "https://schema.org/InStock",
+      "seller": { "@type": "Organization", "name": "Rose n Petals" }
+    }
+  });
+  return `
+    <script type="application/ld+json">${jsonLd}</script>
+    <section class="section container detail-section">
+      <div class="detail-grid">
+        <div class="detail-image-wrapper">${img}</div>
+        <div class="detail-info">
+          <div class="detail-tags">${tags}</div>
+          <h1 class="detail-title">${escapeHtml(p.name)}</h1>
+          ${price}
+          <div class="detail-desc">${desc}</div>
+          <a href="https://wa.me/917289996804?text=${waText}"
+            target="_blank" rel="noopener noreferrer"
+            class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;font-weight:700;display:block;text-align:center;">
+            Order on WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>`;
+}
+
+function buildSSRPage(ssrContent, products, title, description) {
+  let html = getIndexTemplate();
+
+  if (title)
+    html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`);
+
+  if (description)
+    html = html.replace(
+      /(<meta\s+name=["']description["']\s+content=["'])[^"']*["']/i,
+      `$1${escapeHtml(description)}"`
+    );
+
+  const hydrationScript = `<script>window.__SSR_PRODUCTS__=${JSON.stringify(products)};window.__SSR_HYDRATED__=false;</script>`;
+  html = html.replace('</body>', `${hydrationScript}</body>`);
+
+  html = html.replace(
+    /<main\s+id=["']app["'][^>]*>[\s\S]*?<\/main>/,
+    `<main id="app" class="app-main"><div id="ssr-marker" style="display:none"></div>${ssrContent}</main>`
+  );
+
+  return html;
+}
+// ─────────────────────────────────────────────────────────────────────────────
 const app = express();
 // Render automatically provides the PORT environment variable
 const PORT = process.env.PORT || 8080;
@@ -26,7 +237,7 @@ const parseCookies = (req) => {
 app.use('/admin_views', (req, res) => res.status(403).send('Forbidden'));
 
 // Serve all static assets from the current directory (index.html, css, js, etc.)
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname), { index: false }));
 
 // Admin Auth Middleware
 const requireAdmin = (req, res, next) => {
@@ -198,7 +409,7 @@ app.get('/policies', (req, res) => {
 });
 
 // Landing page template handler
-const fs = require('fs');
+// fs already required at the top
 function serveLandingPage(res, data) {
   const templatePath = path.join(__dirname, 'landing-page.html');
   let html = fs.readFileSync(templatePath, 'utf8');
@@ -667,10 +878,101 @@ app.get('/site.webmanifest', (req, res) => {
   res.sendFile(path.join(__dirname, 'site.webmanifest'));
 });
 
-// SPA Fallback: Any other route returns index.html for client-side routing
+// ─── SSR Routes ──────────────────────────────────────────────────────────────
+
+// Homepage
+app.get('/', async (req, res) => {
+  try {
+    const products = await getProducts();
+    const bestSellers = products.filter(p => p.isbestseller).slice(0, 8);
+    const ssrContent = `
+      <section class="section section-light">
+        <div class="container">
+          <h2 class="section-title">Best Sellers</h2>
+          ${catalogGridHTML(bestSellers)}
+        </div>
+      </section>`;
+    const html = buildSSRPage(
+      ssrContent,
+      products,
+      'Flower Delivery in Ghaziabad | Fresh Bouquets — Rose n Petals',
+      'Order fresh flower bouquets in Ghaziabad with 1-hour delivery. Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali and more. Starting Rs.200. Order on WhatsApp +91 7289996804.'
+    );
+    res.send(html);
+  } catch (err) {
+    console.error('[SSR] Homepage error:', err);
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
+
+// Catalog page
+app.get('/catalog', async (req, res) => {
+  try {
+    const products = await getProducts();
+    const filter = req.query.filter;
+    let displayed = products;
+    if (filter && filter.toLowerCase() !== 'all') {
+      if (filter.toLowerCase().includes('under 499')) {
+        displayed = products.filter(p => p.price < 499);
+      } else {
+        displayed = products.filter(p =>
+          p.occasiontags.some(tag =>
+            tag.toLowerCase() === filter.toLowerCase()
+          )
+        );
+      }
+    }
+    const ssrContent = `
+      <div class="page-header section-light">
+        <div class="container">
+          <h1 class="mb-2">Our Bouquets</h1>
+          <p class="text-muted">Fresh, hand-arranged flowers for every moment.</p>
+        </div>
+      </div>
+      <section class="section container">
+        ${catalogGridHTML(displayed)}
+      </section>`;
+    const html = buildSSRPage(
+      ssrContent,
+      products,
+      'All Bouquets | Flower Delivery Ghaziabad — Rose n Petals',
+      'Browse all fresh flower bouquets. Same-day delivery in Ghaziabad. Handmade arrangements starting Rs.200. Order on WhatsApp.'
+    );
+    res.send(html);
+  } catch (err) {
+    console.error('[SSR] Catalog error:', err);
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
+
+// Individual bouquet detail pages
+app.get('/bouquet/:slug', async (req, res) => {
+  try {
+    const products = await getProducts();
+    const slug = req.params.slug;
+    const product = products.find(p => p.slug === slug);
+    if (!product) {
+      return res.sendFile(path.join(__dirname, 'index.html'));
+    }
+    const ssrContent = bouquetDetailHTML(product);
+    const title = `${product.name} | Bouquet Delivery Ghaziabad — Rose n Petals`;
+    const desc = product.shortdescription
+      ? product.shortdescription.slice(0, 140)
+      : `Order ${product.name} with 1-hour delivery in Ghaziabad. Starting Rs.${product.price}. Order on WhatsApp.`;
+    const html = buildSSRPage(ssrContent, products, title, desc);
+    res.send(html);
+  } catch (err) {
+    console.error(`[SSR] /bouquet/${req.params.slug} error:`, err);
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
+
+// Catch-all — all other routes (area pages, blog, policies, etc.)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 app.listen(PORT, HOST, () => {
   console.log(`Server is running on http://${HOST}:${PORT}`);

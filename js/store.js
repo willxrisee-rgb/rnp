@@ -7,6 +7,20 @@ window.Store = {
     sheetsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTHd0751qQ03HhhAmQhVE32BlLZXOO1g40tqB3XPv_9WZCUwW4iQwZ6mNWUnf0Pvf0aD1HkRBAuOQQu/pub?output=csv',
 
     async fetchProducts() {
+        // If SSR already injected products, use them — skip Google Sheets fetch
+        if (window.__SSR_PRODUCTS__ && window.__SSR_PRODUCTS__.length > 0) {
+            // Map SSR keys to SPA keys to ensure compatibility
+            this.products = window.__SSR_PRODUCTS__.map(p => ({
+                ...p,
+                image_url: p.imageurl || p.image_url,
+                short_description: p.shortdescription || p.short_description,
+                occasion_tags: p.occasiontags || p.occasion_tags,
+                is_best_seller: p.isbestseller || p.is_best_seller
+            }));
+            window.__SSR_PRODUCTS__ = null; // clear to avoid stale data on SPA nav
+            console.log(`[Store] Using ${this.products.length} SSR-injected products.`);
+            return this.products;
+        }
         try {
             // Check if there is a Node.js backend providing environment variables
             try {
