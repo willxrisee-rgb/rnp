@@ -43,7 +43,7 @@ window.CorePagesData = {
         faqs: [
             {
                 q: 'Which areas in Ghaziabad do you deliver to?',
-                a: 'We deliver to Kavi Nagar, Raj Nagar, Indirapuram, Vaishali, Vasundhara, Mohan Nagar, Vijay Nagar, Crossing Republik and nearby localities. Message us on WhatsApp if your area is not listed — we'll do our best to cover it.'
+                a: "We deliver to Kavi Nagar, Raj Nagar, Indirapuram, Vaishali, Vasundhara, Mohan Nagar, Vijay Nagar, Crossing Republik and nearby localities. Message us on WhatsApp if your area is not listed — we'll do our best to cover it."
             },
             {
                 q: 'Do you offer same-day flower delivery in Ghaziabad?',
