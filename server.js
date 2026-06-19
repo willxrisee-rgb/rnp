@@ -1079,7 +1079,9 @@ app.get('/bouquet/product-:num', async (req, res) => {
     const num = req.params.num;
     const product = products.find(p =>
       p.id.toString() === num ||
-      p.id.toString() === `product-${num}`
+      p.id.toString() === `product-${num}` ||
+      p.id.toString().toLowerCase() === `product ${num}` ||
+      p.id.toString().toLowerCase().replace(/\s+/g, '-') === `product-${num}`
     );
     if (product) {
       return res.redirect(301, `/bouquet/${product.slug}`);
