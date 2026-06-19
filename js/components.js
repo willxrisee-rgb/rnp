@@ -8,7 +8,9 @@ window.Components = {
             : (primaryTag ? `<span class="product-card__badge occasion">${primaryTag}</span>` : '');
 
         const imageHtml = bouquet.image_url
-            ? `<img src="${bouquet.image_url}" alt="${bouquet.name}" class="card-image" loading="lazy">`
+            ? `<img src="${bouquet.image_url}"
+         alt="${bouquet.name} — Flower Bouquet for Delivery in Ghaziabad"
+         class="card-image" loading="lazy" width="400" height="400">`
             : `<div class="card-image placeholder-image text-center p-4"><span>Image coming soon</span></div>`;
 
         const safeBouquetName = (bouquet.name || '').replace(/'/g, "\\'");
