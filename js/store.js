@@ -83,7 +83,11 @@ window.Store = {
             // Map the parsed row to our app's Object model according to rnp.md
             const idVal = rowData['product no.'] || rowData['id'];
             if (!idVal) continue;
-            const cleanSlug = idVal.toString().toLowerCase().replace(/\s+/g, '-');
+            const cleanSlug = (rowData['product name'] || rowData['name'] || idVal)
+              .toString()
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/^-+|-+$/g, '');
             const nameVal = rowData['product name'] || rowData['name'];
             const priceVal = rowData['price (₹)'] || rowData['price'];
             const imgVal = rowData['image url'] || rowData['image_url'];

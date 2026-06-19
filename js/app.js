@@ -183,7 +183,12 @@ const App = {
         const slug = path.replace(/^\//, '');
 
         const appEl = document.getElementById('app');
-        appEl.innerHTML = ''; // clear current view
+        const ssrMarker = document.getElementById('ssr-marker');
+        if (ssrMarker) {
+          ssrMarker.remove();
+        } else {
+          appEl.innerHTML = '';
+        }
         
         const scrollTo = urlParams.get('scrollTo');
         if (!scrollTo) {
