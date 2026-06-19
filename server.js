@@ -58,8 +58,10 @@ function parseProductsCSV(csvText) {
     const statusVal = (rowData['status'] || '').toLowerCase();
     if (!statusVal.includes('in') || !statusVal.includes('stock')) continue;
 
-    const cleanSlug = idVal.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const nameVal = rowData['product name'] || rowData['name'] || '';
+    const cleanSlug = nameVal.toString().toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
     const priceVal = rowData['price'] || '';
     let imgVal = rowData['image url'] || rowData['imageurl'] || '';
     const descVal = rowData['description'] || rowData['shortdescription'] || '';
@@ -1067,6 +1069,36 @@ app.get('/catalog', async (req, res) => {
   } catch (err) {
     console.error('[SSR] Catalog error:', err);
     res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
+
+// Redirect legacy product slugs to name-based slugs
+app.get('/bouquet/product-:num', async (req, res) => {
+  try {
+    const products = await getProducts();
+    const num = req.params.num;
+    const product = products.find(p =>
+      p.id.toString() === num ||
+      p.id.toString().toLowerCase() === `product-${num}`
+    );
+    if (product) {
+      return res.redirect(301, `/bouquet/${product.slug}`);
+    }
+    return res.status(404).send(buildSSRPage(
+      `<div class="container">
+        <section style="text-align:center;padding:80px 20px">
+          <h1>Bouquet Not Found</h1>
+          <p>This bouquet may no longer be available.</p>
+          <a href="/catalog" class="btn btn-primary">Browse All Bouquets</a>
+        </section>
+      </div>`,
+      [],
+      '404 Bouquet Not Found — Rose n Petals',
+      'The bouquet you are looking for is no longer available.',
+      null
+    ));
+  } catch (err) {
+    return res.status(404).sendFile(path.join(__dirname, 'index.html'));
   }
 });
 
