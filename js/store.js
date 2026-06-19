@@ -18,6 +18,7 @@ window.Store = {
                 is_best_seller: p.isbestseller || p.is_best_seller
             }));
             window.__SSR_PRODUCTS__ = null; // clear to avoid stale data on SPA nav
+            window.__SSR_HYDRATED__ = true;
             console.log(`[Store] Using ${this.products.length} SSR-injected products.`);
             return this.products;
         }

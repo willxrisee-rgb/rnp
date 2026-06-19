@@ -9,6 +9,20 @@ function getCurrentRoute() {
   return path + (search ? search : '');
 }
 
+function setCanonical(path) {
+  const base = 'https://rosenpetals.com';
+  const fullUrl = path === '/' || path === ''
+    ? base
+    : base + '/' + path.replace(/^\//, '');
+  let el = document.querySelector('link[rel="canonical"]');
+  if (!el) {
+    el = document.createElement('link');
+    el.rel = 'canonical';
+    document.head.appendChild(el);
+  }
+  el.href = fullUrl;
+}
+
 const App = {
     init() {
         // Init Mobile Menu
@@ -205,6 +219,7 @@ const App = {
 
         // Simple path-based router
         if (path === '/' || path === '') {
+            setCanonical('/');
             window.Pages.renderHomePage(appEl);
             if (scrollTo) {
                 setTimeout(() => {
@@ -214,16 +229,18 @@ const App = {
             }
         }
         else if (path === '/catalog') {
+            setCanonical('/catalog');
             const filterParam = urlParams.get('filter') || 'All';
             window.Pages.renderCatalogPage(appEl, filterParam);
         }
         else if (path.startsWith('/bouquet/')) {
-            const slug = path.replace('/bouquet/', '');
-            window.Pages.renderBouquetDetailPage(appEl, slug);
+            const bouquetSlug = path.replace('/bouquet/', '');
+            setCanonical('/bouquet/' + bouquetSlug);
+            window.Pages.renderBouquetDetailPage(appEl, bouquetSlug);
         }
         else {
-            // ── Core Service SEO pages (dynamic slug matching) ──
             const slug = path.replace(/^\//, '');
+            setCanonical('/' + slug);
             if (window.CoreServiceRoutes && window.CoreServiceRoutes.isCorePage(slug)) {
                 window.CoreServiceRoutes.render(appEl, slug);
             } else if (window.UrgencyServiceRoutes && window.UrgencyServiceRoutes.isUrgencyPage(slug)) {
@@ -233,8 +250,10 @@ const App = {
             } else if (window.LocalAreaRoutes && window.LocalAreaRoutes.isLocalAreaPage(slug)) {
                 window.LocalAreaRoutes.render(appEl, slug);
             } else {
-                // 404
-                appEl.innerHTML = `<div class="container section"><div class="section-title"><h2>Page Not Found</h2><a href="/" class="btn btn-primary">Go Home</a></div></div>`;
+                appEl.innerHTML = `<div class="container section"><div class="section-title">
+                    <h2>Page Not Found</h2>
+                    <a href="/" class="btn btn-primary">Go Home</a>
+                </div></div>`;
             }
         }
     }

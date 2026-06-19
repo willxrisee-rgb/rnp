@@ -34,35 +34,35 @@ window.Pages = {
                 <h2>Shop by Occasion</h2>
                 <div class="category-cards">
                     <a href="/catalog?filter=Birthday" class="category-card">
-                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779475822/Carnival_Mix_d2c4cl.png" alt="Birthday">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779475822/Carnival_Mix_d2c4cl.png" alt="Birthday flowers delivered in Ghaziabad">
                         <span>Birthday</span>
                     </a>
                     <a href="/catalog?filter=Anniversary" class="category-card">
-                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779516704/Harmony_Blush_bpdbwl.png" alt="Anniversary">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779516704/Harmony_Blush_bpdbwl.png" alt="Anniversary flower bouquet Ghaziabad">
                         <span>Anniversary</span>
                     </a>
                     <a href="/catalog?filter=Celebration" class="category-card">
-                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png" alt="Celebration">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png" alt="Celebration flowers Ghaziabad">
                         <span>Celebration</span>
                     </a>
                     <a href="/catalog?filter=Romantic" class="category-card">
-                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505954/blush_carnation_jecbzq.png" alt="Romantic">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505954/blush_carnation_jecbzq.png" alt="Romantic flowers Ghaziabad">
                         <span>Romantic</span>
                     </a>
                     <a href="/catalog?filter=Get%20Well%20Soon" class="category-card">
-                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779504779/Tulip_Charm_qi8hg1.png" alt="Get Well Soon">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779504779/Tulip_Charm_qi8hg1.png" alt="Get well soon flowers Ghaziabad">
                         <span>Get Well Soon</span>
                     </a>
                     <a href="/catalog?filter=Sorry" class="category-card">
-                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779506580/Vitage_Tale_n6pxuo.png" alt="Sorry">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779506580/Vitage_Tale_n6pxuo.png" alt="Sorry flowers Ghaziabad">
                         <span>Sorry</span>
                     </a>
                     <a href="/catalog?filter=Same%20Day" class="category-card">
-                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779467296/Sunflower_Burst_Bouquet_rkp5xf.png" alt="Same Day">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779467296/Sunflower_Burst_Bouquet_rkp5xf.png" alt="Same day flower delivery Ghaziabad">
                         <span>Same Day</span>
                     </a>
                     <a href="/catalog?filter=Sympathy" class="category-card">
-                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779476670/Ocean_MIst_vcnm4j.png" alt="Sympathy">
+                        <img src="https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779476670/Ocean_MIst_vcnm4j.png" alt="Sympathy flowers Ghaziabad">
                         <span>Sympathy</span>
                     </a>
                 </div>
