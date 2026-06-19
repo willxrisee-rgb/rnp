@@ -120,7 +120,12 @@ function productCardHTML(p) {
   const href = `/bouquet/${p.slug}`;
   const price = p.price ? `<p class="product-price">&#8377;${escapeHtml(String(p.price))}</p>` : '';
   const img = p.imageurl
-    ? `<img src="${escapeHtml(p.imageurl)}" alt="${escapeHtml(p.name)}" class="product-image" loading="lazy">`
+    ? `<img src="${escapeHtml(p.imageurl)}"
+          alt="${escapeHtml(p.name)} — Flower Bouquet for Delivery in Ghaziabad"
+          class="product-image"
+          loading="lazy"
+          width="400"
+          height="400">`
     : `<div class="product-image-placeholder"></div>`;
   const tags = p.occasiontags.map(t =>
     `<span class="badge">${escapeHtml(t)}</span>`
@@ -150,28 +155,87 @@ function bouquetDetailHTML(p) {
   const desc = p.shortdescription
     ? `<p class="detail-desc">${escapeHtml(p.shortdescription)}</p>` : '';
   const img = p.imageurl
-    ? `<img src="${escapeHtml(p.imageurl)}" alt="${escapeHtml(p.name)}" class="detail-image" loading="lazy">`
+    ? `<img src="${escapeHtml(p.imageurl)}"
+          alt="${escapeHtml(p.name)} — Fresh Bouquet Delivery Ghaziabad Rose n Petals"
+          class="detail-image"
+          fetchpriority="high"
+          width="600"
+          height="600">`
     : '';
   const waText = encodeURIComponent(`Hi, I want to order ${p.name} from Rose n Petals. Please help me.`);
   const tags = p.occasiontags.map(t =>
     `<span class="badge detail-badge">${escapeHtml(t)}</span>`
   ).join('');
+
+  const priceValidUntil = new Date();
+  priceValidUntil.setFullYear(priceValidUntil.getFullYear() + 1);
+
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Product",
+    "@id": `https://rosenpetals.com/bouquet/${p.slug}`,
     "name": p.name,
-    "description": p.shortdescription || '',
-    "image": p.imageurl || '',
+    "description": p.shortdescription || `Order ${p.name} with 1-hour delivery in Ghaziabad.`,
+    "image": [p.imageurl],
+    "sku": escapeHtml(String(p.id)),
+    "brand": { "@type": "Brand", "name": "Rose n Petals" },
+    "url": `https://rosenpetals.com/bouquet/${p.slug}`,
     "offers": {
       "@type": "Offer",
       "priceCurrency": "INR",
       "price": p.price,
+      "priceValidUntil": priceValidUntil.toISOString().slice(0, 10),
       "availability": "https://schema.org/InStock",
-      "seller": { "@type": "Organization", "name": "Rose n Petals" }
+      "url": `https://rosenpetals.com/bouquet/${p.slug}`,
+      "seller": {
+        "@type": "Organization",
+        "name": "Rose n Petals",
+        "url": "https://rosenpetals.com"
+      },
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "currency": "INR",
+          "value": 0
+        },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 0,
+            "maxValue": 1,
+            "unitCode": "HUR"
+          },
+          "transitTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 0,
+            "maxValue": 1,
+            "unitCode": "HUR"
+          }
+        },
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": "IN",
+          "addressRegion": "UP"
+        }
+      }
     }
   });
+
+  const breadcrumbJson = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+      { "@type": "ListItem", "position": 2, "name": "Bouquets", "item": "https://rosenpetals.com/catalog" },
+      { "@type": "ListItem", "position": 3, "name": p.name, "item": `https://rosenpetals.com/bouquet/${p.slug}` }
+    ]
+  });
+
   return `
     <script type="application/ld+json">${jsonLd}</script>
+    <script type="application/ld+json">${breadcrumbJson}</script>
     <section class="section container detail-section">
       <div class="detail-grid">
         <div class="detail-image-wrapper">${img}</div>
@@ -182,7 +246,8 @@ function bouquetDetailHTML(p) {
           <div class="detail-desc">${desc}</div>
           <a href="https://wa.me/917289996804?text=${waText}"
             target="_blank" rel="noopener noreferrer"
-            class="btn btn-primary" style="width:100%;padding:14px;font-size:15px;font-weight:700;display:block;text-align:center;">
+            class="btn btn-primary"
+            style="width:100%;padding:14px;font-size:15px;font-weight:700;display:block;text-align:center;margin-top:16px;">
             Order on WhatsApp
           </a>
         </div>
@@ -190,7 +255,7 @@ function bouquetDetailHTML(p) {
     </section>`;
 }
 
-function buildSSRPage(ssrContent, products, title, description) {
+function buildSSRPage(ssrContent, products, title, description, canonicalUrl) {
   let html = getIndexTemplate();
 
   if (title)
@@ -200,6 +265,12 @@ function buildSSRPage(ssrContent, products, title, description) {
     html = html.replace(
       /(<meta\s+name=["']description["']\s+content=["'])[^"']*["']/i,
       `$1${escapeHtml(description)}"`
+    );
+
+  if (canonicalUrl)
+    html = html.replace(
+      /<link\s+rel=["']canonical["'][^>]*>/i,
+      `<link rel="canonical" href="${escapeHtml(canonicalUrl)}">`
     );
 
   const hydrationScript = `<script>window.__SSR_PRODUCTS__=${JSON.stringify(products)};window.__SSR_HYDRATED__=false;</script>`;
@@ -885,18 +956,59 @@ app.get('/', async (req, res) => {
   try {
     const products = await getProducts();
     const bestSellers = products.filter(p => p.isbestseller).slice(0, 8);
+
+    const homeBreadcrumb = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" }
+      ]
+    });
+
+    const categoryStrip = `
+      <section class="category-strip">
+        <h2>Shop by Occasion</h2>
+        <div class="category-cards">
+          <a href="/catalog?filter=Birthday" class="category-card"><span>Birthday</span></a>
+          <a href="/catalog?filter=Anniversary" class="category-card"><span>Anniversary</span></a>
+          <a href="/catalog?filter=Celebration" class="category-card"><span>Celebration</span></a>
+          <a href="/catalog?filter=Romantic" class="category-card"><span>Romantic</span></a>
+          <a href="/catalog?filter=Get%20Well%20Soon" class="category-card"><span>Get Well Soon</span></a>
+          <a href="/catalog?filter=Sorry" class="category-card"><span>Sorry</span></a>
+          <a href="/catalog?filter=Same%20Day" class="category-card"><span>Same Day</span></a>
+          <a href="/catalog?filter=Sympathy" class="category-card"><span>Sympathy</span></a>
+        </div>
+      </section>`;
+
     const ssrContent = `
+      <script type="application/ld+json">${homeBreadcrumb}</script>
+      <section class="hero-section">
+        <div class="hero-content container">
+          <span class="hero-label">Ghaziabad's Best Florist</span>
+          <h1 style="color:#1A1A1A">Fresh Flower Delivery in Ghaziabad</h1>
+          <p style="color:#555555;font-size:16px">Handmade bouquets delivered to your door in under 1 hour.<br>Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali &amp; more.</p>
+          <p style="font-size:14px;color:#CC0000;font-weight:500">Starting from &#8377;200 &middot; No app needed &middot; Easy WhatsApp order</p>
+          <div class="hero-buttons">
+            <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me."
+              target="_blank" rel="noopener noreferrer" class="hero-btn-primary">Order on WhatsApp</a>
+            <a href="/catalog" class="hero-btn-secondary">Browse Bouquets</a>
+          </div>
+        </div>
+      </section>
+      ${categoryStrip}
       <section class="section section-light">
         <div class="container">
           <h2 class="section-title">Best Sellers</h2>
           ${catalogGridHTML(bestSellers)}
         </div>
       </section>`;
+
     const html = buildSSRPage(
       ssrContent,
       products,
       'Flower Delivery in Ghaziabad | Fresh Bouquets — Rose n Petals',
-      'Order fresh flower bouquets in Ghaziabad with 1-hour delivery. Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali and more. Starting Rs.200. Order on WhatsApp +91 7289996804.'
+      'Order fresh flower bouquets in Ghaziabad with 1-hour delivery. Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali and more. Starting Rs.200. Order on WhatsApp +91 7289996804.',
+      'https://rosenpetals.com'
     );
     res.send(html);
   } catch (err) {
@@ -922,7 +1034,18 @@ app.get('/catalog', async (req, res) => {
         );
       }
     }
+
+    const catalogBreadcrumb = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+        { "@type": "ListItem", "position": 2, "name": "Bouquets", "item": "https://rosenpetals.com/catalog" }
+      ]
+    });
+
     const ssrContent = `
+      <script type="application/ld+json">${catalogBreadcrumb}</script>
       <div class="page-header section-light">
         <div class="container">
           <h1 class="mb-2">Our Bouquets</h1>
@@ -932,11 +1055,13 @@ app.get('/catalog', async (req, res) => {
       <section class="section container">
         ${catalogGridHTML(displayed)}
       </section>`;
+
     const html = buildSSRPage(
       ssrContent,
       products,
       'All Bouquets | Flower Delivery Ghaziabad — Rose n Petals',
-      'Browse all fresh flower bouquets. Same-day delivery in Ghaziabad. Handmade arrangements starting Rs.200. Order on WhatsApp.'
+      'Browse all fresh flower bouquets. Same-day delivery in Ghaziabad. Handmade arrangements starting Rs.200. Order on WhatsApp.',
+      'https://rosenpetals.com/catalog'
     );
     res.send(html);
   } catch (err) {
@@ -951,15 +1076,36 @@ app.get('/bouquet/:slug', async (req, res) => {
     const products = await getProducts();
     const slug = req.params.slug;
     const product = products.find(p => p.slug === slug);
+
     if (!product) {
-      return res.sendFile(path.join(__dirname, 'index.html'));
+      return res.status(404).send(buildSSRPage(
+        `<div class="container">
+          <section style="text-align:center;padding:80px 20px">
+            <h1>Bouquet Not Found</h1>
+            <p>This bouquet may no longer be available.</p>
+            <a href="/catalog" class="btn btn-primary">Browse All Bouquets</a>
+          </section>
+        </div>`,
+        [],
+        '404 Bouquet Not Found — Rose n Petals',
+        'The bouquet you are looking for is no longer available.',
+        null
+      ));
     }
+
     const ssrContent = bouquetDetailHTML(product);
     const title = `${product.name} | Bouquet Delivery Ghaziabad — Rose n Petals`;
     const desc = product.shortdescription
       ? product.shortdescription.slice(0, 140)
-      : `Order ${product.name} with 1-hour delivery in Ghaziabad. Starting Rs.${product.price}. Order on WhatsApp.`;
-    const html = buildSSRPage(ssrContent, products, title, desc);
+      : `Order ${product.name} with 1-hour delivery in Ghaziabad. Starting Rs.${product.price}.`;
+
+    const html = buildSSRPage(
+      ssrContent,
+      products,
+      title,
+      desc,
+      `https://rosenpetals.com/bouquet/${product.slug}`
+    );
     res.send(html);
   } catch (err) {
     console.error(`[SSR] /bouquet/${req.params.slug} error:`, err);
@@ -974,10 +1120,10 @@ app.get('*', async (req, res) => {
       let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
       const hydrationScript = `<script>window.__SSR_PRODUCTS__=${JSON.stringify(products)};window.__SSR_HYDRATED__=false;</script>`;
       html = html.replace('</body>', `${hydrationScript}</body>`);
-      res.send(html);
+      res.status(404).send(html);
     } catch (err) {
       console.error('[SSR] Catch-all error:', err);
-      res.sendFile(path.join(__dirname, 'index.html'));
+      res.status(404).sendFile(path.join(__dirname, 'index.html'));
     }
   });
 
