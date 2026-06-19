@@ -270,7 +270,7 @@ function buildSSRPage(ssrContent, products, title, description, canonicalUrl) {
   if (canonicalUrl)
     html = html.replace(
       /<link\s+rel=["']canonical["'][^>]*>/i,
-      `<link rel="canonical" href="${escapeHtml(canonicalUrl)}">`
+      `<link rel="canonical" href="${canonicalUrl}">`
     );
 
   const hydrationScript = `<script>window.__SSR_PRODUCTS__=${JSON.stringify(products)};window.__SSR_HYDRATED__=false;</script>`;
