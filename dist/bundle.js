@@ -25,17 +25,17 @@ Address: ${t}
 Area: ${i}
 Delivery time: ${d} \u2013 ${n}
 Message on card: "${l}"
-Payment method: ${u}`}let p=encodeURIComponent(o),g=`https://api.whatsapp.com/send?phone=${this.SHOP_PHONE}&text=${p}`;window.gtag&&window.gtag("event","whatsapp_order_click",{event_category:"Order Intent",bouquet_name:bouquetName}),window.location.href=g}};window.Components={createProductCard(a){let r=a.occasion_tags.length>0?a.occasion_tags[0]:"",e=a.is_best_seller?'<span class="product-card__badge bestseller">BEST SELLER</span>':r?`<span class="product-card__badge occasion">${r}</span>`:"",t=a.image_url?`<img src="${a.image_url}"
+Payment method: ${u}`}let p=encodeURIComponent(o),g=`https://api.whatsapp.com/send?phone=${this.SHOP_PHONE}&text=${p}`;window.gtag&&window.gtag("event","whatsapp_order_click",{event_category:"Order Intent",bouquet_name:bouquetName}),window.location.href=g}};window.Components={createProductCard(a,r=0){let t=r<2?'loading="eager" fetchpriority="high"':'loading="lazy"',i=a.occasion_tags.length>0?a.occasion_tags[0]:"",d=a.is_best_seller?'<span class="product-card__badge bestseller">BEST SELLER</span>':i?`<span class="product-card__badge occasion">${i}</span>`:"",n=a.image_url?`<img src="${a.image_url}"
          alt="${a.name} \u2014 Flower Bouquet for Delivery in Ghaziabad"
-         class="card-image" loading="lazy" width="400" height="400">`:'<div class="card-image placeholder-image text-center p-4"><span>Image coming soon</span></div>',i=(a.name||"").replace(/'/g,"\\'");return`
+         class="card-image" ${t} width="400" height="400">`:'<div class="card-image placeholder-image text-center p-4"><span>Image coming soon</span></div>',l=(a.name||"").replace(/'/g,"\\'");return`
             <article class="product-card">
-                <a href="/bouquet/${a.slug}" class="product-card__image" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${i}' });">
-                    ${t}
-                    ${e}
+                <a href="/bouquet/${a.slug}" class="product-card__image" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${l}' });">
+                    ${n}
+                    ${d}
                 </a>
                 <div class="product-card__content">
                     <h3 class="product-card__title">
-                        <a href="/bouquet/${a.slug}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${i}' });">
+                        <a href="/bouquet/${a.slug}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${l}' });">
                             ${a.name}
                         </a>
                     </h3>
@@ -43,7 +43,7 @@ Payment method: ${u}`}let p=encodeURIComponent(o),g=`https://api.whatsapp.com/se
                     <div class="product-card__price-row" style="display:flex; flex-direction:column; gap:8px;">
                         <span class="product-card__price">\u20B9${a.price}</span>
                         <div style="display:flex; gap:8px;">
-                            <a href="https://api.whatsapp.com/send?phone=917289996804&text=${encodeURIComponent(`Hi! I'd like to order the ${a.name} bouquet.`)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm product-card__btn" onclick="if(window.gtag) gtag('event', 'whatsapp_order_click', { event_category: 'Order Intent', bouquet_name: '${i}' });">Order now</a>
+                            <a href="https://api.whatsapp.com/send?phone=917289996804&text=${encodeURIComponent(`Hi! I'd like to order the ${a.name} bouquet.`)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm product-card__btn" onclick="if(window.gtag) gtag('event', 'whatsapp_order_click', { event_category: 'Order Intent', bouquet_name: '${l}' });">Order now</a>
                             <button class="btn-add-cart" onclick="if(window.CartUI && window.CartUI.addItem){window.CartUI.addItem('${a.id}')} else {console.warn('CartUI not ready yet')}">Add to Cart</button>
                         </div>
                     </div>
@@ -811,7 +811,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                 <div class="container">
                     <h2 class="section-title">Best Sellers</h2>
                     <div class="product-grid">
-                        ${e.map(n=>Components.createProductCard(n)).join("")}
+                        ${e.map((n,l)=>Components.createProductCard(n,l)).join("")}
                     </div>
                     ${e.length===0?'<p class="text-center text-muted">No best sellers found currently.</p>':""}
                 </div>
@@ -905,7 +905,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                 
                 <!-- Grid -->
                 <div class="product-grid">
-                    ${i.length>0?i.map(n=>Components.createProductCard(n)).join(""):'<div class="empty-state"><p>No bouquets found for this occasion. Please try another filter.</p></div>'}
+                    ${i.length>0?i.map((n,l)=>Components.createProductCard(n,l)).join(""):'<div class="empty-state"><p>No bouquets found for this occasion. Please try another filter.</p></div>'}
                 </div>
                 
                 <!-- Custom Bouquet Banner -->
@@ -992,7 +992,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                   </button>
                 </div>
             </div>
-        `;a.innerHTML=l,WhatsApp.initFormListener()},setupChipListeners(a){document.querySelectorAll(".filter-chip").forEach(r=>{r.addEventListener("click",e=>{let t=e.target.getAttribute("data-filter");window.location.href=a+encodeURIComponent(t)})})},renderFlowerDeliveryGhaziabad(a){document.title="Flower Delivery in Ghaziabad | Rose n Petals",a.innerHTML=`
+        `;a.innerHTML=l,WhatsApp.initFormListener()},setupChipListeners(a){document.querySelectorAll(".filter-chip").forEach(r=>{r.addEventListener("click",e=>{let t=e.target.getAttribute("data-filter"),i=a+encodeURIComponent(t);window.history.pushState(null,"",i),App.handleRouting()})})},renderFlowerDeliveryGhaziabad(a){document.title="Flower Delivery in Ghaziabad | Rose n Petals",a.innerHTML=`
             <section class="section container">
                 <div class="section-title">
                     <h1>Fresh Flower Delivery in Ghaziabad \u2013 Starting \u20B9200</h1>
@@ -1092,7 +1092,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                     </a>
                 </div>
             </section>
-        `}};function x(){if(window.INITIAL_PAGE)return"/"+window.INITIAL_PAGE;var a=window.location.pathname,r=window.location.search;return a+(r||"")}function S(a){let r="https://rosenpetals.com",e=a==="/"||a===""?r:r+"/"+a.replace(/^\//,""),t=document.querySelector('link[rel="canonical"]');t||(t=document.createElement("link"),t.rel="canonical",document.head.appendChild(t)),t.href=e}var q={init(){this.initMobileMenu();let a=document.querySelector(".logo");if(a){let r=0,e=null;a.addEventListener("click",t=>{r++,r===3&&(t.preventDefault(),window.location.href="/admin/login"),clearTimeout(e),e=setTimeout(()=>{r=0},2e3)})}window.addEventListener("popstate",function(){q.handleRouting()}),document.body.addEventListener("click",r=>{let e=r.target.closest("a");if(!e)return;let t=e.getAttribute("href");t&&(e.getAttribute("target")==="_blank"||t.startsWith("http")||t.startsWith("tel:")||t.startsWith("mailto:")||t.startsWith("#")||t.endsWith(".xml")||e.origin&&e.origin!==window.location.origin||t.startsWith("/")&&(r.preventDefault(),window.history.pushState(null,"",t),q.handleRouting()))}),this.loadDataAndStart(),this.checkPromoPopup()},checkPromoPopup(){if(window.location.href.includes("promo=QR")){document.body.insertAdjacentHTML("beforeend",`
+        `}};function x(){if(window.INITIAL_PAGE){var a=window.INITIAL_PAGE;return window.INITIAL_PAGE=null,"/"+a}var r=window.location.pathname,e=window.location.search;return r+(e||"")}function S(a){let r="https://rosenpetals.com",e=a==="/"||a===""?r:r+"/"+a.replace(/^\//,""),t=document.querySelector('link[rel="canonical"]');t||(t=document.createElement("link"),t.rel="canonical",document.head.appendChild(t)),t.href=e}var q={init(){this.initMobileMenu();let a=document.querySelector(".logo");if(a){let r=0,e=null;a.addEventListener("click",t=>{r++,r===3&&(t.preventDefault(),window.location.href="/admin/login"),clearTimeout(e),e=setTimeout(()=>{r=0},2e3)})}window.addEventListener("popstate",function(){q.handleRouting()}),document.body.addEventListener("click",r=>{let e=r.target.closest("a");if(!e)return;let t=e.getAttribute("href");t&&(e.getAttribute("target")==="_blank"||t.startsWith("http")||t.startsWith("tel:")||t.startsWith("mailto:")||t.startsWith("#")||t.endsWith(".xml")||e.origin&&e.origin!==window.location.origin||t.startsWith("/")&&(r.preventDefault(),window.history.pushState(null,"",t),q.handleRouting()))}),this.loadDataAndStart(),this.checkPromoPopup()},checkPromoPopup(){if(window.location.href.includes("promo=QR")){document.body.insertAdjacentHTML("beforeend",`
                 <div class="voucher-overlay" id="voucherPopup">
                     <div class="voucher-card">
                         <div class="voucher-title">Thanks for visiting our shop! \u{1F338}</div>

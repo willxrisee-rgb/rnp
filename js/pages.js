@@ -108,7 +108,7 @@ window.Pages = {
                 <div class="container">
                     <h2 class="section-title">Best Sellers</h2>
                     <div class="product-grid">
-                        ${bestSellers.map(b => Components.createProductCard(b)).join('')}
+                        ${bestSellers.map((b, i) => Components.createProductCard(b, i)).join('')}
                     </div>
                     ${bestSellers.length === 0 ? '<p class="text-center text-muted">No best sellers found currently.</p>' : ''}
                 </div>
@@ -216,7 +216,7 @@ window.Pages = {
                 <!-- Grid -->
                 <div class="product-grid">
                     ${filteredProducts.length > 0
-                ? filteredProducts.map(b => Components.createProductCard(b)).join('')
+                ? filteredProducts.map((b, i) => Components.createProductCard(b, i)).join('')
                 : '<div class="empty-state"><p>No bouquets found for this occasion. Please try another filter.</p></div>'
             }
                 </div>
@@ -352,7 +352,9 @@ window.Pages = {
         document.querySelectorAll('.filter-chip').forEach(chip => {
             chip.addEventListener('click', (e) => {
                 const filterValue = e.target.getAttribute('data-filter');
-                window.location.href = baseUrl + encodeURIComponent(filterValue);
+                const newUrl = baseUrl + encodeURIComponent(filterValue);
+                window.history.pushState(null, '', newUrl);
+                App.handleRouting();
             });
         });
     },

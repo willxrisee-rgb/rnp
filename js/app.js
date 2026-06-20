@@ -1,26 +1,28 @@
 // js/app.js
 
 function getCurrentRoute() {
-  if (window.INITIAL_PAGE) {
-    return '/' + window.INITIAL_PAGE;
-  }
-  var path = window.location.pathname;
-  var search = window.location.search;
-  return path + (search ? search : '');
+    if (window.INITIAL_PAGE) {
+        var initial = window.INITIAL_PAGE;
+        window.INITIAL_PAGE = null;
+        return '/' + initial;
+    }
+    var path = window.location.pathname;
+    var search = window.location.search;
+    return path + (search ? search : '');
 }
 
 function setCanonical(path) {
-  const base = 'https://rosenpetals.com';
-  const fullUrl = path === '/' || path === ''
-    ? base
-    : base + '/' + path.replace(/^\//, '');
-  let el = document.querySelector('link[rel="canonical"]');
-  if (!el) {
-    el = document.createElement('link');
-    el.rel = 'canonical';
-    document.head.appendChild(el);
-  }
-  el.href = fullUrl;
+    const base = 'https://rosenpetals.com';
+    const fullUrl = path === '/' || path === ''
+        ? base
+        : base + '/' + path.replace(/^\//, '');
+    let el = document.querySelector('link[rel="canonical"]');
+    if (!el) {
+        el = document.createElement('link');
+        el.rel = 'canonical';
+        document.head.appendChild(el);
+    }
+    el.href = fullUrl;
 }
 
 const App = {
@@ -47,21 +49,21 @@ const App = {
         }
 
         // Handle route changes using History API
-        window.addEventListener('popstate', function() { App.handleRouting(); });
+        window.addEventListener('popstate', function () { App.handleRouting(); });
 
         // Intercept local link clicks for SPA routing
         document.body.addEventListener('click', (e) => {
             const link = e.target.closest('a');
             if (!link) return;
-            
+
             const href = link.getAttribute('href');
             if (!href) return;
 
             // Skip external links, tel, mailto, whatsapp, target="_blank", anchors, sitemap
-            if (link.getAttribute('target') === '_blank' || 
-                href.startsWith('http') || 
-                href.startsWith('tel:') || 
-                href.startsWith('mailto:') || 
+            if (link.getAttribute('target') === '_blank' ||
+                href.startsWith('http') ||
+                href.startsWith('tel:') ||
+                href.startsWith('mailto:') ||
                 href.startsWith('#') ||
                 href.endsWith('.xml')) {
                 return;
@@ -199,11 +201,11 @@ const App = {
         const appEl = document.getElementById('app');
         const ssrMarker = document.getElementById('ssr-marker');
         if (ssrMarker) {
-          ssrMarker.remove();
+            ssrMarker.remove();
         } else {
-          appEl.innerHTML = '';
+            appEl.innerHTML = '';
         }
-        
+
         const scrollTo = urlParams.get('scrollTo');
         if (!scrollTo) {
             window.scrollTo(0, 0); // scroll to top only if not jumping to a section

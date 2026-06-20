@@ -118,14 +118,18 @@ function getIndexTemplate() {
   return fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
 }
 
-function productCardHTML(p) {
+function productCardHTML(p, index = 0) {
+  const isPriority = index < 2;
+  const imgAttrs = isPriority
+    ? 'loading="eager" fetchpriority="high"'
+    : 'loading="lazy"';
   const href = `/bouquet/${p.slug}`;
   const price = p.price ? `<p class="product-price">&#8377;${escapeHtml(String(p.price))}</p>` : '';
   const img = p.imageurl
     ? `<img src="${escapeHtml(p.imageurl)}"
           alt="${escapeHtml(p.name)} — Flower Bouquet for Delivery in Ghaziabad"
           class="product-image"
-          loading="lazy"
+          ${imgAttrs}
           width="400"
           height="400">`
     : `<div class="product-image-placeholder"></div>`;
@@ -149,7 +153,7 @@ function productCardHTML(p) {
 
 function catalogGridHTML(products) {
   if (!products.length) return '<p>No products available.</p>';
-  return `<div class="product-grid">${products.map(productCardHTML).join('')}</div>`;
+  return `<div class="product-grid">${products.map((p, i) => productCardHTML(p, i)).join('')}</div>`;
 }
 
 function bouquetDetailHTML(p) {

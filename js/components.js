@@ -1,7 +1,11 @@
 // js/components.js
 
 window.Components = {
-    createProductCard(bouquet) {
+    createProductCard(bouquet, index = 0) {
+        const isPriority = index < 2;
+        const imgAttrs = isPriority
+            ? 'loading="eager" fetchpriority="high"'
+            : 'loading="lazy"';
         const primaryTag = bouquet.occasion_tags.length > 0 ? bouquet.occasion_tags[0] : '';
         const badgeHTML = bouquet.is_best_seller
             ? '<span class="product-card__badge bestseller">BEST SELLER</span>'
@@ -10,7 +14,7 @@ window.Components = {
         const imageHtml = bouquet.image_url
             ? `<img src="${bouquet.image_url}"
          alt="${bouquet.name} — Flower Bouquet for Delivery in Ghaziabad"
-         class="card-image" loading="lazy" width="400" height="400">`
+         class="card-image" ${imgAttrs} width="400" height="400">`
             : `<div class="card-image placeholder-image text-center p-4"><span>Image coming soon</span></div>`;
 
         const safeBouquetName = (bouquet.name || '').replace(/'/g, "\\'");
