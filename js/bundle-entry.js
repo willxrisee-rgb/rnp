@@ -1,0 +1,13 @@
+import "./store.js";
+import "./whatsapp.js";
+import "./components.js";
+import "./corePagesData.js";
+import "./coreServiceRoutes.js";
+import "./urgencyPagesData.js";
+import "./urgencyServiceRoutes.js";
+import "./occasionPagesData.js";
+import "./occasionRoutes.js";
+import "./localAreaPagesData.js";
+import "./localAreaRoutes.js";
+import "./pages.js";
+import "./app.js";
