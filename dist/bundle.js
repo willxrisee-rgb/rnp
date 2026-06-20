@@ -52,7 +52,7 @@ Payment method: ${u}`}let p=encodeURIComponent(o),g=`https://api.whatsapp.com/se
         `},createFilterChips(a,r){return`
             <div class="filter-chips-wrapper">
                 <div class="filter-chips-container scroll-hide">
-                    ${a.map(t=>`<button class="filter-chip ${t.toLowerCase()===r.toLowerCase()?"active":""}" data-filter="${t}">${t}</button>`).join("")}
+                    ${a.map(t=>`<button class="filter-chip ${t.toLowerCase()===r.toLowerCase()?"active":""}" data-filter="${t}" style="min-height:44px; padding:10px 16px;">${t}</button>`).join("")}
                 </div>
             </div>
         `},createSteps(a){return`
@@ -192,9 +192,9 @@ Payment method: ${u}`}let p=encodeURIComponent(o),g=`https://api.whatsapp.com/se
                         <div style="font-size:14px; font-weight:600; margin-bottom:4px;">${o.name}</div>
                         <div style="font-size:13px; color:#CC0000; margin-bottom:8px;">\u20B9${o.price}</div>
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <button onclick="window.CartStore.updateQuantity('${o.id}', ${o.quantity-1})" style="width:28px; height:28px; border:1px solid #eee; background:white; border-radius:4px; cursor:pointer;">-</button>
-                            <span style="font-size:14px;">${o.quantity}</span>
-                            <button onclick="window.CartStore.updateQuantity('${o.id}', ${o.quantity+1})" style="width:28px; height:28px; border:1px solid #eee; background:white; border-radius:4px; cursor:pointer;">+</button>
+                            <button onclick="window.CartStore.updateQuantity('${o.id}', ${o.quantity-1})" style="width:40px; height:40px; min-width:40px; min-height:40px; border:1px solid #eee; background:white; border-radius:4px; cursor:pointer; font-size:18px;">-</button>
+                            <span style="font-size:14px; min-width:24px; text-align:center;">${o.quantity}</span>
+                            <button onclick="window.CartStore.updateQuantity('${o.id}', ${o.quantity+1})" style="width:40px; height:40px; min-width:40px; min-height:40px; border:1px solid #eee; background:white; border-radius:4px; cursor:pointer; font-size:18px;">+</button>
                         </div>
                     </div>
                     <button onclick="window.CartStore.removeFromCart('${o.id}')" style="background:none; border:none; cursor:pointer; padding:8px; display:flex;" title="Remove item">
@@ -726,7 +726,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                     <p class="hero-subtitle" style="color: #555555; font-size: 16px;">Handmade bouquets delivered to your door in under 1 hour.<br>Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali & more.</p>
                     <p style="font-size: 14px; color: #CC0000; margin-bottom: 28px; font-weight: 500;">Starting from \u20B9200 \xB7 No app needed \xB7 Easy WhatsApp order</p>
                     <div class="hero-buttons">
-                        <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" class="hero-btn-primary" style="background: #CC0000; color: white; border-radius: 8px; padding: 14px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Order on WhatsApp</a>
+                        <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" rel="noopener noreferrer" class="hero-btn-primary" style="background: #CC0000; color: white; border-radius: 8px; padding: 14px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Order on WhatsApp</a>
                         <a href="/catalog" class="hero-btn-secondary" style="background: white; color: #CC0000; border: 2px solid #CC0000; border-radius: 8px; padding: 12px 28px; font-size: 15px; font-weight: 600; display: inline-block; box-sizing: border-box;">Browse Bouquets</a>
                     </div>
                 </div>
@@ -797,7 +797,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                     <div class="area-card"><span class="area-emoji">\u{1F3D7}\uFE0F</span>Crossing Republik</div>
                 </div>
                 <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 20px;">Not sure if we deliver to your area?<br>Just WhatsApp us \u2014 we will reach you!</p>
-                <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" class="hero-btn-primary" style="background: white; color: #CC0000; border-radius: 8px; padding: 14px 32px; font-size: 15px; font-weight: 700; box-shadow: 0 4px 16px rgba(0,0,0,0.2); display: inline-block; transition: all 0.2s ease;">Order on WhatsApp Now</a>
+                <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" rel="noopener noreferrer" class="hero-btn-primary" style="background: white; color: #CC0000; border-radius: 8px; padding: 14px 32px; font-size: 15px; font-weight: 700; box-shadow: 0 4px 16px rgba(0,0,0,0.2); display: inline-block; transition: all 0.2s ease;">Order on WhatsApp Now</a>
             </section>
             
             <!-- Shop by Occasion -->
@@ -842,7 +842,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                         <div class="mt-4" style="border-top: 1px solid #eee; padding-top: 16px;">
                             <p>\u{1F4CD} KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad \u2013 201002</p>
                             <p>\u{1F4DE} +91 9810244455</p>
-                            <p>\u{1F4AC} WhatsApp: <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank">+91 7289996804</a></p>
+                            <p>\u{1F4AC} WhatsApp: <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" rel="noopener noreferrer">+91 7289996804</a></p>
                             <p>\u{1F4F8} <a href="https://www.instagram.com/_rosenpetals_" target="_blank">@_rosenpetals_</a></p>
                         </div>
                     </div>

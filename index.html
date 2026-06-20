@@ -40,8 +40,8 @@
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": "28.6692",
-        "longitude": "77.4538"
+        "latitude": 28.6692,
+        "longitude": 77.4538
       },
       "openingHoursSpecification": [
         {
@@ -66,10 +66,17 @@
       ],
       "currenciesAccepted": "INR",
       "paymentAccepted": "UPI, Bank Transfer",
-      "areaServed": {
-        "@type": "City",
-        "name": "Ghaziabad"
-      }
+      "areaServed": [
+        {"@type": "City", "name": "Ghaziabad"},
+        {"@type": "Place", "name": "Kavi Nagar"},
+        {"@type": "Place", "name": "Raj Nagar"},
+        {"@type": "Place", "name": "Indirapuram"},
+        {"@type": "Place", "name": "Vaishali"},
+        {"@type": "Place", "name": "Vasundhara"},
+        {"@type": "Place", "name": "Mohan Nagar"},
+        {"@type": "Place", "name": "Vijay Nagar"},
+        {"@type": "Place", "name": "Crossing Republik"}
+      ]
     }
     </script>
 
@@ -198,7 +205,7 @@
                 <ul class="nav-list">
                     <li><a href="/" class="nav-link">Home</a></li>
                     <li><a href="/catalog" class="nav-link">Bouquets</a></li>
-                    <li><a href="/catalog?filter=occasions" class="nav-link">Occasions</a></li>
+                    <li><a href="/catalog?filter=All" class="nav-link">Occasions</a></li>
                     <li><a href="/?scrollTo=how-it-works" class="nav-link">How it works</a></li>
                     <li><a href="/?scrollTo=global-footer" class="nav-link">Contact</a></li>
                     <li>
@@ -243,7 +250,7 @@
                 <img src="/Logo.jpg" alt="Rose n Petals" class="footer-logo">
                 <h3>Contact Us</h3>
                 <p><strong>WhatsApp:</strong> <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me."
-                        target="_blank">+91 7289996804</a></p>
+                        target="_blank" rel="noopener noreferrer">+91 7289996804</a></p>
                 <p><strong>Phone:</strong> <a href="tel:+919810244455">+91 9810244455</a></p>
                 <p><strong>Address:</strong> Shop No. 14, KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad, Uttar Pradesh – 201002</p>
                 <p><strong>Hours:</strong> Every day, 8 AM – 10 PM</p>

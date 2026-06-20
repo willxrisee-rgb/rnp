@@ -47,7 +47,7 @@ window.Components = {
     createFilterChips(options, selectedOption) {
         const chipsHTML = options.map(opt => {
             const isActive = opt.toLowerCase() === selectedOption.toLowerCase() ? 'active' : '';
-            return `<button class="filter-chip ${isActive}" data-filter="${opt}">${opt}</button>`;
+            return `<button class="filter-chip ${isActive}" data-filter="${opt}" style="min-height:44px; padding:10px 16px;">${opt}</button>`;
         }).join('');
 
         return `
@@ -325,9 +325,9 @@ window.CartUI = {
                         <div style="font-size:14px; font-weight:600; margin-bottom:4px;">${item.name}</div>
                         <div style="font-size:13px; color:#CC0000; margin-bottom:8px;">₹${item.price}</div>
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <button onclick="window.CartStore.updateQuantity('${item.id}', ${item.quantity - 1})" style="width:28px; height:28px; border:1px solid #eee; background:white; border-radius:4px; cursor:pointer;">-</button>
-                            <span style="font-size:14px;">${item.quantity}</span>
-                            <button onclick="window.CartStore.updateQuantity('${item.id}', ${item.quantity + 1})" style="width:28px; height:28px; border:1px solid #eee; background:white; border-radius:4px; cursor:pointer;">+</button>
+                            <button onclick="window.CartStore.updateQuantity('${item.id}', ${item.quantity - 1})" style="width:40px; height:40px; min-width:40px; min-height:40px; border:1px solid #eee; background:white; border-radius:4px; cursor:pointer; font-size:18px;">-</button>
+                            <span style="font-size:14px; min-width:24px; text-align:center;">${item.quantity}</span>
+                            <button onclick="window.CartStore.updateQuantity('${item.id}', ${item.quantity + 1})" style="width:40px; height:40px; min-width:40px; min-height:40px; border:1px solid #eee; background:white; border-radius:4px; cursor:pointer; font-size:18px;">+</button>
                         </div>
                     </div>
                     <button onclick="window.CartStore.removeFromCart('${item.id}')" style="background:none; border:none; cursor:pointer; padding:8px; display:flex;" title="Remove item">
