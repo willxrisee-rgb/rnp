@@ -223,7 +223,8 @@ function bouquetDetailHTML(p) {
         "shippingDestination": {
           "@type": "DefinedRegion",
           "addressCountry": "IN",
-          "addressRegion": "UP"
+          "addressRegion": "UP",
+          "addressLocality": "Ghaziabad"
         }
       }
     }
@@ -490,10 +491,67 @@ app.get('/policies', (req, res) => {
 function serveLandingPage(res, data) {
   const templatePath = path.join(__dirname, 'landing-page.html');
   let html = fs.readFileSync(templatePath, 'utf8');
+
+  // Build local service schema from page data
+  const localSchema = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": ["LocalBusiness", "Florist"],
+    "@id": "https://rosenpetals.com",
+    "name": "Rose n Petals",
+    "url": data.canonical,
+    "telephone": "+917289996804",
+    "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png",
+    "logo": "https://rosenpetals.com/Logo.jpg",
+    "priceRange": "₹200 - ₹2000",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Shop No. 14, KD Market, Block D, Sector 18, Kavi Nagar",
+      "addressLocality": "Ghaziabad",
+      "addressRegion": "Uttar Pradesh",
+      "postalCode": "201002",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 28.6692,
+      "longitude": 77.4538
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "opens": "08:00",
+        "closes": "22:00"
+      }
+    ],
+    "areaServed": {
+      "@type": "Place",
+      "name": data.areaName
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": data.h1,
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": data.h1,
+            "url": data.canonical
+          },
+          "priceCurrency": "INR",
+          "price": "200",
+          "availability": "https://schema.org/InStock"
+        }
+      ]
+    }
+  });
+
   html = html.replace(/\{\{PAGE_TITLE\}\}/g, data.title);
   html = html.replace(/\{\{META_DESCRIPTION\}\}/g, data.description);
   html = html.replace(/\{\{CANONICAL_URL\}\}/g, data.canonical);
   html = html.replace(/\{\{BREADCRUMB_SCHEMA\}\}/g, data.breadcrumb);
+  html = html.replace(/\{\{LOCAL_SCHEMA\}\}/g, localSchema);
   html = html.replace(/\{\{PAGE_SLUG\}\}/g, data.slug);
   html = html.replace(/\{\{H1\}\}/g, data.h1);
   html = html.replace(/\{\{LEAD_TEXT\}\}/g, data.leadText);
@@ -510,7 +568,8 @@ app.get('/flower-delivery-ghaziabad', (req, res) => {
     slug: 'flower-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery in Ghaziabad","item":"https://rosenpetals.com/flower-delivery-ghaziabad"}]}',
     h1: 'Flower Delivery in Ghaziabad',
-    leadText: 'Rose n Petals delivers fresh handmade bouquets across all of Ghaziabad in under 1 hour. Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali, Vasundhara and more. Orders via WhatsApp — no app needed. Starting from ₹200.'
+    leadText: 'Rose n Petals delivers fresh handmade bouquets across all of Ghaziabad in under 1 hour. Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali, Vasundhara and more. Orders via WhatsApp — no app needed. Starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -522,7 +581,8 @@ app.get('/online-flower-delivery-ghaziabad', (req, res) => {
     slug: 'online-flower-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Online Flower Delivery Ghaziabad","item":"https://rosenpetals.com/online-flower-delivery-ghaziabad"}]}',
     h1: 'Online Flower Delivery in Ghaziabad',
-    leadText: 'Experience fast and reliable online flower delivery in Ghaziabad. Fresh handmade bouquets delivered to your doorstep in under 1 hour, starting from just ₹200.'
+    leadText: 'Experience fast and reliable online flower delivery in Ghaziabad. Fresh handmade bouquets delivered to your doorstep in under 1 hour, starting from just ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -534,7 +594,8 @@ app.get('/bouquet-delivery-ghaziabad', (req, res) => {
     slug: 'bouquet-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Bouquet Delivery Ghaziabad","item":"https://rosenpetals.com/bouquet-delivery-ghaziabad"}]}',
     h1: 'Bouquet Delivery in Ghaziabad',
-    leadText: 'Get beautiful, fresh bouquet delivery in Ghaziabad. Our handmade floral arrangements are delivered in under 1 hour. Starting from ₹200.'
+    leadText: 'Get beautiful, fresh bouquet delivery in Ghaziabad. Our handmade floral arrangements are delivered in under 1 hour. Starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -546,7 +607,8 @@ app.get('/send-flowers-ghaziabad', (req, res) => {
     slug: 'send-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Send Flowers Ghaziabad","item":"https://rosenpetals.com/send-flowers-ghaziabad"}]}',
     h1: 'Send Flowers in Ghaziabad',
-    leadText: 'Send flowers to your loved ones anywhere in Ghaziabad with ease. Delivered fresh in under 1 hour, starting from ₹200. Order via WhatsApp.'
+    leadText: 'Send flowers to your loved ones anywhere in Ghaziabad with ease. Delivered fresh in under 1 hour, starting from ₹200. Order via WhatsApp.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -558,7 +620,8 @@ app.get('/order-flowers-online-ghaziabad', (req, res) => {
     slug: 'order-flowers-online-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Order Flowers Online Ghaziabad","item":"https://rosenpetals.com/order-flowers-online-ghaziabad"}]}',
     h1: 'Order Flowers Online in Ghaziabad',
-    leadText: 'Order flowers online in Ghaziabad seamlessly through WhatsApp. Fresh handmade bouquets delivered in under 1 hour, starting from ₹200.'
+    leadText: 'Order flowers online in Ghaziabad seamlessly through WhatsApp. Fresh handmade bouquets delivered in under 1 hour, starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -570,7 +633,8 @@ app.get('/florist-ghaziabad', (req, res) => {
     slug: 'florist-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Florist in Ghaziabad","item":"https://rosenpetals.com/florist-ghaziabad"}]}',
     h1: 'Local Florist in Ghaziabad',
-    leadText: 'Rose n Petals is your trusted local florist in Ghaziabad. Enjoy fresh handmade bouquets delivered in under 1 hour, starting at ₹200.'
+    leadText: 'Rose n Petals is your trusted local florist in Ghaziabad. Enjoy fresh handmade bouquets delivered in under 1 hour, starting at ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -582,7 +646,8 @@ app.get('/flower-shop-ghaziabad', (req, res) => {
     slug: 'flower-shop-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Shop Ghaziabad","item":"https://rosenpetals.com/flower-shop-ghaziabad"}]}',
     h1: 'Flower Shop in Ghaziabad',
-    leadText: 'Visit the premier flower shop in Ghaziabad or order via WhatsApp. We deliver fresh, stunning bouquets in under 1 hour from ₹200.'
+    leadText: 'Visit the premier flower shop in Ghaziabad or order via WhatsApp. We deliver fresh, stunning bouquets in under 1 hour from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -594,7 +659,8 @@ app.get('/fresh-flowers-ghaziabad', (req, res) => {
     slug: 'fresh-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Fresh Flowers Ghaziabad","item":"https://rosenpetals.com/fresh-flowers-ghaziabad"}]}',
     h1: 'Fresh Flowers in Ghaziabad',
-    leadText: 'Discover the best fresh flowers in Ghaziabad. Delivered in under 1 hour across the city, our handmade bouquets start from ₹200.'
+    leadText: 'Discover the best fresh flowers in Ghaziabad. Delivered in under 1 hour across the city, our handmade bouquets start from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -606,7 +672,8 @@ app.get('/rose-bouquet-delivery-ghaziabad', (req, res) => {
     slug: 'rose-bouquet-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Rose Bouquet Delivery Ghaziabad","item":"https://rosenpetals.com/rose-bouquet-delivery-ghaziabad"}]}',
     h1: 'Rose Bouquet Delivery in Ghaziabad',
-    leadText: 'Specialized rose bouquet delivery in Ghaziabad. Perfect for any occasion, delivered fresh in under 1 hour. Prices starting at ₹200.'
+    leadText: 'Specialized rose bouquet delivery in Ghaziabad. Perfect for any occasion, delivered fresh in under 1 hour. Prices starting at ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -618,7 +685,8 @@ app.get('/mixed-flower-bouquet-ghaziabad', (req, res) => {
     slug: 'mixed-flower-bouquet-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Mixed Flower Bouquet Ghaziabad","item":"https://rosenpetals.com/mixed-flower-bouquet-ghaziabad"}]}',
     h1: 'Mixed Flower Bouquet in Ghaziabad',
-    leadText: 'Brighten someone\'s day with a vibrant mixed flower bouquet in Ghaziabad. Delivered quickly in under 1 hour, starting from ₹200.'
+    leadText: 'Brighten someone\'s day with a vibrant mixed flower bouquet in Ghaziabad. Delivered quickly in under 1 hour, starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -632,7 +700,8 @@ app.get('/flower-delivery-indirapuram', (req, res) => {
     slug: 'flower-delivery-indirapuram',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery Ghaziabad","item":"https://rosenpetals.com/flower-delivery-ghaziabad"},{"@type":"ListItem","position":3,"name":"Flower Delivery Indirapuram","item":"https://rosenpetals.com/flower-delivery-indirapuram"}]}',
     h1: 'Flower Delivery in Indirapuram, Ghaziabad',
-    leadText: 'Rose n Petals delivers fresh bouquets to Indirapuram in under 1 hour. We cover all sectors and societies in Indirapuram. Handmade bouquets from ₹200. Order on WhatsApp.'
+    leadText: 'Rose n Petals delivers fresh bouquets to Indirapuram in under 1 hour. We cover all sectors and societies in Indirapuram. Handmade bouquets from ₹200. Order on WhatsApp.',
+    areaName: 'Indirapuram'
   });
 });
 
@@ -644,7 +713,8 @@ app.get('/flower-delivery-vaishali-ghaziabad', (req, res) => {
     slug: 'flower-delivery-vaishali-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery Ghaziabad","item":"https://rosenpetals.com/flower-delivery-ghaziabad"},{"@type":"ListItem","position":3,"name":"Flower Delivery Vaishali","item":"https://rosenpetals.com/flower-delivery-vaishali-ghaziabad"}]}',
     h1: 'Flower Delivery in Vaishali, Ghaziabad',
-    leadText: 'Get fresh flowers delivered to your door in Vaishali, Ghaziabad in under 1 hour. Rose n Petals serves all of Vaishali Sector 1, 2, 3, 4, 5 and 6. Bouquets from ₹200.'
+    leadText: 'Get fresh flowers delivered to your door in Vaishali, Ghaziabad in under 1 hour. Rose n Petals serves all of Vaishali Sector 1, 2, 3, 4, 5 and 6. Bouquets from ₹200.',
+    areaName: 'Vaishali'
   });
 });
 
@@ -656,7 +726,8 @@ app.get('/flower-delivery-vasundhara-ghaziabad', (req, res) => {
     slug: 'flower-delivery-vasundhara-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery Ghaziabad","item":"https://rosenpetals.com/flower-delivery-ghaziabad"},{"@type":"ListItem","position":3,"name":"Flower Delivery Vasundhara","item":"https://rosenpetals.com/flower-delivery-vasundhara-ghaziabad"}]}',
     h1: 'Flower Delivery in Vasundhara, Ghaziabad',
-    leadText: 'Rose n Petals delivers fresh bouquets to Vasundhara in under 1 hour. We serve all sectors in Vasundhara. Handmade bouquets start from ₹200.'
+    leadText: 'Rose n Petals delivers fresh bouquets to Vasundhara in under 1 hour. We serve all sectors in Vasundhara. Handmade bouquets start from ₹200.',
+    areaName: 'Vasundhara'
   });
 });
 
@@ -668,7 +739,8 @@ app.get('/flower-delivery-raj-nagar-ghaziabad', (req, res) => {
     slug: 'flower-delivery-raj-nagar-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery Ghaziabad","item":"https://rosenpetals.com/flower-delivery-ghaziabad"},{"@type":"ListItem","position":3,"name":"Flower Delivery Raj Nagar","item":"https://rosenpetals.com/flower-delivery-raj-nagar-ghaziabad"}]}',
     h1: 'Flower Delivery in Raj Nagar, Ghaziabad',
-    leadText: 'Fresh bouquet delivery in Raj Nagar and Raj Nagar Extension, Ghaziabad. Delivered in under 1 hour by Rose n Petals. Handmade bouquets starting from ₹200.'
+    leadText: 'Fresh bouquet delivery in Raj Nagar and Raj Nagar Extension, Ghaziabad. Delivered in under 1 hour by Rose n Petals. Handmade bouquets starting from ₹200.',
+    areaName: 'Raj Nagar'
   });
 });
 
@@ -680,7 +752,8 @@ app.get('/flower-delivery-kavi-nagar-ghaziabad', (req, res) => {
     slug: 'flower-delivery-kavi-nagar-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery Ghaziabad","item":"https://rosenpetals.com/flower-delivery-ghaziabad"},{"@type":"ListItem","position":3,"name":"Flower Delivery Kavi Nagar","item":"https://rosenpetals.com/flower-delivery-kavi-nagar-ghaziabad"}]}',
     h1: 'Flower Delivery in Kavi Nagar, Ghaziabad',
-    leadText: 'Rose n Petals is your local florist in Kavi Nagar, Ghaziabad. We are based in KD Market, Sector 18, Kavi Nagar and deliver fresh handmade bouquets starting from ₹200.'
+    leadText: 'Rose n Petals is your local florist in Kavi Nagar, Ghaziabad. We are based in KD Market, Sector 18, Kavi Nagar and deliver fresh handmade bouquets starting from ₹200.',
+    areaName: 'Kavi Nagar'
   });
 });
 
@@ -692,7 +765,8 @@ app.get('/flower-delivery-mohan-nagar-ghaziabad', (req, res) => {
     slug: 'flower-delivery-mohan-nagar-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery Ghaziabad","item":"https://rosenpetals.com/flower-delivery-ghaziabad"},{"@type":"ListItem","position":3,"name":"Flower Delivery Mohan Nagar","item":"https://rosenpetals.com/flower-delivery-mohan-nagar-ghaziabad"}]}',
     h1: 'Flower Delivery in Mohan Nagar, Ghaziabad',
-    leadText: 'Send fresh flowers to Mohan Nagar, Ghaziabad with our quick 1-hour delivery service. Handmade beautiful bouquets starting from ₹200.'
+    leadText: 'Send fresh flowers to Mohan Nagar, Ghaziabad with our quick 1-hour delivery service. Handmade beautiful bouquets starting from ₹200.',
+    areaName: 'Mohan Nagar'
   });
 });
 
@@ -704,7 +778,8 @@ app.get('/flower-delivery-vijay-nagar-ghaziabad', (req, res) => {
     slug: 'flower-delivery-vijay-nagar-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery Ghaziabad","item":"https://rosenpetals.com/flower-delivery-ghaziabad"},{"@type":"ListItem","position":3,"name":"Flower Delivery Vijay Nagar","item":"https://rosenpetals.com/flower-delivery-vijay-nagar-ghaziabad"}]}',
     h1: 'Flower Delivery in Vijay Nagar, Ghaziabad',
-    leadText: 'Reliable flower delivery in Vijay Nagar, Ghaziabad. Get your fresh handmade bouquets delivered in under 1 hour, starting from just ₹200.'
+    leadText: 'Reliable flower delivery in Vijay Nagar, Ghaziabad. Get your fresh handmade bouquets delivered in under 1 hour, starting from just ₹200.',
+    areaName: 'Vijay Nagar'
   });
 });
 
@@ -716,7 +791,8 @@ app.get('/flower-delivery-crossing-republik-ghaziabad', (req, res) => {
     slug: 'flower-delivery-crossing-republik-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery Ghaziabad","item":"https://rosenpetals.com/flower-delivery-ghaziabad"},{"@type":"ListItem","position":3,"name":"Flower Delivery Crossing Republik","item":"https://rosenpetals.com/flower-delivery-crossing-republik-ghaziabad"}]}',
     h1: 'Flower Delivery in Crossing Republik, Ghaziabad',
-    leadText: 'Fast and fresh flower delivery in Crossing Republik, Ghaziabad. Delight your loved ones in under 1 hour with bouquets starting from ₹200.'
+    leadText: 'Fast and fresh flower delivery in Crossing Republik, Ghaziabad. Delight your loved ones in under 1 hour with bouquets starting from ₹200.',
+    areaName: 'Crossing Republik'
   });
 });
 
@@ -730,7 +806,8 @@ app.get('/same-day-flower-delivery-ghaziabad', (req, res) => {
     slug: 'same-day-flower-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Same Day Flower Delivery Ghaziabad","item":"https://rosenpetals.com/same-day-flower-delivery-ghaziabad"}]}',
     h1: 'Same Day Flower Delivery in Ghaziabad',
-    leadText: 'Need flowers delivered today in Ghaziabad? We offer same-day delivery in under 1 hour for orders placed before 9 PM. WhatsApp us your order — bouquets start from ₹200.'
+    leadText: 'Need flowers delivered today in Ghaziabad? We offer same-day delivery in under 1 hour for orders placed before 9 PM. WhatsApp us your order — bouquets start from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -742,7 +819,8 @@ app.get('/express-flower-delivery-ghaziabad', (req, res) => {
     slug: 'express-flower-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Express Flower Delivery Ghaziabad","item":"https://rosenpetals.com/express-flower-delivery-ghaziabad"}]}',
     h1: 'Express Flower Delivery in Ghaziabad',
-    leadText: 'In a rush? Choose our express flower delivery in Ghaziabad. Fresh bouquets delivered in under 1 hour, starting from ₹200.'
+    leadText: 'In a rush? Choose our express flower delivery in Ghaziabad. Fresh bouquets delivered in under 1 hour, starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -754,7 +832,8 @@ app.get('/2-hour-flower-delivery-ghaziabad', (req, res) => {
     slug: '2-hour-flower-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"2 Hour Flower Delivery Ghaziabad","item":"https://rosenpetals.com/2-hour-flower-delivery-ghaziabad"}]}',
     h1: '2-Hour Flower Delivery in Ghaziabad',
-    leadText: 'Guaranteed 2-hour flower delivery in Ghaziabad, usually arriving in under 1 hour. Fresh handmade bouquets starting from ₹200.'
+    leadText: 'Guaranteed 2-hour flower delivery in Ghaziabad, usually arriving in under 1 hour. Fresh handmade bouquets starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -766,7 +845,8 @@ app.get('/midnight-flower-delivery-ghaziabad', (req, res) => {
     slug: 'midnight-flower-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Midnight Flower Delivery Ghaziabad","item":"https://rosenpetals.com/midnight-flower-delivery-ghaziabad"}]}',
     h1: 'Midnight Flower Delivery in Ghaziabad',
-    leadText: 'Surprise them at the stroke of midnight with our midnight flower delivery in Ghaziabad. Fresh bouquets from ₹200. Order now on WhatsApp.'
+    leadText: 'Surprise them at the stroke of midnight with our midnight flower delivery in Ghaziabad. Fresh bouquets from ₹200. Order now on WhatsApp.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -778,7 +858,8 @@ app.get('/urgent-flower-delivery-ghaziabad', (req, res) => {
     slug: 'urgent-flower-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Urgent Flower Delivery Ghaziabad","item":"https://rosenpetals.com/urgent-flower-delivery-ghaziabad"}]}',
     h1: 'Urgent Flower Delivery in Ghaziabad',
-    leadText: 'Require flowers right now? Use our urgent flower delivery in Ghaziabad. Delivered fresh in under 1 hour, starting from ₹200.'
+    leadText: 'Require flowers right now? Use our urgent flower delivery in Ghaziabad. Delivered fresh in under 1 hour, starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -790,7 +871,8 @@ app.get('/last-minute-flower-delivery-ghaziabad', (req, res) => {
     slug: 'last-minute-flower-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Last Minute Flower Delivery Ghaziabad","item":"https://rosenpetals.com/last-minute-flower-delivery-ghaziabad"}]}',
     h1: 'Last Minute Flower Delivery in Ghaziabad',
-    leadText: 'Forgot an important date? Try our last minute flower delivery in Ghaziabad. Fresh handmade bouquets delivered in under 1 hour, from ₹200.'
+    leadText: 'Forgot an important date? Try our last minute flower delivery in Ghaziabad. Fresh handmade bouquets delivered in under 1 hour, from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -802,7 +884,8 @@ app.get('/flower-delivery-today-ghaziabad', (req, res) => {
     slug: 'flower-delivery-today-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Flower Delivery Today Ghaziabad","item":"https://rosenpetals.com/flower-delivery-today-ghaziabad"}]}',
     h1: 'Flower Delivery Today in Ghaziabad',
-    leadText: 'Looking for flower delivery today in Ghaziabad? We deliver fresh, stunning bouquets in under 1 hour. Prices start from ₹200.'
+    leadText: 'Looking for flower delivery today in Ghaziabad? We deliver fresh, stunning bouquets in under 1 hour. Prices start from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -814,7 +897,8 @@ app.get('/emergency-flower-delivery-ghaziabad', (req, res) => {
     slug: 'emergency-flower-delivery-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Emergency Flower Delivery Ghaziabad","item":"https://rosenpetals.com/emergency-flower-delivery-ghaziabad"}]}',
     h1: 'Emergency Flower Delivery in Ghaziabad',
-    leadText: 'For urgent needs, count on our emergency flower delivery in Ghaziabad. Speedy delivery in under 1 hour for bouquets starting at ₹200.'
+    leadText: 'For urgent needs, count on our emergency flower delivery in Ghaziabad. Speedy delivery in under 1 hour for bouquets starting at ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -828,7 +912,8 @@ app.get('/birthday-flowers-ghaziabad', (req, res) => {
     slug: 'birthday-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Birthday Flowers Ghaziabad","item":"https://rosenpetals.com/birthday-flowers-ghaziabad"}]}',
     h1: 'Birthday Flowers in Ghaziabad',
-    leadText: 'Surprise someone special with fresh birthday flowers delivered in Ghaziabad in under 1 hour. Handmade birthday bouquets starting from ₹200. Order on WhatsApp — fast, simple, and personal.'
+    leadText: 'Surprise someone special with fresh birthday flowers delivered in Ghaziabad in under 1 hour. Handmade birthday bouquets starting from ₹200. Order on WhatsApp — fast, simple, and personal.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -840,7 +925,8 @@ app.get('/anniversary-flowers-ghaziabad', (req, res) => {
     slug: 'anniversary-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Anniversary Flowers Ghaziabad","item":"https://rosenpetals.com/anniversary-flowers-ghaziabad"}]}',
     h1: 'Anniversary Flowers in Ghaziabad',
-    leadText: 'Celebrate your anniversary with beautiful fresh flowers delivered anywhere in Ghaziabad in under 1 hour. Romantic bouquets starting from ₹200. WhatsApp us to order.'
+    leadText: 'Celebrate your anniversary with beautiful fresh flowers delivered anywhere in Ghaziabad in under 1 hour. Romantic bouquets starting from ₹200. WhatsApp us to order.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -852,7 +938,8 @@ app.get('/get-well-soon-flowers-ghaziabad', (req, res) => {
     slug: 'get-well-soon-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Get Well Soon Flowers Ghaziabad","item":"https://rosenpetals.com/get-well-soon-flowers-ghaziabad"}]}',
     h1: 'Get Well Soon Flowers in Ghaziabad',
-    leadText: 'Wish a speedy recovery with get well soon flowers in Ghaziabad. Delivered fresh in under 1 hour, beautiful bouquets starting from ₹200.'
+    leadText: 'Wish a speedy recovery with get well soon flowers in Ghaziabad. Delivered fresh in under 1 hour, beautiful bouquets starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -864,7 +951,8 @@ app.get('/congratulations-flowers-ghaziabad', (req, res) => {
     slug: 'congratulations-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Congratulations Flowers Ghaziabad","item":"https://rosenpetals.com/congratulations-flowers-ghaziabad"}]}',
     h1: 'Congratulations Flowers in Ghaziabad',
-    leadText: 'Celebrate achievements with our congratulations flowers in Ghaziabad. Handmade fresh bouquets delivered in under 1 hour from ₹200.'
+    leadText: 'Celebrate achievements with our congratulations flowers in Ghaziabad. Handmade fresh bouquets delivered in under 1 hour from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -876,7 +964,8 @@ app.get('/sorry-flowers-ghaziabad', (req, res) => {
     slug: 'sorry-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Sorry Flowers Ghaziabad","item":"https://rosenpetals.com/sorry-flowers-ghaziabad"}]}',
     h1: 'Sorry Flowers in Ghaziabad',
-    leadText: 'Express your sincere apologies with sorry flowers in Ghaziabad. Delivered swiftly in under 1 hour. Thoughtful bouquets starting at ₹200.'
+    leadText: 'Express your sincere apologies with sorry flowers in Ghaziabad. Delivered swiftly in under 1 hour. Thoughtful bouquets starting at ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -888,7 +977,8 @@ app.get('/romantic-flowers-ghaziabad', (req, res) => {
     slug: 'romantic-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Romantic Flowers Ghaziabad","item":"https://rosenpetals.com/romantic-flowers-ghaziabad"}]}',
     h1: 'Romantic Flowers in Ghaziabad',
-    leadText: 'Express your love with romantic flowers in Ghaziabad. Beautiful, fresh red roses delivered in under 1 hour, starting from ₹200.'
+    leadText: 'Express your love with romantic flowers in Ghaziabad. Beautiful, fresh red roses delivered in under 1 hour, starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -900,7 +990,8 @@ app.get('/new-baby-flowers-ghaziabad', (req, res) => {
     slug: 'new-baby-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"New Baby Flowers Ghaziabad","item":"https://rosenpetals.com/new-baby-flowers-ghaziabad"}]}',
     h1: 'New Baby Flowers in Ghaziabad',
-    leadText: 'Welcome the little one with new baby flowers in Ghaziabad. Fresh and lovely bouquets delivered in under 1 hour from ₹200.'
+    leadText: 'Welcome the little one with new baby flowers in Ghaziabad. Fresh and lovely bouquets delivered in under 1 hour from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -912,7 +1003,8 @@ app.get('/housewarming-flowers-ghaziabad', (req, res) => {
     slug: 'housewarming-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Housewarming Flowers Ghaziabad","item":"https://rosenpetals.com/housewarming-flowers-ghaziabad"}]}',
     h1: 'Housewarming Flowers in Ghaziabad',
-    leadText: 'Congratulate them on their new home with housewarming flowers in Ghaziabad. Delivered fresh in under 1 hour, starting from ₹200.'
+    leadText: 'Congratulate them on their new home with housewarming flowers in Ghaziabad. Delivered fresh in under 1 hour, starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -924,7 +1016,8 @@ app.get('/sympathy-flowers-ghaziabad', (req, res) => {
     slug: 'sympathy-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Sympathy Flowers Ghaziabad","item":"https://rosenpetals.com/sympathy-flowers-ghaziabad"}]}',
     h1: 'Sympathy Flowers in Ghaziabad',
-    leadText: 'Express your condolences with sympathy flowers in Ghaziabad. Respectful, fresh bouquets delivered in under 1 hour, starting from ₹200.'
+    leadText: 'Express your condolences with sympathy flowers in Ghaziabad. Respectful, fresh bouquets delivered in under 1 hour, starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
@@ -936,7 +1029,8 @@ app.get('/diwali-flowers-ghaziabad', (req, res) => {
     slug: 'diwali-flowers-ghaziabad',
     breadcrumb: '{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://rosenpetals.com"},{"@type":"ListItem","position":2,"name":"Diwali Flowers Ghaziabad","item":"https://rosenpetals.com/diwali-flowers-ghaziabad"}]}',
     h1: 'Diwali Flowers in Ghaziabad',
-    leadText: 'Light up their festive spirit with Diwali flowers in Ghaziabad. Vibrant, fresh bouquets delivered in under 1 hour, starting from ₹200.'
+    leadText: 'Light up their festive spirit with Diwali flowers in Ghaziabad. Vibrant, fresh bouquets delivered in under 1 hour, starting from ₹200.',
+    areaName: 'Ghaziabad'
   });
 });
 
