@@ -140,7 +140,7 @@ window.Pages = {
                             <p>📍 KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad – 201002</p>
                             <p>📞 +91 9810244455</p>
                             <p>💬 WhatsApp: <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" rel="noopener noreferrer">+91 7289996804</a></p>
-                            <p>📸 <a href="https://www.instagram.com/_rosenpetals_" target="_blank">@_rosenpetals_</a></p>
+                            <p>📸 <a href="https://www.instagram.com/_rosenpetals_" target="_blank" rel="noopener noreferrer">@_rosenpetals_</a></p>
                         </div>
                     </div>
                 </div>
@@ -375,6 +375,7 @@ window.Pages = {
             "Hi, I want to order a bouquet for delivery in Ghaziabad."
         )}"
                       target="_blank"
+                      rel="noopener noreferrer"
                       class="btn btn-primary mt-3"
                     >
                       Order on WhatsApp
@@ -460,6 +461,7 @@ window.Pages = {
             "Hi, I want to order a bouquet for delivery in Ghaziabad."
         )}"
                       target="_blank"
+                      rel="noopener noreferrer"
                       class="btn btn-primary btn-lg mt-3"
                     >
                       Order on WhatsApp

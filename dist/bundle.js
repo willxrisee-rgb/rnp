@@ -843,7 +843,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                             <p>\u{1F4CD} KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad \u2013 201002</p>
                             <p>\u{1F4DE} +91 9810244455</p>
                             <p>\u{1F4AC} WhatsApp: <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" rel="noopener noreferrer">+91 7289996804</a></p>
-                            <p>\u{1F4F8} <a href="https://www.instagram.com/_rosenpetals_" target="_blank">@_rosenpetals_</a></p>
+                            <p>\u{1F4F8} <a href="https://www.instagram.com/_rosenpetals_" target="_blank" rel="noopener noreferrer">@_rosenpetals_</a></p>
                         </div>
                     </div>
                 </div>
@@ -1003,6 +1003,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                     <a
                       href="https://api.whatsapp.com/send?phone=917289996804&text=${encodeURIComponent("Hi, I want to order a bouquet for delivery in Ghaziabad.")}"
                       target="_blank"
+                      rel="noopener noreferrer"
                       class="btn btn-primary mt-3"
                     >
                       Order on WhatsApp
@@ -1086,6 +1087,7 @@ Coupon: ${this.couponApplied.code} (-\u20B9${e})`);let i=r-e;window._pendingCart
                     <a
                       href="https://api.whatsapp.com/send?phone=917289996804&text=${encodeURIComponent("Hi, I want to order a bouquet for delivery in Ghaziabad.")}"
                       target="_blank"
+                      rel="noopener noreferrer"
                       class="btn btn-primary btn-lg mt-3"
                     >
                       Order on WhatsApp
