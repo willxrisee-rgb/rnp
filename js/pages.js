@@ -354,7 +354,7 @@ window.Pages = {
                 const filterValue = e.target.getAttribute('data-filter');
                 const newUrl = baseUrl + encodeURIComponent(filterValue);
                 window.history.pushState(null, '', newUrl);
-                App.handleRouting();
+                if (window.App) window.App.handleRouting();
             });
         });
     },
