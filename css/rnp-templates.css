@@ -630,3 +630,11 @@ details[open] .rnp-faqs__q::after { content: '−'; }
   margin-top: 10px;
   padding-top: 4px;
 }
+
+.navbar-logo {
+  object-fit: contain;
+}
+
+.footer-logo {
+  object-fit: contain;
+}
