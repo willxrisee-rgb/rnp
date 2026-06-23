@@ -40,36 +40,36 @@ window.UrgencyServiceRoutes = {
         if (!data) {
             const fallbackTitle = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
             data = {
-                pageTitle:       `${fallbackTitle} | Rose n Petals`,
-                mainKeyword:     fallbackTitle,
-                urgencyType:     'express',
+                pageTitle: `${fallbackTitle} | Rose n Petals`,
+                mainKeyword: fallbackTitle,
+                urgencyType: 'express',
                 deliveryPromise: 'Order Now → Delivered Today',
-                cutoffTime:      'Order before 8 PM for same-day delivery in Ghaziabad',
-                guaranteeText:   'We confirm your slot on WhatsApp before we start.',
-                headline:        `${fallbackTitle} – Fast & Fresh`,
-                subheadline:     'Fresh handmade bouquets delivered fast across Ghaziabad. WhatsApp us to place your order now.',
+                cutoffTime: 'Order before 8 PM for same-day delivery in Ghaziabad',
+                guaranteeText: 'We confirm your slot on WhatsApp before we start.',
+                headline: `${fallbackTitle} – Fast & Fresh`,
+                subheadline: 'Fresh handmade bouquets delivered fast across Ghaziabad. WhatsApp us to place your order now.',
                 benefits: [
-                    { icon: '🌹', title: 'Fresh & Handmade',   text: 'Every bouquet made to order' },
-                    { icon: '⚡', title: 'Priority Dispatch',  text: 'Urgent orders handled first' },
-                    { icon: '💰', title: 'Starting ₹200',      text: 'No express surcharge' },
-                    { icon: '📲', title: 'WhatsApp Booking',   text: 'Slot confirmed in 10 minutes' },
+                    { icon: '🌹', title: 'Fresh & Handmade', text: 'Every bouquet made to order' },
+                    { icon: '⚡', title: 'Priority Dispatch', text: 'Urgent orders handled first' },
+                    { icon: '💰', title: 'Starting ₹200', text: 'No express surcharge' },
+                    { icon: '📲', title: 'WhatsApp Booking', text: 'Slot confirmed in 10 minutes' },
                 ],
                 speedProof: [
-                    { icon: '⚡', stat: 'Under 1 hr', label: 'Delivery from confirmation',     note: 'Across Ghaziabad' },
-                    { icon: '📦', stat: '8 PM',    label: 'Same-day cut-off',           note: '7 days a week' },
-                    { icon: '✅', stat: '10 min',  label: 'Slot confirmation time',     note: 'Via WhatsApp' },
+                    { icon: '⚡', stat: 'Under 1 hr', label: 'Delivery from confirmation', note: 'Across Ghaziabad' },
+                    { icon: '📦', stat: '8 PM', label: 'Same-day cut-off', note: '7 days a week' },
+                    { icon: '✅', stat: '10 min', label: 'Slot confirmation time', note: 'Via WhatsApp' },
                 ],
                 areas: ['Kavi Nagar', 'Raj Nagar', 'Indirapuram', 'Vaishali', 'Vasundhara', 'Mohan Nagar'],
                 steps: [
-                    { number: '01', title: 'WhatsApp Us',           text: 'Share your bouquet choice and delivery address.',              time: 'Takes 2 minutes' },
-                    { number: '02', title: 'Slot Confirmed',         text: 'We confirm your delivery slot on WhatsApp.',                  time: 'Within 10 minutes' },
+                    { number: '01', title: 'WhatsApp Us', text: 'Share your bouquet choice and delivery address.', time: 'Takes 2 minutes' },
+                    { number: '02', title: 'Slot Confirmed', text: 'We confirm your delivery slot on WhatsApp.', time: 'Within 10 minutes' },
                     { number: '03', title: 'Delivered to Your Door', text: 'Fresh bouquet delivered same day to your Ghaziabad address in under 1 hour.', time: 'Under 1 hour from confirmation' },
                 ],
                 faqs: [],
-                ctaText:         'Order on WhatsApp Now',
-                whatsappNumber:  '917289996804',
+                ctaText: 'Order on WhatsApp Now',
+                whatsappNumber: '917289996804',
                 whatsappMessage: `Hi! I need ${fallbackTitle} — please help.`,
-                relatedUrgency:  [],
+                relatedUrgency: [],
             };
         }
 
@@ -145,10 +145,18 @@ window.UrgencyServiceRoutes = {
 
         // ── FAQs ──────────────────────────────────────────────────────────────
         let faqsHtml = '';
-        if (data.faqs && data.faqs.length > 0) {
+        if (data.whyContent || (data.faqs && data.faqs.length > 0)) {
             faqsHtml = `
+                ${data.whyContent ? `
+                <section class="rnp-section lp-why-section" aria-labelledby="why-h2">
+                    <div class="lp-content-inner">
+                        ${data.whyContent}
+                    </div>
+                </section>
+                ` : ''}
+                ${data.faqs && data.faqs.length > 0 ? `
                 <section class="rnp-section rnp-faqs" aria-labelledby="faqs-h2">
-                    <h2 id="faqs-h2" class="rnp-section__h2">Express Delivery — Common Questions</h2>
+                    <h2 id="faqs-h2" class="rnp-section__h2">Common Questions</h2>
                     <dl class="rnp-faqs__list">
                         ${data.faqs.map(faq => `
                             <details class="rnp-faqs__item">
@@ -158,6 +166,7 @@ window.UrgencyServiceRoutes = {
                         `).join('')}
                     </dl>
                 </section>
+                ` : ''}
             `;
         }
 
@@ -210,9 +219,9 @@ window.UrgencyServiceRoutes = {
                     </div>
                     <div class="rnp-hero__media" aria-hidden="${heroImageUrl ? 'false' : 'true'}">
                         ${heroImageUrl
-                            ? `<img class="rnp-hero__img" src="${heroImageUrl}" alt="${heroImageAlt}" loading="lazy">`
-                            : `<div class="rnp-placeholder rnp-placeholder--hero">🌸 Fresh Bouquets</div>`
-                        }
+                ? `<img class="rnp-hero__img" src="${heroImageUrl}" alt="${heroImageAlt}" loading="lazy">`
+                : `<div class="rnp-placeholder rnp-placeholder--hero">🌸 Fresh Bouquets</div>`
+            }
                     </div>
                 </section>
 
