@@ -561,3 +561,72 @@ details[open] .rnp-faqs__q::after { content: '−'; }
   border-color: var(--rnp-pink);
 }
 
+.lp-why-section,
+.lp-faq-section {
+  padding: 52px 20px;
+  background: #fff;
+}
+
+.lp-content-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.lp-content-inner h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.lp-content-inner h3 {
+  font-size: 19px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-top: 32px;
+  margin-bottom: 10px;
+}
+
+.lp-content-inner p {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.75;
+  margin-bottom: 16px;
+}
+
+.lp-content-inner details {
+  border-bottom: 1px solid #efefef;
+  padding: 16px 0;
+}
+
+.lp-content-inner details:first-of-type {
+  border-top: 1px solid #efefef;
+}
+
+.lp-content-inner summary {
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  color: #1a1a1a;
+  list-style: none;
+  padding-right: 24px;
+  position: relative;
+}
+
+.lp-content-inner summary::after {
+  content: '+';
+  position: absolute;
+  right: 0;
+  font-size: 18px;
+  color: #CC0000;
+}
+
+.lp-content-inner details[open] summary::after {
+  content: '-';
+}
+
+.lp-content-inner details p {
+  margin-top: 10px;
+  padding-top: 4px;
+}

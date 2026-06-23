@@ -556,6 +556,8 @@ function serveLandingPage(res, data) {
   html = html.replace(/\{\{PAGE_SLUG\}\}/g, data.slug);
   html = html.replace(/\{\{H1\}\}/g, data.h1);
   html = html.replace(/\{\{LEAD_TEXT\}\}/g, data.leadText);
+  html = html.replace(/\{\{WHY_CONTENT\}\}/g, data.whyContent || '');
+  html = html.replace(/\{\{FAQ_CONTENT\}\}/g, data.faqContent || '');
   res.send(html);
 }
 
