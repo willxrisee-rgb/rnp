@@ -502,6 +502,7 @@ function serveLandingPage(res, data) {
     "telephone": "+917289996804",
     "image": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png",
     "logo": "https://rosenpetals.com/Logo.jpg",
+    "foundingDate": "1999",
     "priceRange": "₹200 - ₹2000",
     "address": {
       "@type": "PostalAddress",
@@ -1107,7 +1108,7 @@ app.get('/', async (req, res) => {
       ssrContent,
       products,
       'Flower Delivery in Ghaziabad | Fresh Bouquets — Rose n Petals',
-      'Order fresh flower bouquets in Ghaziabad with 1-hour delivery. Serving Kavi Nagar, Raj Nagar, Indirapuram, Vaishali and more. Starting Rs.200. Order on WhatsApp +91 7289996804.',
+      'Ghaziabad\'s trusted florist since 1999. Fresh handmade bouquets delivered in 1 hour to Kavi Nagar, Indirapuram, Vaishali and more. Starting Rs.200. WhatsApp +91 7289996804.',
       'https://rosenpetals.com'
     );
     res.send(html);
