@@ -168,14 +168,29 @@ window.LocalAreaRoutes = {
                     </ol>
                 </section>
 
+                <!-- ── WHY CONTENT ───────────────────────────────────────── -->
+                ${data.whyContent ? `
+                <section class="rnp-section lp-why-section" aria-labelledby="why-h2">
+                    <div class="lp-content-inner">
+                        ${data.whyContent}
+                    </div>
+                </section>
+                ` : ''}
+
                 <!-- ── FAQs ──────────────────────────────────────────────── -->
                 <section class="rnp-section rnp-faqs" aria-labelledby="faqs-h2">
+                    ${data.faqContent ? `
+                    <div class="lp-content-inner">
+                        ${data.faqContent}
+                    </div>
+                    ` : `
                     <h2 id="faqs-h2" class="rnp-section__h2">
                         FAQs — Flower Delivery in ${data.areaName}
                     </h2>
                     <dl class="rnp-faqs__list">
                         ${faqsHtml}
                     </dl>
+                    `}
                 </section>
 
                 <!-- ── NEARBY AREAS ──────────────────────────────────────── -->
