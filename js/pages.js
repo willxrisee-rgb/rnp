@@ -125,7 +125,7 @@ window.Pages = {
                 ${Components.createSteps(stepsData)}
             </section>
             
-            <!-- About Us -->
+            <!-- About Rose n Petals — Since 1999 -->
             <section class="section section-light">
                 <div class="container">
                     <div class="about-card p-4" style="background: white; padding: 32px;">
