@@ -130,17 +130,30 @@ window.Pages = {
                 <div class="container">
                     <div class="about-card p-4" style="background: white; padding: 32px;">
                         <h2 class="section-title text-left mb-4" style="text-align: left;">About Rose n Petals</h2>
-                        <p>Rose n Petals is a local flower shop based in Kavi Nagar, Ghaziabad — run with love and a genuine passion for fresh flowers.</p>
-                        <p>We are not a big national brand with a call centre. We are your neighbourhood florist. Every bouquet we make is handcrafted fresh — not pre-packaged, not mass-produced. When you order from us, a real person reads your WhatsApp message, makes your bouquet, and sends it out to you in under 1 hour.</p>
-                        <p>Our shop is located at KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad. We deliver across all of Ghaziabad — from Indirapuram and Vaishali to Raj Nagar, Vasundhara, Crossing Republik, and every neighbourhood in between.</p>
-                        <p>Whether it is a last-minute birthday bouquet, a romantic anniversary surprise, a farewell for a friend, or simply a bunch of flowers to brighten someone's day — we are here, open from 8 AM to 10 PM, every single day.</p>
-                        <p>Bouquets start at ₹200. Orders are placed on WhatsApp — simple, fast, and personal.</p>
-                        
+
+                        <h3 style="font-size:19px;font-weight:600;color:#1a1a1a;margin-bottom:12px;">Ghaziabad's Neighbourhood Florist — Since 1999</h3>
+                        <p style="font-size:16px;color:#444;line-height:1.75;margin-bottom:16px;">Rose n Petals has been handcrafting flower bouquets in Ghaziabad since 1999. What started as a small flower shop in Kavi Nagar has grown into one of the most trusted names for flower delivery across Ghaziabad and the NCR. We are not a website that outsources your order to whoever is available. We are a family-run shop — and every bouquet that leaves our hands has been made by us, with flowers we picked that morning.</p>
+
+                        <h3 style="font-size:19px;font-weight:600;color:#1a1a1a;margin-top:28px;margin-bottom:12px;">Fresh Flowers, Every Single Day</h3>
+                        <p style="font-size:16px;color:#444;line-height:1.75;margin-bottom:16px;">We source our flowers daily from wholesale flower markets. Roses, lilies, sunflowers, carnations, gerberas — whatever is freshest that morning is what goes into your bouquet. We never use flowers that are more than 24 hours old in our arrangements. This is why customers who order from us come back — because the flowers last, and they look exactly as good in person as they do in the photos.</p>
+
+                        <h3 style="font-size:19px;font-weight:600;color:#1a1a1a;margin-top:28px;margin-bottom:12px;">Delivery Across All of Ghaziabad in Under 1 Hour</h3>
+                        <p style="font-size:16px;color:#444;line-height:1.75;margin-bottom:16px;">We deliver to every part of Ghaziabad — Kavi Nagar, Raj Nagar, Indirapuram, Vaishali, Vasundhara, Mohan Nagar, Vijay Nagar, and Crossing Republik. Our average delivery time is under 1 hour from the moment you place your order. For urgent orders — last-minute birthdays, forgotten anniversaries — WhatsApp us and we will do our best to get it to you as fast as possible. We have been doing this for 26 years. We know how to move quickly.</p>
+
+                        <h3 style="font-size:19px;font-weight:600;color:#1a1a1a;margin-top:28px;margin-bottom:12px;">Custom Bouquets for Every Occasion</h3>
+                        <p style="font-size:16px;color:#444;line-height:1.75;margin-bottom:16px;">Birthdays, anniversaries, graduations, weddings, housewarmings, hospital visits, condolence flowers — we make arrangements for every occasion and every budget. Our bouquets start at ₹200 and go up to premium custom designs. If you have a specific flower, colour, or style in mind, just tell us. Custom orders are one of the things we do best — after 26 years, we have made every type of arrangement you can imagine.</p>
+
+                        <h3 style="font-size:19px;font-weight:600;color:#1a1a1a;margin-top:28px;margin-bottom:12px;">Why Order From a Neighbourhood Florist?</h3>
+                        <p style="font-size:16px;color:#444;line-height:1.75;margin-bottom:16px;">Large national flower delivery platforms charge high delivery fees, use franchise florists with inconsistent quality, and have no accountability once your order is placed. When you order from Rose n Petals, you are talking directly to the people making your bouquet. If something is not right, you call us — not a customer service centre. We have a 26-year reputation in this city to uphold, and we take that seriously with every single order.</p>
+
+                        <h3 style="font-size:19px;font-weight:600;color:#1a1a1a;margin-top:28px;margin-bottom:12px;">How to Order — Simple WhatsApp Process</h3>
+                        <p style="font-size:16px;color:#444;line-height:1.75;margin-bottom:16px;">Browse our bouquets on this website or on our Instagram. When you have found something you like, WhatsApp us at +91 7289996804 with the bouquet name, your delivery address in Ghaziabad, and your preferred time. We will confirm your order within minutes and deliver fresh flowers to your door. No app needed, no complicated checkout, no waiting. Just a simple conversation and a beautiful bouquet on its way.</p>
+
                         <div class="mt-4" style="border-top: 1px solid #eee; padding-top: 16px;">
-                            <p>📍 KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad – 201002</p>
-                            <p>📞 +91 9810244455</p>
-                            <p>💬 WhatsApp: <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" rel="noopener noreferrer">+91 7289996804</a></p>
-                            <p>📸 <a href="https://www.instagram.com/_rosenpetals_" target="_blank" rel="noopener noreferrer">@_rosenpetals_</a></p>
+                            <p style="font-size:15px;color:#444;">KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad – 201002</p>
+                            <p style="font-size:15px;color:#444;">Phone: <a href="tel:+919810244455" style="color:#CC0000;">+91 9810244455</a></p>
+                            <p style="font-size:15px;color:#444;">WhatsApp: <a href="https://wa.me/917289996804?text=Hi%2C%20I%20want%20to%20order%20a%20bouquet%20from%20Rose%20n%20Petals.%20Please%20help%20me." target="_blank" rel="noopener noreferrer" style="color:#CC0000;">+91 7289996804</a></p>
+                            <p style="font-size:15px;color:#444;">Hours: Every day, 8 AM – 10 PM</p>
                         </div>
                     </div>
                 </div>
@@ -151,38 +164,47 @@ window.Pages = {
                 <div class="container">
                     <h2 class="section-title">Frequently Asked Questions</h2>
                     <div class="faq-accordion" style="max-width: 800px; margin: 0 auto;">
-                        <details>
-                            <summary>Do you deliver flowers to all areas of Ghaziabad?</summary>
-                            <div class="faq-answer">Yes. Rose n Petals delivers across all of Ghaziabad including Kavi Nagar, Raj Nagar, Indirapuram, Vaishali, Vasundhara, Mohan Nagar, Vijay Nagar, Crossing Republik and surrounding areas.</div>
+
+                        <details style="border-bottom: 1px solid #efefef; padding: 16px 0;">
+                            <summary style="font-weight:600;font-size:15px;cursor:pointer;color:#1a1a1a;list-style:none;">Do you deliver on Sundays and public holidays?</summary>
+                            <p style="margin-top:10px;font-size:15px;color:#555;line-height:1.6;">Yes. We are open every day of the year, 8 AM to 10 PM. Sundays, national holidays, festival days — the shop runs regardless. If you need flowers on Diwali morning or on New Year's Day, we are here.</p>
                         </details>
-                        <details>
-                            <summary>How long does delivery take?</summary>
-                            <div class="faq-answer">We deliver in under 1 hour of order confirmation. Same-day delivery is available for orders placed before 9 PM.</div>
+
+                        <details style="border-bottom: 1px solid #efefef; padding: 16px 0;">
+                            <summary style="font-weight:600;font-size:15px;cursor:pointer;color:#1a1a1a;list-style:none;">Can I add a personal note with the bouquet?</summary>
+                            <p style="margin-top:10px;font-size:15px;color:#555;line-height:1.6;">Yes. When you message us on WhatsApp, simply include the note text. We will handwrite it on a card and include it with the bouquet. There is no extra charge for the note.</p>
                         </details>
-                        <details>
-                            <summary>What is the minimum order price?</summary>
-                            <div class="faq-answer">Bouquets start from ₹200. We have options for every budget including premium arrangements.</div>
+
+                        <details style="border-bottom: 1px solid #efefef; padding: 16px 0;">
+                            <summary style="font-weight:600;font-size:15px;cursor:pointer;color:#1a1a1a;list-style:none;">What if I need flowers in under 30 minutes?</summary>
+                            <p style="margin-top:10px;font-size:15px;color:#555;line-height:1.6;">For areas close to our Kavi Nagar shop — including Kavi Nagar itself, parts of Vijay Nagar, and nearby Raj Nagar — delivery in under 30 minutes is often possible. WhatsApp us at +91 7289996804 immediately. We will tell you honestly whether we can make it. We do not promise what we cannot deliver.</p>
                         </details>
-                        <details>
-                            <summary>How do I place an order?</summary>
-                            <div class="faq-answer">WhatsApp us at +91 7289996804. No app download, no complicated form. Just message us your bouquet choice, delivery address, and preferred time.</div>
+
+                        <details style="border-bottom: 1px solid #efefef; padding: 16px 0;">
+                            <summary style="font-weight:600;font-size:15px;cursor:pointer;color:#1a1a1a;list-style:none;">Can I place a same-day order?</summary>
+                            <p style="margin-top:10px;font-size:15px;color:#555;line-height:1.6;">Yes. We accept same-day orders until 9 PM for most areas, with delivery by 10 PM. For urgent situations, contact us on WhatsApp and we will confirm what is possible given your location and the current time.</p>
                         </details>
-                        <details>
-                            <summary>Do you accept Cash on Delivery?</summary>
-                            <div class="faq-answer">No. We accept UPI and Bank Transfer only. Payment is made after order confirmation on WhatsApp.</div>
+
+                        <details style="border-bottom: 1px solid #efefef; padding: 16px 0;">
+                            <summary style="font-weight:600;font-size:15px;cursor:pointer;color:#1a1a1a;list-style:none;">What payment methods do you accept?</summary>
+                            <p style="margin-top:10px;font-size:15px;color:#555;line-height:1.6;">We accept UPI and bank transfer only. No cash on delivery, no credit card payment at the door. Payment is confirmed before the bouquet enters preparation, which is why delivery is faster — we are not waiting on a payment upon arrival.</p>
                         </details>
-                        <details>
-                            <summary>Can I get a custom bouquet?</summary>
-                            <div class="faq-answer">Yes. WhatsApp us with your idea — flowers, colours, budget, occasion — and we will create it for you starting from ₹200.</div>
+
+                        <details style="border-bottom: 1px solid #efefef; padding: 16px 0;">
+                            <summary style="font-weight:600;font-size:15px;cursor:pointer;color:#1a1a1a;list-style:none;">What bouquets do you have under ₹500?</summary>
+                            <p style="margin-top:10px;font-size:15px;color:#555;line-height:1.6;">Our range starts at ₹200 and includes rose bouquets, carnation arrangements, gerbera bunches, and mixed combinations. Under ₹500, you can get a clean, well-arranged bouquet suitable for birthdays, housewarmings, get well visits, or a simple gesture of affection. Send us a WhatsApp message with your budget and occasion — we will show you what we have.</p>
                         </details>
-                        <details>
-                            <summary>What are your shop hours?</summary>
-                            <div class="faq-answer">We are open every day from 8 AM to 10 PM. WhatsApp orders are accepted during shop hours.</div>
+
+                        <details style="border-bottom: 1px solid #efefef; padding: 16px 0;">
+                            <summary style="font-weight:600;font-size:15px;cursor:pointer;color:#1a1a1a;list-style:none;">How quickly do you respond on WhatsApp?</summary>
+                            <p style="margin-top:10px;font-size:15px;color:#555;line-height:1.6;">We respond within 5 to 15 minutes during shop hours. For urgent orders, write URGENT in your first message and we will prioritise your order immediately.</p>
                         </details>
-                        <details>
-                            <summary>How quickly do you respond on WhatsApp?</summary>
-                            <div class="faq-answer">We respond within 15–30 minutes during shop hours. For urgent orders write URGENT in your first message and we will prioritise your order immediately.</div>
+
+                        <details style="padding: 16px 0;">
+                            <summary style="font-weight:600;font-size:15px;cursor:pointer;color:#1a1a1a;list-style:none;">Can I customise a bouquet?</summary>
+                            <p style="margin-top:10px;font-size:15px;color:#555;line-height:1.6;">Yes. WhatsApp us with your idea — flowers, colours, budget, occasion — and we will create it for you starting from ₹200. Custom orders are one of the things we do best. After 26 years, we have made every type of arrangement you can imagine.</p>
                         </details>
+
                     </div>
                 </div>
             </section>
