@@ -62,7 +62,7 @@ function parseProductsCSV(csvText) {
     const cleanSlug = nameVal.toString().toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
-    const priceVal = rowData['price'] || '';
+    const priceVal = rowData['price (₹)'] || rowData['price'] || '';
     let imgVal = rowData['image url'] || rowData['imageurl'] || '';
     const descVal = rowData['description'] || rowData['shortdescription'] || '';
     const occVal = rowData['occasion'] || rowData['occasiontags'] || '';
@@ -110,7 +110,7 @@ async function getProducts() {
 }
 
 // Warm the cache on server start
-getProducts().catch(() => {});
+getProducts().catch(() => { });
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ─── SSR: HTML builders ───────────────────────────────────────────────────
@@ -520,7 +520,7 @@ function serveLandingPage(res, data) {
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
         "opens": "08:00",
         "closes": "22:00"
       }
@@ -1330,17 +1330,17 @@ app.get('/bouquet/:slug', async (req, res) => {
 
 // Catch-all — all other routes (area pages, blog, policies, etc.)
 app.get('*', async (req, res) => {
-    try {
-      const products = await getProducts();
-      let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-      const hydrationScript = `<script>window.__SSR_PRODUCTS__=${JSON.stringify(products)};window.__SSR_HYDRATED__=false;</script>`;
-      html = html.replace('</body>', `${hydrationScript}</body>`);
-      res.status(404).send(html);
-    } catch (err) {
-      console.error('[SSR] Catch-all error:', err);
-      res.status(404).sendFile(path.join(__dirname, 'index.html'));
-    }
-  });
+  try {
+    const products = await getProducts();
+    let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+    const hydrationScript = `<script>window.__SSR_PRODUCTS__=${JSON.stringify(products)};window.__SSR_HYDRATED__=false;</script>`;
+    html = html.replace('</body>', `${hydrationScript}</body>`);
+    res.status(404).send(html);
+  } catch (err) {
+    console.error('[SSR] Catch-all error:', err);
+    res.status(404).sendFile(path.join(__dirname, 'index.html'));
+  }
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 
