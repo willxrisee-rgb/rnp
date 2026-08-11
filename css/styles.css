@@ -1665,3 +1665,67 @@ textarea:focus {
     font-size: 18px;
   }
 }
+
+/* WhatsApp Floating Button - Neo-Brutalist Glassmorphism */
+.whatsapp-float {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  background: rgba(37, 211, 102, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 3px solid #000;
+  border-radius: 16px;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 1);
+  z-index: 9999;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+}
+
+.whatsapp-float::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.2) 40%,
+    rgba(255, 255, 255, 0) 50%
+  );
+  transform: rotate(45deg);
+  animation: shine 3s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.whatsapp-float:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+  background: rgba(37, 211, 102, 0.95);
+}
+
+.whatsapp-float:active {
+  transform: translate(6px, 6px);
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.whatsapp-float svg {
+  width: 32px;
+  height: 32px;
+  fill: #fff;
+  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5));
+  z-index: 1;
+}
