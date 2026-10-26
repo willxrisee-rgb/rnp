@@ -379,6 +379,12 @@ export function updateNavbarAuthUI(user) {
     }
 }
 
+// Wait for getCurrentUser() Promise to resolve on initial load so navbar does not flash logged-out
+getCurrentUser().then((user) => {
+    updateNavbarAuthUI(user);
+});
+
+// Also keep listening for ongoing auth changes (sign in, sign out)
 onAuthStateChanged(getFirebaseAuth(), (user) => {
     updateNavbarAuthUI(user);
 });

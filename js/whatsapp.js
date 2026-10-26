@@ -62,6 +62,14 @@ window.WhatsApp = {
         const statusEl = document.getElementById('order-user-status');
         if (!statusEl) return;
 
+        if (!window.RNPAuth) {
+            await new Promise((resolve) => {
+                if (window.RNPAuth) return resolve();
+                window.addEventListener('RNPAuthReady', () => resolve(), { once: true });
+                setTimeout(resolve, 3000);
+            });
+        }
+
         try {
             const user = window.RNPAuth ? await window.RNPAuth.getCurrentUser() : null;
             if (user) {

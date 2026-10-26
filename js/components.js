@@ -79,7 +79,18 @@ window.Components = {
         if (typeof window === 'undefined') return;
         setTimeout(async () => {
             try {
-                if (!window.RNPAuth || typeof window.RNPAuth.getUserProfile !== 'function') return;
+                if (!window.RNPAuth) {
+                    await new Promise((resolve) => {
+                        if (window.RNPAuth) return resolve();
+                        window.addEventListener('RNPAuthReady', () => resolve(), { once: true });
+                        setTimeout(resolve, 3000);
+                    });
+                }
+                if (!window.RNPAuth || typeof window.RNPAuth.getCurrentUser !== 'function') return;
+
+                const user = await window.RNPAuth.getCurrentUser();
+                if (!user) return;
+
                 const profile = await window.RNPAuth.getUserProfile();
                 if (!profile) return;
 
