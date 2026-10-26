@@ -796,7 +796,7 @@
          ═══════════════════════════════════════════════════════ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
         // ──────────────────────────────────────────────────────
@@ -903,20 +903,12 @@
         let redirectUrl = urlParams.get('redirect') || sessionStorage.getItem('rnp_login_redirect') || '/';
 
         let isHandled = false;
-        let redirectDone = false;
-        let authStateDone = false;
 
         function showLoginStep() {
             if (isHandled) return;
             const stepLoading = document.getElementById('step-loading');
             if (stepLoading) stepLoading.style.display = 'none';
             stepLogin.style.display = 'block';
-        }
-
-        function checkBothDone() {
-            if (redirectDone && authStateDone && !isHandled) {
-                showLoginStep();
-            }
         }
 
         async function handleAuthenticatedUser(user) {
@@ -954,57 +946,36 @@
             }
         }
 
-        // 1. Execute getRedirectResult on page load
-        getRedirectResult(auth)
-            .then(async (result) => {
-                redirectDone = true;
-                if (result && result.user) {
-                    await handleAuthenticatedUser(result.user);
-                } else {
-                    checkBothDone();
-                }
-            })
-            .catch((error) => {
-                redirectDone = true;
-                console.error("[RNP Auth] getRedirectResult error:", error);
-                alert(`Login Error: ${error.code} - ${error.message}`);
-                showToast(`Login Error: ${error.code || 'failed'}`, 'error');
-                checkBothDone();
-            });
-
-        // 2. onAuthStateChanged as backup / session restore
+        // Check if user is already signed in on load
         onAuthStateChanged(auth, async (user) => {
-            authStateDone = true;
             if (user) {
                 await handleAuthenticatedUser(user);
             } else {
-                checkBothDone();
+                showLoginStep();
             }
         });
 
-        // Safety fallback: if network hangs, do not leave user on spinner forever
-        setTimeout(() => {
-            if (!isHandled && (!redirectDone || !authStateDone)) {
-                redirectDone = true;
-                authStateDone = true;
-                checkBothDone();
-            }
-        }, 6000);
-
-        // ── Google Sign-In Handler (Mobile-Friendly Redirect) ──
-        googleBtn.addEventListener('click', async () => {
+        // ── Google Sign-In Handler (Popup) ──
+        googleBtn.addEventListener('click', () => {
             setLoading(googleBtn, true);
 
-            try {
-                // Persist target redirect in sessionStorage so it isn't lost across page redirects
-                sessionStorage.setItem('rnp_login_redirect', redirectUrl);
-                await signInWithRedirect(auth, provider);
-            } catch (error) {
-                console.error("Google sign-in error:", error);
-                setLoading(googleBtn, false);
-                alert(`Login Error: ${error.code} - ${error.message}`);
-                showToast(`Login Error: ${error.code || 'failed'}`, 'error');
-            }
+            signInWithPopup(auth, provider)
+                .then(async (result) => {
+                    setLoading(googleBtn, false);
+                    if (result && result.user) {
+                        await handleAuthenticatedUser(result.user);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Google sign-in error:", error);
+                    setLoading(googleBtn, false);
+                    if (error.code === 'auth/unauthorized-domain') {
+                        alert('Developer Error: Firebase is blocking this domain. Please ensure rosenpetals.com is added to Firebase Authentication -> Settings -> Authorized Domains.');
+                    } else {
+                        alert('Login Error: ' + error.code + ' - ' + error.message);
+                    }
+                    showToast(`Login Error: ${error.code || 'failed'}`, 'error');
+                });
         });
 
         // ── Phone Input: Format & Validate ───────────────────
