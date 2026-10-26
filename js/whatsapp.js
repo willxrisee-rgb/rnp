@@ -374,7 +374,7 @@ window.WhatsApp = {
 
         } catch (error) {
             console.error('[RNP] Order submission failed:', error);
-            alert('We could not save your order request. Please check your internet connection and try again.');
+            alert(`Order Error: ${error.code || 'order-failed'} - ${error.message || error}`);
             if (submitBtn) {
                 submitBtn.disabled = false;
                 const btnText = submitBtn.querySelector('.btn-text');

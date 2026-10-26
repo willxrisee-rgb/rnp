@@ -9,7 +9,7 @@
  */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
 // ──────────────────────────────────────────────────────
@@ -212,6 +212,29 @@ export async function saveUserAddress(userId, { deliveryAddress, deliveryPincode
     }
 }
 
+/**
+ * Initiates Google Sign-In with redirect (mobile-friendly, bypasses popup blockers).
+ * @param {string} [redirectUrl] - Target URL to return to after sign-in.
+ */
+export async function signInWithGoogle(redirectUrl) {
+    try {
+        const auth = getFirebaseAuth();
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        const returnUrl = redirectUrl || (window.location.pathname + window.location.search);
+        try {
+            sessionStorage.setItem('rnp_auth_redirect', returnUrl);
+        } catch (e) {}
+
+        await signInWithRedirect(auth, provider);
+    } catch (error) {
+        console.error("[RNP Auth] signInWithRedirect error:", error);
+        alert(`Login Error: ${error.code} - ${error.message}`);
+        throw error;
+    }
+}
+
 // ──────────────────────────────────────────────────────
 //  🔔 BRANDED LOGIN POP-UP MODAL (Intercept Unauthenticated Checkout)
 // ──────────────────────────────────────────────────────
@@ -330,6 +353,7 @@ window.RNPAuth = {
     getUserProfile,
     saveUserAddress,
     signOutUser,
+    signInWithGoogle,
     isUserRegistered,
     requireAuth,
     onUserChanged,
@@ -358,4 +382,37 @@ export function updateNavbarAuthUI(user) {
 onAuthStateChanged(getFirebaseAuth(), (user) => {
     updateNavbarAuthUI(user);
 });
+
+// Catch redirect result on non-login pages (e.g. returning directly to catalog/bouquet)
+if (typeof window !== 'undefined' && !window.location.pathname.includes('login.html')) {
+    const auth = getFirebaseAuth();
+    getRedirectResult(auth)
+        .then(async (result) => {
+            if (result && result.user) {
+                const user = result.user;
+                try {
+                    const profile = await getUserProfile();
+                    let targetUrl = sessionStorage.getItem('rnp_auth_redirect') || (window.location.pathname + window.location.search);
+                    sessionStorage.removeItem('rnp_auth_redirect');
+
+                    if (!profile || !profile.whatsapp) {
+                        // User needs to save WhatsApp number on login.html
+                        window.location.href = `/login.html?redirect=${encodeURIComponent(targetUrl)}`;
+                    } else {
+                        updateNavbarAuthUI(user);
+                        if (targetUrl && targetUrl !== window.location.pathname && targetUrl !== '/') {
+                            window.location.href = targetUrl;
+                        }
+                    }
+                } catch (err) {
+                    console.error("[RNP Auth] Profile check after redirect error:", err);
+                    alert(`Login Error: ${err.code || 'unknown'} - ${err.message || err}`);
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("[RNP Auth] getRedirectResult error:", error);
+            alert(`Login Error: ${error.code} - ${error.message}`);
+        });
+}
 

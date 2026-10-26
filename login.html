@@ -758,7 +758,7 @@
          ═══════════════════════════════════════════════════════ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
         // ──────────────────────────────────────────────────────
@@ -860,43 +860,20 @@
 
         // ── Helper for post-login redirect ───────────────────
         const urlParams = new URLSearchParams(window.location.search);
-        const redirectUrl = urlParams.get('redirect') || '/';
+        let redirectUrl = urlParams.get('redirect') || sessionStorage.getItem('rnp_login_redirect') || '/';
 
-        // ── Check Auth State on Load ─────────────────────────
-        // If user is already signed in with a complete profile, redirect
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                try {
-                    const userRef = doc(db, "Users", user.uid);
-                    const userSnap = await getDoc(userRef);
-                    if (userSnap.exists() && userSnap.data().whatsapp) {
-                        // Already registered — redirect
-                        window.location.href = redirectUrl;
-                    } else {
-                        // Logged in but no WhatsApp number — show phone step
-                        showPhoneStep(user);
-                    }
-                } catch (err) {
-                    console.error("Auth state check error:", err);
-                }
-            }
-        });
+        let redirectHandled = false;
 
-        // ── Google Sign-In Handler ───────────────────────────
-        googleBtn.addEventListener('click', async () => {
-            setLoading(googleBtn, true);
-
+        async function handleAuthenticatedUser(user) {
             try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-
                 // Check if user already exists in Firestore
                 const userRef = doc(db, "Users", user.uid);
                 const userSnap = await getDoc(userRef);
 
                 if (userSnap.exists() && userSnap.data().whatsapp) {
                     // ✅ Returning user with complete profile
-                    showToast(`Welcome back, ${user.displayName}! 🌹`, 'success');
+                    showToast(`Welcome back, ${user.displayName || 'friend'}! 🌹`, 'success');
+                    sessionStorage.removeItem('rnp_login_redirect');
                     setTimeout(() => {
                         window.location.href = redirectUrl;
                     }, 1200);
@@ -905,28 +882,50 @@
                     showPhoneStep(user);
                     showToast('Signed in! Just one more step...', 'info');
                 }
+            } catch (err) {
+                console.error("[RNP Auth] Profile check error:", err);
+                alert(`Login Error: ${err.code || 'firestore-error'} - ${err.message || err}`);
+            }
+        }
 
+        // ── Handle Mobile Redirect Result on Page Load ─────────
+        getRedirectResult(auth)
+            .then(async (result) => {
+                if (result && result.user) {
+                    redirectHandled = true;
+                    setLoading(googleBtn, true);
+                    await handleAuthenticatedUser(result.user);
+                    setLoading(googleBtn, false);
+                }
+            })
+            .catch((error) => {
+                console.error("Google redirect sign-in error:", error);
+                setLoading(googleBtn, false);
+                alert(`Login Error: ${error.code} - ${error.message}`);
+                showToast(`Login Error: ${error.code || 'failed'}`, 'error');
+            });
+
+        // ── Check Auth State on Load ─────────────────────────
+        // If user is already signed in with a complete profile, redirect
+        onAuthStateChanged(auth, async (user) => {
+            if (user && !redirectHandled) {
+                await handleAuthenticatedUser(user);
+            }
+        });
+
+        // ── Google Sign-In Handler (Mobile-Friendly Redirect) ──
+        googleBtn.addEventListener('click', async () => {
+            setLoading(googleBtn, true);
+
+            try {
+                // Persist target redirect in sessionStorage so it isn't lost across page redirects
+                sessionStorage.setItem('rnp_login_redirect', redirectUrl);
+                await signInWithRedirect(auth, provider);
             } catch (error) {
                 console.error("Google sign-in error:", error);
                 setLoading(googleBtn, false);
-
-                // Handle specific Firebase errors gracefully
-                switch (error.code) {
-                    case 'auth/popup-closed-by-user':
-                        showToast('Sign-in cancelled. Try again when ready.', 'info');
-                        break;
-                    case 'auth/popup-blocked':
-                        showToast('Pop-up was blocked. Please allow pop-ups for this site.', 'error');
-                        break;
-                    case 'auth/network-request-failed':
-                        showToast('Network error. Please check your internet connection.', 'error');
-                        break;
-                    case 'auth/cancelled-popup-request':
-                        // Silent — another popup was opened
-                        break;
-                    default:
-                        showToast('Sign-in failed. Please try again.', 'error');
-                }
+                alert(`Login Error: ${error.code} - ${error.message}`);
+                showToast(`Login Error: ${error.code || 'failed'}`, 'error');
             }
         });
 
@@ -992,14 +991,8 @@
             } catch (error) {
                 console.error("Firestore save error:", error);
                 setLoading(saveBtn, false);
-
-                if (error.code === 'permission-denied') {
-                    showToast('Access denied. Please contact support.', 'error');
-                } else if (error.code === 'unavailable') {
-                    showToast('Service unavailable. Please try again shortly.', 'error');
-                } else {
-                    showToast('Could not save. Please try again.', 'error');
-                }
+                alert(`Login Error: ${error.code || 'firestore-save'} - ${error.message || error}`);
+                showToast(`Save Error: ${error.code || 'failed'}`, 'error');
             }
         });
     </script>
