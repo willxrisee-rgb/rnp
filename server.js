@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-
-// ─── SSR: Server-side product cache ───────────────────────────────────────
 const fs = require('fs');
+const admin = require('firebase-admin');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTHd0751qQ03HhhAmQhVE32BlLZXOO1g40tqB3XPv_9WZCUwW4iQwZ6mNWUnf0Pvf0aD1HkRBAuOQQu/pub?output=csv';
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
@@ -324,6 +324,307 @@ app.get('/login', (req, res) => {
 
 app.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, 'profile.html'));
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 🤖 Telegram Owner Approval Bot Notification Route
+// ─────────────────────────────────────────────────────────────────────────────
+function escapeTelegramHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function formatDeliveryDate(dateStr) {
+  if (!dateStr) return '';
+  const parts = String(dateStr).split('-');
+  if (parts.length === 3 && parts[0].length === 4) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[parseInt(parts[1], 10) - 1] || parts[1];
+    return `${parts[2]}-${month}-${parts[0]}`;
+  }
+  return dateStr;
+}
+
+app.post('/api/notify-order', async (req, res) => {
+  try {
+    const order = req.body;
+    if (!order) {
+      return res.status(400).json({ error: 'Missing order data' });
+    }
+
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (!botToken || !chatId) {
+      console.warn('[Telegram Bot] Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID in environment variables.');
+      return res.status(200).json({
+        success: false,
+        message: 'Order received, but Telegram notifications are not configured in environment variables.'
+      });
+    }
+
+    const orderId = order.id || `RNP-${Date.now()}`;
+    const displayOrderId = order.id
+      ? (order.id.startsWith('RNP-') ? order.id : `RNP-${order.id.substring(0, 8).toUpperCase()}`)
+      : `RNP-${Date.now().toString().slice(-5)}`;
+
+    const bouquet = order.bouquetName || (order.cart ? order.cart.map(i => i.name).join(', ') : 'Fresh Floral Bouquet');
+    const price = order.total || order.price || 0;
+    const formattedDate = formatDeliveryDate(order.deliveryDate);
+    const dateSlotText = formattedDate && order.timeSlot
+      ? `${formattedDate} (${order.timeSlot})`
+      : (formattedDate || order.timeSlot || 'Standard Delivery');
+    const fullAddress = [order.deliveryAddress, order.pincode].filter(Boolean).join(', ');
+    const contactText = order.recipientName && order.customerPhone
+      ? `${order.recipientName} (${order.customerPhone})`
+      : (order.recipientName || order.customerPhone || 'Customer');
+
+    let messageText = `🚨 <b>NEW ORDER REQUEST</b> 🚨\n\n` +
+      `<b>Order ID:</b> #${escapeTelegramHtml(displayOrderId)}\n` +
+      `<b>Bouquet:</b> ${escapeTelegramHtml(bouquet)}\n` +
+      `<b>Price:</b> ₹${escapeTelegramHtml(price)}\n` +
+      `<b>Delivery Date:</b> ${escapeTelegramHtml(dateSlotText)}\n` +
+      `<b>Address:</b> ${escapeTelegramHtml(fullAddress)}\n` +
+      `<b>Contact:</b> ${escapeTelegramHtml(contactText)}`;
+
+    if (order.cardMessage && order.cardMessage !== 'None') {
+      messageText += `\n<b>Card Message:</b> <i>${escapeTelegramHtml(order.cardMessage)}</i>`;
+    }
+
+    const payload = {
+      chat_id: chatId,
+      text: messageText,
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: '✅ Accept & Request Payment', callback_data: `ACCEPT_${orderId}` }
+          ],
+          [
+            { text: '❌ Shop Busy (Deny)', callback_data: `DENY_${orderId}` }
+          ]
+        ]
+      }
+    };
+
+    const telegramRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const telegramData = await telegramRes.json();
+    if (!telegramRes.ok || !telegramData.ok) {
+      console.error('[Telegram Bot] Telegram API error:', telegramData);
+      return res.status(502).json({ error: 'Telegram API error', details: telegramData });
+    }
+
+    console.log(`[Telegram Bot] Successfully sent order alert for #${displayOrderId}`);
+    return res.status(200).json({ success: true, messageId: telegramData.result?.message_id });
+
+  } catch (err) {
+    console.error('[Telegram Bot] Exception in /api/notify-order:', err);
+    return res.status(500).json({ error: 'Internal server error', message: err.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 🔥 Firebase Admin SDK Initialization
+// ─────────────────────────────────────────────────────────────────────────────
+let adminDb = null;
+
+function getFirebaseAdminDb() {
+  if (adminDb) return adminDb;
+
+  const serviceAccountRaw = process.env.FIREBASE_SERVICE_ACCOUNT;
+  if (!serviceAccountRaw) {
+    console.warn('[Firebase Admin] Notice: FIREBASE_SERVICE_ACCOUNT is not set. Firestore updates via webhook will be skipped.');
+    return null;
+  }
+
+  try {
+    let serviceAccount;
+    const trimmed = serviceAccountRaw.trim();
+    if (trimmed.startsWith('{')) {
+      serviceAccount = JSON.parse(trimmed);
+    } else {
+      try {
+        const decoded = Buffer.from(trimmed, 'base64').toString('utf8');
+        serviceAccount = JSON.parse(decoded);
+      } catch (e) {
+        serviceAccount = JSON.parse(trimmed);
+      }
+    }
+
+    const apps = typeof admin.getApps === 'function' ? admin.getApps() : (admin.apps || []);
+    const app = apps.length > 0
+      ? apps[0]
+      : admin.initializeApp({
+          credential: (admin.credential?.cert || admin.cert)(serviceAccount)
+        });
+
+    console.log('[Firebase Admin] Successfully initialized Firebase Admin SDK.');
+    adminDb = getFirestore(app);
+    return adminDb;
+  } catch (err) {
+    console.error('[Firebase Admin] Failed to initialize Firebase Admin SDK:', err.message);
+    return null;
+  }
+}
+
+// Non-blocking initialization on start
+try {
+  getFirebaseAdminDb();
+} catch (e) {
+  console.warn('[Firebase Admin] Initial boot check:', e.message);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 🤖 Telegram Webhook Route (Handle Accept / Deny Callback Queries)
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/api/telegram-webhook', async (req, res) => {
+  // Always respond with 200 OK immediately so Telegram knows the update was received
+  res.status(200).json({ ok: true });
+
+  try {
+    const update = req.body;
+    if (!update || !update.callback_query) {
+      // Not a callback query (e.g. general message or ping), ignore
+      return;
+    }
+
+    const callbackQuery = update.callback_query;
+    const callbackQueryId = callbackQuery.id;
+    const data = callbackQuery.data || '';
+    const message = callbackQuery.message;
+    const messageId = message?.message_id;
+    const chatId = message?.chat?.id;
+    const originalText = message?.text || '';
+
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    if (!botToken) {
+      console.error('[Telegram Webhook] TELEGRAM_BOT_TOKEN is not set.');
+      return;
+    }
+
+    const isAccept = data.startsWith('ACCEPT_');
+    const isDeny = data.startsWith('DENY_');
+
+    if (!isAccept && !isDeny) {
+      console.log('[Telegram Webhook] Unrecognized callback query data:', data);
+      return;
+    }
+
+    const orderId = isAccept
+      ? data.replace('ACCEPT_', '').trim()
+      : data.replace('DENY_', '').trim();
+
+    console.log(`[Telegram Webhook] Processing ${isAccept ? 'ACCEPT' : 'DENY'} for Order #${orderId}`);
+
+    // 1. Update Firestore Orders collection via Firebase Admin
+    const db = getFirebaseAdminDb();
+    if (db && orderId) {
+      try {
+        const orderRef = db.collection('Orders').doc(orderId);
+        if (isAccept) {
+          await orderRef.set({
+            status: 'PAYMENT_PENDING',
+            updatedAt: FieldValue.serverTimestamp()
+          }, { merge: true });
+          console.log(`[Telegram Webhook] Firestore Order #${orderId} marked as PAYMENT_PENDING`);
+        } else {
+          await orderRef.set({
+            status: 'CANCELLED_SHOP_BUSY',
+            updatedAt: FieldValue.serverTimestamp()
+          }, { merge: true });
+          console.log(`[Telegram Webhook] Firestore Order #${orderId} marked as CANCELLED_SHOP_BUSY`);
+        }
+      } catch (dbErr) {
+        console.error(`[Telegram Webhook] Error updating Firestore order #${orderId}:`, dbErr.message);
+      }
+    } else if (!db) {
+      console.warn(`[Telegram Webhook] Firebase Admin not initialized. Skipped Firestore update for #${orderId}.`);
+    }
+
+    // 2. Prepare Updated Telegram Message Text
+    const statusHeader = isAccept
+      ? '✅ <b>STATUS: ACCEPTED (Waiting for Payment)</b>'
+      : '❌ <b>STATUS: DENIED (Shop Busy)</b>';
+
+    let formattedLines = '';
+    if (originalText) {
+      const cleanOriginal = originalText.replace(/🚨\s*NEW ORDER REQUEST\s*🚨/gi, '').trim();
+      const lines = cleanOriginal.split('\n');
+      formattedLines = lines.map(line => {
+        const trimmed = line.trim();
+        const colonIndex = trimmed.indexOf(':');
+        if (colonIndex > 0 && !trimmed.startsWith('http')) {
+          const key = trimmed.slice(0, colonIndex).trim();
+          const val = trimmed.slice(colonIndex + 1).trim();
+          return `<b>${escapeTelegramHtml(key)}:</b> ${escapeTelegramHtml(val)}`;
+        }
+        return escapeTelegramHtml(trimmed);
+      }).filter(Boolean).join('\n');
+    }
+
+    const updatedText = formattedLines
+      ? `${statusHeader}\n\n${formattedLines}`
+      : `${statusHeader}\n\n<b>Order ID:</b> #${escapeTelegramHtml(orderId)}`;
+
+    // 3. Edit Message Text in Telegram (Remove inline keyboard buttons)
+    if (chatId && messageId) {
+      try {
+        const editRes = await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            message_id: messageId,
+            text: updatedText,
+            parse_mode: 'HTML',
+            reply_markup: {
+              inline_keyboard: [] // Removes buttons so they cannot be clicked again
+            }
+          })
+        });
+        const editData = await editRes.json();
+        if (!editRes.ok || !editData.ok) {
+          console.error('[Telegram Webhook] editMessageText error:', editData);
+        } else {
+          console.log(`[Telegram Webhook] Telegram message #${messageId} updated successfully.`);
+        }
+      } catch (editErr) {
+        console.error('[Telegram Webhook] editMessageText exception:', editErr.message);
+      }
+    }
+
+    // 4. Answer Callback Query to stop the loading spinner on Telegram
+    if (callbackQueryId) {
+      try {
+        const answerText = isAccept
+          ? 'Order Accepted! Status: Payment Pending.'
+          : 'Order Denied. Status: Shop Busy.';
+
+        await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            callback_query_id: callbackQueryId,
+            text: answerText,
+            show_alert: false
+          })
+        });
+      } catch (ansErr) {
+        console.error('[Telegram Webhook] answerCallbackQuery exception:', ansErr.message);
+      }
+    }
+
+  } catch (err) {
+    console.error('[Telegram Webhook] Uncaught error in handler:', err);
+  }
 });
 
 // Admin Auth Middleware

@@ -354,7 +354,19 @@ window.WhatsApp = {
             // ── 6. Save to Firestore 'Orders' Collection ──
             const savedOrder = await window.RNPAuth.saveOrderToFirestore(orderData);
 
-            // ── 6b. Save Address & Pincode to User Profile in Firestore 'Users' Collection ({ merge: true }) ──
+            // ── 6b. Notify Telegram Owner Approval Bot (Fire-and-forget in background) ──
+            fetch('/api/notify-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: savedOrder.id,
+                    ...orderData
+                })
+            }).catch((notifyErr) => {
+                console.warn('[RNP] Telegram order notification background call failed:', notifyErr);
+            });
+
+            // ── 6c. Save Address & Pincode to User Profile in Firestore 'Users' Collection ({ merge: true }) ──
             if (window.RNPAuth && typeof window.RNPAuth.saveUserAddress === 'function') {
                 try {
                     await window.RNPAuth.saveUserAddress(user.uid, {
