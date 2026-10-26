@@ -33,6 +33,18 @@ window.CorePagesData = {
 
     // ─── 1. flower delivery Ghaziabad ────────────────────────────────────────
     'flower-delivery-ghaziabad': {
+        metaDescription: "Fresh flower delivery in ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/flower-delivery-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Delivery in Ghaziabad", "item": "https://rosenpetals.com/flower-delivery-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Flower Delivery in Ghaziabad | Rose n Petals',
         mainKeyword: 'flower delivery Ghaziabad',
         headline: 'Fresh Flower Delivery in Ghaziabad – Starting ₹200',
@@ -65,6 +77,18 @@ window.CorePagesData = {
 
     // ─── 2. online flower delivery Ghaziabad ─────────────────────────────────
     'online-flower-delivery-ghaziabad': {
+        metaDescription: "Fresh online flower delivery in ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/online-flower-delivery-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Online Flower Delivery in Ghaziabad", "item": "https://rosenpetals.com/online-flower-delivery-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Online Flower Delivery in Ghaziabad | Rose n Petals',
         mainKeyword: 'online flower delivery Ghaziabad',
         headline: 'Online Flower Delivery in Ghaziabad – Order from Home',
@@ -97,6 +121,18 @@ window.CorePagesData = {
 
     // ─── 3. bouquet delivery Ghaziabad ───────────────────────────────────────
     'bouquet-delivery-ghaziabad': {
+        metaDescription: "Fresh bouquet delivery in ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/bouquet-delivery-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Bouquet Delivery in Ghaziabad", "item": "https://rosenpetals.com/bouquet-delivery-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Bouquet Delivery in Ghaziabad | Rose n Petals',
         mainKeyword: 'bouquet delivery Ghaziabad',
         headline: 'Beautiful Bouquet Delivery in Ghaziabad – From ₹200',
@@ -129,6 +165,18 @@ window.CorePagesData = {
 
     // ─── 4. send flowers to Ghaziabad ────────────────────────────────────────
     'send-flowers-ghaziabad': {
+        metaDescription: "Fresh send flowers to ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/send-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Send Flowers to Ghaziabad", "item": "https://rosenpetals.com/send-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Send Flowers to Ghaziabad | Rose n Petals',
         mainKeyword: 'send flowers to Ghaziabad',
         headline: 'Send Flowers to Ghaziabad – Delivered Fresh, Same Day',
@@ -161,6 +209,18 @@ window.CorePagesData = {
 
     // ─── 5. order flowers online Ghaziabad ───────────────────────────────────
     'order-flowers-online-ghaziabad': {
+        metaDescription: "Fresh order flowers online in ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/order-flowers-online-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Order Flowers Online in Ghaziabad", "item": "https://rosenpetals.com/order-flowers-online-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Order Flowers Online in Ghaziabad | Rose n Petals',
         mainKeyword: 'order flowers online Ghaziabad',
         headline: 'Order Flowers Online in Ghaziabad – Quick & Easy',
@@ -193,6 +253,18 @@ window.CorePagesData = {
 
     // ─── 6. florist in Ghaziabad ─────────────────────────────────────────────
     'florist-ghaziabad': {
+        metaDescription: "Fresh trusted florist in ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/florist-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Trusted Florist in Ghaziabad", "item": "https://rosenpetals.com/florist-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Trusted Florist in Ghaziabad | Rose n Petals',
         mainKeyword: 'florist in Ghaziabad',
         headline: 'Your Trusted Local Florist in Ghaziabad',
@@ -225,6 +297,18 @@ window.CorePagesData = {
 
     // ─── 7. flower shop in Ghaziabad ─────────────────────────────────────────
     'flower-shop-ghaziabad': {
+        metaDescription: "Fresh flower shop in ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/flower-shop-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Shop in Ghaziabad", "item": "https://rosenpetals.com/flower-shop-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Flower Shop in Ghaziabad | Rose n Petals',
         mainKeyword: 'flower shop in Ghaziabad',
         headline: 'Rose n Petals – Your Go-To Flower Shop in Ghaziabad',
@@ -257,6 +341,18 @@ window.CorePagesData = {
 
     // ─── 8. fresh flowers Ghaziabad ──────────────────────────────────────────
     'fresh-flowers-ghaziabad': {
+        metaDescription: "Fresh fresh flowers in ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/fresh-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Fresh Flowers in Ghaziabad", "item": "https://rosenpetals.com/fresh-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Fresh Flowers in Ghaziabad | Rose n Petals',
         mainKeyword: 'fresh flowers Ghaziabad',
         headline: 'Guaranteed Fresh Flowers in Ghaziabad – Made to Order',
@@ -289,6 +385,18 @@ window.CorePagesData = {
 
     // ─── 9. rose bouquet delivery Ghaziabad ──────────────────────────────────
     'rose-bouquet-delivery-ghaziabad': {
+        metaDescription: "Fresh rose bouquet delivery in ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/rose-bouquet-delivery-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Rose Bouquet Delivery in Ghaziabad", "item": "https://rosenpetals.com/rose-bouquet-delivery-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Rose Bouquet Delivery in Ghaziabad | Rose n Petals',
         mainKeyword: 'rose bouquet delivery Ghaziabad',
         headline: 'Rose Bouquet Delivery in Ghaziabad – Handmade with Love',
@@ -321,6 +429,18 @@ window.CorePagesData = {
 
     // ─── 10. mixed flower bouquet Ghaziabad ──────────────────────────────────
     'mixed-flower-bouquet-ghaziabad': {
+        metaDescription: "Fresh mixed flower bouquet in ghaziabad by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/mixed-flower-bouquet-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Flower Delivery", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "Mixed Flower Bouquet in Ghaziabad", "item": "https://rosenpetals.com/mixed-flower-bouquet-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         pageTitle: 'Mixed Flower Bouquet in Ghaziabad | Rose n Petals',
         mainKeyword: 'mixed flower bouquet Ghaziabad',
         headline: 'Mixed Flower Bouquets in Ghaziabad – Colourful & Fresh',

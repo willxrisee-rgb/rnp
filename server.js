@@ -317,6 +317,15 @@ app.use('/admin_views', (req, res) => res.status(403).send('Forbidden'));
 // Serve all static assets from the current directory (index.html, css, js, etc.)
 app.use(express.static(path.join(__dirname), { index: false }));
 
+// Customer Login & Profile Routes
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, 'profile.html'));
+});
+
 // Admin Auth Middleware
 const requireAdmin = (req, res, next) => {
   const cookies = parseCookies(req);

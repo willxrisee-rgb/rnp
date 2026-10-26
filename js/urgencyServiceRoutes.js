@@ -73,7 +73,7 @@ window.UrgencyServiceRoutes = {
             };
         }
 
-        document.title = data.pageTitle;
+        window.App.applySEOMeta(data);
 
         const waLink = `https://api.whatsapp.com/send?phone=${data.whatsappNumber}&text=${encodeURIComponent(data.whatsappMessage || 'Hi! I need urgent flower delivery in Ghaziabad.')}`;
 

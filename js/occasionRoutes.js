@@ -25,7 +25,7 @@ window.OccasionRoutes = {
         const data = window.OccasionPagesData ? window.OccasionPagesData[slug] : null;
         if (!data) return;
 
-        document.title = data.pageTitle;
+        window.App.applySEOMeta(data);
 
         const waLink = `https://api.whatsapp.com/send?phone=${data.whatsappNumber}&text=${encodeURIComponent(data.whatsappMessage)}`;
 
@@ -149,7 +149,7 @@ window.OccasionRoutes = {
                         ${productsHtml}
                     </div>
                     <div class="rnp-section__footer" style="margin-top: 2rem; text-align: center;">
-                        <a class="rnp-btn rnp-btn--ghost" href="#/catalog">Browse All Bouquets →</a>
+                        <a class="rnp-btn rnp-btn--ghost" href="/catalog">Browse All Bouquets →</a>
                     </div>
                 </section>
 

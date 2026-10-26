@@ -75,40 +75,97 @@ window.Components = {
         `;
     },
 
+    prefillOrderFormFromProfile() {
+        if (typeof window === 'undefined') return;
+        setTimeout(async () => {
+            try {
+                if (!window.RNPAuth || typeof window.RNPAuth.getUserProfile !== 'function') return;
+                const profile = await window.RNPAuth.getUserProfile();
+                if (!profile) return;
+
+                // Pre-fill WhatsApp Phone
+                const phoneInput = document.getElementById('customerPhone');
+                if (phoneInput && profile.whatsapp && (!phoneInput.value.trim() || phoneInput.dataset.prefilled !== 'false')) {
+                    phoneInput.value = profile.whatsapp;
+                    phoneInput.dataset.prefilled = 'true';
+                }
+
+                // Pre-fill Delivery Address
+                const addressInput = document.getElementById('deliveryAddress');
+                if (addressInput && profile.deliveryAddress && (!addressInput.value.trim() || addressInput.dataset.prefilled !== 'false')) {
+                    addressInput.value = profile.deliveryAddress;
+                    addressInput.dataset.prefilled = 'true';
+                }
+
+                // Pre-fill Delivery Pincode
+                const pincodeInput = document.getElementById('deliveryPincode');
+                if (pincodeInput && profile.deliveryPincode && (!pincodeInput.value.trim() || pincodeInput.dataset.prefilled !== 'false')) {
+                    pincodeInput.value = profile.deliveryPincode;
+                    pincodeInput.dataset.prefilled = 'true';
+                    if (window.WhatsApp && typeof window.WhatsApp.validatePincodeLive === 'function') {
+                        window.WhatsApp.validatePincodeLive(profile.deliveryPincode);
+                    }
+                }
+            } catch (err) {
+                console.warn('[Components] Could not pre-fill order form from profile:', err);
+            }
+        }, 60);
+    },
+
     createOrderForm(bouquet) {
+        // Pre-fill form from user's profile (phone, default delivery address, and pincode)
+        this.prefillOrderFormFromProfile();
+
         return `
-            <div class="order-form-container">
-                <h3 class="form-title">Order Details</h3>
+            <div class="order-form-container" id="order-form-container">
+                <div class="form-header-row">
+                    <h3 class="form-title">Order Details</h3>
+                    <div id="order-user-status" class="order-user-status"></div>
+                </div>
+                
                 <form id="bouquet-order-form" class="order-form">
                     <input type="hidden" id="bouquetId" value="${bouquet.id}">
                     <input type="hidden" id="bouquetName" value="${bouquet.name}">
                     <input type="hidden" id="bouquetPrice" value="${bouquet.price}">
+                    <input type="hidden" id="bouquetImage" value="${bouquet.image_url || ''}">
                     
+                    <!-- 1. Contact Person Name at Delivery -->
                     <div class="form-group">
-                        <label for="fullName">Full Name <span class="required">*</span></label>
-                        <input type="text" id="fullName" name="fullName" required placeholder="John Doe">
+                        <label for="recipientName">
+                            Name of the person to contact at delivery <span class="required">*</span>
+                        </label>
+                        <input type="text" id="recipientName" name="recipientName" required placeholder="Name of the person to contact at delivery">
                     </div>
                     
+                    <!-- 2. WhatsApp Phone Number (Pre-filled from profile, editable) -->
                     <div class="form-group">
-                        <label for="mobileNumber">Mobile Number <span class="required">*</span></label>
-                        <input type="tel" id="mobileNumber" name="mobileNumber" required placeholder="+91 XXXXX XXXXX">
+                        <label for="customerPhone">
+                            WhatsApp Phone Number <span class="required">*</span>
+                            <span class="label-hint">(For order confirmation & delivery updates)</span>
+                        </label>
+                        <input type="tel" id="customerPhone" name="customerPhone" required placeholder="+91 98XXXXXXXX" autocomplete="tel">
                     </div>
                     
+                    <!-- 3. Delivery Address -->
                     <div class="form-group">
-                        <label for="address">Full Delivery Address <span class="required">*</span></label>
-                        <textarea id="address" name="address" rows="3" required placeholder="House No, Street, Landmark..."></textarea>
+                        <label for="deliveryAddress">Delivery Address <span class="required">*</span></label>
+                        <textarea id="deliveryAddress" name="deliveryAddress" rows="3" required placeholder="House/Flat No., Apartment, Street, Landmark..."></textarea>
                     </div>
                     
+                    <!-- 4. Delivery Pincode (Crucial: 10km radius Ghaziabad validation) -->
                     <div class="form-group">
-                        <label for="area">Delivery Area <span class="required">*</span></label>
-                        <select id="area" name="area" required>
-                            <option value="">Select an area...</option>
-                            <option value="Kavi Nagar">Kavi Nagar</option>
-                            <option value="Raj Nagar">Raj Nagar</option>
-                            <option value="Other">Other (Subject to availability)</option>
-                        </select>
+                        <label for="deliveryPincode">
+                            Delivery Pincode <span class="required">*</span>
+                            <span class="label-hint">(10km Ghaziabad delivery radius)</span>
+                        </label>
+                        <div class="pincode-input-wrapper">
+                            <input type="text" id="deliveryPincode" name="deliveryPincode" required maxlength="6" inputmode="numeric" placeholder="e.g. 201002" autocomplete="postal-code">
+                            <span id="pincode-indicator" class="pincode-indicator"></span>
+                        </div>
+                        <div id="pincode-feedback" class="pincode-feedback" role="alert"></div>
                     </div>
                     
+                    <!-- 5. Delivery Date & Time Slot (1-Hour Windows) -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="deliveryDate">Delivery Date <span class="required">*</span></label>
@@ -117,40 +174,55 @@ window.Components = {
                         <div class="form-group">
                             <label for="deliverySlot">Time Slot <span class="required">*</span></label>
                             <select id="deliverySlot" name="deliverySlot" required>
-                                <option value="">Select time...</option>
-                                <option value="10 AM – 1 PM">10 AM – 1 PM</option>
-                                <option value="1 PM – 4 PM">1 PM – 4 PM</option>
-                                <option value="4 PM – 8 PM">4 PM – 8 PM</option>
+                                <option value="">Select time slot...</option>
+                                <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                                <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                                <option value="12:00 PM - 1:00 PM">12:00 PM - 1:00 PM</option>
+                                <option value="1:00 PM - 2:00 PM">1:00 PM - 2:00 PM</option>
+                                <option value="2:00 PM - 3:00 PM">2:00 PM - 3:00 PM</option>
+                                <option value="3:00 PM - 4:00 PM">3:00 PM - 4:00 PM</option>
+                                <option value="4:00 PM - 5:00 PM">4:00 PM - 5:00 PM</option>
+                                <option value="5:00 PM - 6:00 PM">5:00 PM - 6:00 PM</option>
+                                <option value="6:00 PM - 7:00 PM">6:00 PM - 7:00 PM</option>
+                                <option value="7:00 PM - 8:00 PM">7:00 PM - 8:00 PM</option>
                             </select>
                         </div>
                     </div>
                     
+                    <!-- 5. Custom Message on Card -->
                     <div class="form-group">
-                        <label for="cardMessage">Message on Card (optional)</label>
-                        <textarea id="cardMessage" name="cardMessage" rows="2" placeholder="Write a short note..."></textarea>
+                        <label for="cardMessage">
+                            Message on Card 
+                            <span class="label-hint">(Optional)</span>
+                        </label>
+                        <textarea id="cardMessage" name="cardMessage" rows="2" placeholder="Write a short heartfelt note to accompany the flowers..."></textarea>
                     </div>
                     
+                    <!-- Payment Information -->
                     <div class="form-group">
                         <label>Preferred Payment Method <span class="required">*</span></label>
                         <div class="radio-group">
                             <label class="radio-label">
-                                <input type="radio" name="paymentMethod" value="UPI" required checked> UPI
+                                <input type="radio" name="paymentMethod" value="UPI" required checked> UPI (Google Pay, PhonePe, Paytm)
                             </label>
                             <label class="radio-label">
                                 <input type="radio" name="paymentMethod" value="Bank transfer" required> Bank Transfer
                             </label>
                         </div>
+                        <p class="payment-note-inline">🔒 Safe payment via UPI QR code or NetBanking upon florist confirmation.</p>
                     </div>
                     
                     <div class="delivery-info-block">
-                        <p>🕐 Delivered in under 1 hour after confirmation</p>
-                        <p>📦 Delivered by our third-party delivery partner</p>
-                        <p>💬 WhatsApp reply within 15–30 minutes (8 AM–10 PM)</p>
-                        <p>✅ Same-day delivery available before 9 PM</p>
+                        <p>🌸 100% fresh flowers hand-tied to order in Ghaziabad</p>
+                        <p>🕐 Delivered in under 1 hour after florist confirmation</p>
+                        <p>💬 Direct WhatsApp update & live stock check in &lt;10 minutes</p>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary btn-block btn-lg">Confirm on WhatsApp</button>
-                    <p class="form-note">Next step opens WhatsApp with your order details.</p>
+                    <button type="submit" id="btn-submit-order" class="btn btn-primary btn-block btn-lg">
+                        <span class="btn-text">Confirm Order</span>
+                        <span class="btn-spinner" style="display:none;">⏳ Placing your order...</span>
+                    </button>
+                    <p class="form-note">🔒 Safe checkout. Tracked directly via your account & WhatsApp.</p>
                 </form>
             </div>
         `;
@@ -164,6 +236,88 @@ window.Components = {
                 <a href="https://api.whatsapp.com/send?phone=917289996804&text=Hi%2C%20I%20want%20to%20order%20a%20custom%20bouquet.%20Can%20you%20help%20me%3F" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg" style="display: inline-block;" onclick="if(window.gtag) gtag('event', 'whatsapp_order_click', { event_category: 'Order Intent', bouquet_name: 'Custom' });">Order a Custom Bouquet on WhatsApp</a>
             </div>
         `;
+    },
+
+    _discountToastTimer: null,
+
+    /**
+     * Non-intrusive 10% discount lead magnet for non-logged-in visitors.
+     * Slides in after 5 seconds on the catalog page.
+     */
+    initDiscountLeadMagnet() {
+        if (typeof window === 'undefined' || !window.localStorage) return;
+
+        // Skip if already dismissed
+        if (localStorage.getItem('rnp_discount_toast_dismissed') === 'true') {
+            return;
+        }
+
+        // Clear existing timer if any
+        if (this._discountToastTimer) {
+            clearTimeout(this._discountToastTimer);
+        }
+
+        // Wait 5 seconds
+        this._discountToastTimer = setTimeout(async () => {
+            if (localStorage.getItem('rnp_discount_toast_dismissed') === 'true') {
+                return;
+            }
+
+            // Only show for users who are NOT currently logged in
+            try {
+                const user = window.RNPAuth ? await window.RNPAuth.getCurrentUser() : null;
+                if (user) {
+                    return;
+                }
+            } catch (err) {
+                console.warn('[RNP] Auth check for lead magnet:', err);
+            }
+
+            // Avoid duplicates
+            if (document.getElementById('rnp-discount-toast')) {
+                return;
+            }
+
+            const toast = document.createElement('div');
+            toast.id = 'rnp-discount-toast';
+            toast.className = 'rnp-discount-toast';
+            toast.setAttribute('role', 'alert');
+
+            const loginUrl = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+
+            toast.innerHTML = `
+                <div class="rnp-toast-inner">
+                    <div class="rnp-toast-content">
+                        <span class="rnp-toast-icon">🌸</span>
+                        <span class="rnp-toast-text">First time here? Log in to get <strong>10% off</strong> your first Rose n Petals order!</span>
+                    </div>
+                    <div class="rnp-toast-actions">
+                        <a href="${loginUrl}" class="rnp-toast-login-btn">Log In Now</a>
+                        <button type="button" class="rnp-toast-close" id="rnp-toast-close-btn" aria-label="Dismiss discount notification">&times;</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.add('rnp-toast-visible');
+            });
+
+            // Dismiss listener
+            const closeBtn = document.getElementById('rnp-toast-close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    localStorage.setItem('rnp_discount_toast_dismissed', 'true');
+                    toast.classList.remove('rnp-toast-visible');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 350);
+                });
+            }
+        }, 5000);
     }
 };
 

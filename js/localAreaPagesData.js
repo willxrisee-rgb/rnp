@@ -14,14 +14,14 @@ window.SHARED_STEPS = window.SHARED_STEPS || [
 ];
 
 window.SHARED_NEARBY_AREAS = window.SHARED_NEARBY_AREAS || [
-    { label: 'Indirapuram', href: '#/flower-delivery-indirapuram' },
-    { label: 'Vaishali', href: '#/flower-delivery-vaishali-ghaziabad' },
-    { label: 'Vasundhara', href: '#/flower-delivery-vasundhara-ghaziabad' },
-    { label: 'Raj Nagar', href: '#/flower-delivery-raj-nagar-ghaziabad' },
-    { label: 'Kavi Nagar', href: '#/flower-delivery-kavi-nagar-ghaziabad' },
-    { label: 'Mohan Nagar', href: '#/flower-delivery-mohan-nagar-ghaziabad' },
-    { label: 'Vijay Nagar', href: '#/flower-delivery-vijay-nagar-ghaziabad' },
-    { label: 'Crossing Republik', href: '#/flower-delivery-crossing-republik-ghaziabad' }
+    { label: 'Indirapuram', href: '/flower-delivery-indirapuram' },
+    { label: 'Vaishali', href: '/flower-delivery-vaishali-ghaziabad' },
+    { label: 'Vasundhara', href: '/flower-delivery-vasundhara-ghaziabad' },
+    { label: 'Raj Nagar', href: '/flower-delivery-raj-nagar-ghaziabad' },
+    { label: 'Kavi Nagar', href: '/flower-delivery-kavi-nagar-ghaziabad' },
+    { label: 'Mohan Nagar', href: '/flower-delivery-mohan-nagar-ghaziabad' },
+    { label: 'Vijay Nagar', href: '/flower-delivery-vijay-nagar-ghaziabad' },
+    { label: 'Crossing Republik', href: '/flower-delivery-crossing-republik-ghaziabad' }
 ];
 
 // Helper to filter out the current area from nearby areas
@@ -31,10 +31,20 @@ function getNearbyAreas(currentAreaName) {
 
 window.LocalAreaPagesData = {
     "flower-delivery-indirapuram": {
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://rosenpetals.com/flower-delivery-ghaziabad" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Delivery in Indirapuram", "item": "https://rosenpetals.com/flower-delivery-indirapuram" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         slug: "flower-delivery-indirapuram",
         pageTitle: "Flower Delivery in Indirapuram | Rose n Petals",
         metaDescription: "Fresh flower delivery in Indirapuram in under 1 hour. Order handmade bouquets starting from ₹200 on WhatsApp today.",
-        canonicalUrl: "https://rosenpetals.com/#/flower-delivery-indirapuram",
+        canonicalUrl: 'https://rosenpetals.com/flower-delivery-indirapuram',
         areaName: "Indirapuram",
         cityName: "Ghaziabad",
         headline: "Flower Delivery in Indirapuram — Fresh Bouquets from ₹200",
@@ -59,10 +69,20 @@ window.LocalAreaPagesData = {
         faqContent: `<h2>Indirapuram — Frequently Asked Questions</h2><details><summary>How long does delivery take to Indirapuram from your shop?</summary><p>From our Kavi Nagar shop, average delivery to Indirapuram is 30 to 40 minutes. During peak traffic hours in the evening, allow up to 50 minutes for certain blocks. WhatsApp us your address and we will give you an honest time estimate before you confirm.</p></details><details><summary>Do you deliver to Shipra Sun City?</summary><p>Yes. Shipra Sun City is within our regular Indirapuram delivery coverage. Share your tower and flat number when ordering on WhatsApp so we can coordinate entry at the gate without any hold-up on arrival.</p></details><details><summary>Can I order flowers for early morning delivery to an Indirapuram address?</summary><p>We open at 8 AM every day. For early-morning surprises — birthdays, anniversaries — we recommend WhatsApping us the evening before so we can prepare and dispatch as soon as the shop opens.</p></details>`
     },
     "flower-delivery-vaishali-ghaziabad": {
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://rosenpetals.com/flower-delivery-ghaziabad" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Delivery in Vaishali, Ghaziabad", "item": "https://rosenpetals.com/flower-delivery-vaishali-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         slug: "flower-delivery-vaishali-ghaziabad",
         pageTitle: "Flower Delivery in Vaishali, Ghaziabad | Rose n Petals",
         metaDescription: "Fresh flower delivery in Vaishali in under 1 hour. Order handmade bouquets starting from ₹200 on WhatsApp today.",
-        canonicalUrl: "https://rosenpetals.com/#/flower-delivery-vaishali-ghaziabad",
+        canonicalUrl: 'https://rosenpetals.com/flower-delivery-vaishali-ghaziabad',
         areaName: "Vaishali",
         cityName: "Ghaziabad",
         headline: "Flower Delivery in Vaishali — Fresh Bouquets from ₹200",
@@ -87,10 +107,20 @@ window.LocalAreaPagesData = {
         faqContent: `<h2>Vaishali — Frequently Asked Questions</h2><details><summary>How long does delivery to Vaishali Sector 4 take?</summary><p>From our shop in Kavi Nagar Sector 18, delivery to Vaishali Sector 4 typically takes 25 to 35 minutes. Sector 3 is similar. If traffic is heavy on the NH9 corridor, we will tell you before you confirm the order so you can decide.</p></details><details><summary>Can you deliver flowers to an office near Vaishali Metro?</summary><p>Yes. For office deliveries near Vaishali Metro, share the building name, floor, and recipient's name. We recommend ordering before 5 PM for office addresses to ensure your recipient is still available to receive the bouquet.</p></details><details><summary>Do you deliver on weekends to Vaishali?</summary><p>Every day of the week, including Sundays and public holidays. Our hours are 8 AM to 10 PM seven days a week. Vaishali residents can order any day they need flowers — no exceptions.</p></details>`
     },
     "flower-delivery-vasundhara-ghaziabad": {
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://rosenpetals.com/flower-delivery-ghaziabad" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Delivery in Vasundhara, Ghaziabad", "item": "https://rosenpetals.com/flower-delivery-vasundhara-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         slug: "flower-delivery-vasundhara-ghaziabad",
         pageTitle: "Flower Delivery in Vasundhara, Ghaziabad | Rose n Petals",
         metaDescription: "Fresh flower delivery in Vasundhara in under 1 hour. Order handmade bouquets starting from ₹200 on WhatsApp today.",
-        canonicalUrl: "https://rosenpetals.com/#/flower-delivery-vasundhara-ghaziabad",
+        canonicalUrl: 'https://rosenpetals.com/flower-delivery-vasundhara-ghaziabad',
         areaName: "Vasundhara",
         cityName: "Ghaziabad",
         headline: "Flower Delivery in Vasundhara — Fresh Bouquets from ₹200",
@@ -115,10 +145,20 @@ window.LocalAreaPagesData = {
         faqContent: `<h2>Vasundhara — Frequently Asked Questions</h2><details><summary>Do you deliver to all sectors in Vasundhara?</summary><p>Yes — Sector 1 through Sector 16. If you are in an outer sector or a newer housing society, let us know the full address on WhatsApp and we will confirm delivery time before you pay.</p></details><details><summary>I need flowers for a Vasundhara address and I am not in Ghaziabad myself. Can I order remotely?</summary><p>Yes. Many of our orders are placed by people who are in other cities or countries and want to send flowers to someone in Ghaziabad. WhatsApp us the recipient's full Vasundhara address and a contact number for them. We handle the delivery and message you when it is done.</p></details><details><summary>What is the latest I can order for same-day Vasundhara delivery?</summary><p>Same-day orders are accepted until 9 PM for most Vasundhara sectors. For the outer sectors near Crossing Republik, place your order by 8:30 PM to allow delivery by 10 PM. WhatsApp us if you are cutting it close and we will be honest about what is achievable.</p></details>`
     },
     "flower-delivery-raj-nagar-ghaziabad": {
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://rosenpetals.com/flower-delivery-ghaziabad" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Delivery in Raj Nagar, Ghaziabad", "item": "https://rosenpetals.com/flower-delivery-raj-nagar-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         slug: "flower-delivery-raj-nagar-ghaziabad",
         pageTitle: "Flower Delivery in Raj Nagar, Ghaziabad | Rose n Petals",
         metaDescription: "Fresh flower delivery in Raj Nagar in under 1 hour. Order handmade bouquets starting from ₹200 on WhatsApp today.",
-        canonicalUrl: "https://rosenpetals.com/#/flower-delivery-raj-nagar-ghaziabad",
+        canonicalUrl: 'https://rosenpetals.com/flower-delivery-raj-nagar-ghaziabad',
         areaName: "Raj Nagar",
         cityName: "Ghaziabad",
         headline: "Flower Delivery in Raj Nagar — Fresh Bouquets from ₹200",
@@ -143,10 +183,20 @@ window.LocalAreaPagesData = {
         faqContent: `<h2>Raj Nagar — Frequently Asked Questions</h2><details><summary>Do you deliver to Raj Nagar Extension?</summary><p>Yes. Raj Nagar Extension along the NH58 corridor is within our delivery range. Average delivery time from our Kavi Nagar shop is 35 to 45 minutes to most Extension addresses. WhatsApp us your full address and we will confirm the estimated time before you pay.</p></details><details><summary>What is the latest time I can order for same-day delivery to Raj Nagar?</summary><p>For same-day delivery to Raj Nagar and Raj Nagar Extension, place your order by 9 PM. We are open until 10 PM and will deliver as long as the bouquet can be made and dispatched within operating hours.</p></details><details><summary>Can you deliver to an office address in Raj Nagar for a colleague?</summary><p>Yes. Office deliveries in Raj Nagar are part of our regular coverage. Include the company name, floor, and recipient's name when ordering on WhatsApp. For a discreet desk delivery, mention it when you message us and we will coordinate accordingly.</p></details>`
     },
     "flower-delivery-kavi-nagar-ghaziabad": {
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://rosenpetals.com/flower-delivery-ghaziabad" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Delivery in Kavi Nagar, Ghaziabad", "item": "https://rosenpetals.com/flower-delivery-kavi-nagar-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         slug: "flower-delivery-kavi-nagar-ghaziabad",
         pageTitle: "Flower Delivery in Kavi Nagar, Ghaziabad | Rose n Petals",
         metaDescription: "Fresh flower delivery in Kavi Nagar in under 1 hour. Order handmade bouquets starting from ₹200 on WhatsApp today.",
-        canonicalUrl: "https://rosenpetals.com/#/flower-delivery-kavi-nagar-ghaziabad",
+        canonicalUrl: 'https://rosenpetals.com/flower-delivery-kavi-nagar-ghaziabad',
         areaName: "Kavi Nagar",
         cityName: "Ghaziabad",
         headline: "Flower Delivery in Kavi Nagar — Fresh Bouquets from ₹200",
@@ -171,10 +221,20 @@ window.LocalAreaPagesData = {
         faqContent: `<h2>Kavi Nagar — Frequently Asked Questions</h2><details><summary>How fast can you deliver within Kavi Nagar?</summary><p>Our shop is in Sector 18, KD Market. For most Kavi Nagar addresses, we deliver in 20 to 30 minutes from the time your order is confirmed. It is the fastest delivery window we offer anywhere in Ghaziabad.</p></details><details><summary>Can I walk in to the shop and order directly?</summary><p>Yes. Shop No. 14, KD Market, Block D, Sector 18 is open every day from 8 AM to 10 PM. You can walk in, choose what you want, and take it with you or arrange same-day delivery from the counter.</p></details><details><summary>Do you deliver to gated societies in Kavi Nagar?</summary><p>Yes. We have delivered to residential societies and gated colonies across Kavi Nagar since 1999. When placing your order on WhatsApp, share the society name, block, and flat number. We coordinate with the gate or the guard as needed.</p></details>`
     },
     "flower-delivery-mohan-nagar-ghaziabad": {
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://rosenpetals.com/flower-delivery-ghaziabad" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Delivery in Mohan Nagar, Ghaziabad", "item": "https://rosenpetals.com/flower-delivery-mohan-nagar-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         slug: "flower-delivery-mohan-nagar-ghaziabad",
         pageTitle: "Flower Delivery in Mohan Nagar, Ghaziabad | Rose n Petals",
         metaDescription: "Fresh flower delivery in Mohan Nagar in under 1 hour. Order handmade bouquets starting from ₹200 on WhatsApp today.",
-        canonicalUrl: "https://rosenpetals.com/#/flower-delivery-mohan-nagar-ghaziabad",
+        canonicalUrl: 'https://rosenpetals.com/flower-delivery-mohan-nagar-ghaziabad',
         areaName: "Mohan Nagar",
         cityName: "Ghaziabad",
         headline: "Flower Delivery in Mohan Nagar — Fresh Bouquets from ₹200",
@@ -199,10 +259,20 @@ window.LocalAreaPagesData = {
         faqContent: `<h2>Mohan Nagar — Frequently Asked Questions</h2><details><summary>Can you deliver to office addresses near Mohan Nagar Metro?</summary><p>Yes. Office deliveries near Mohan Nagar Metro are part of our regular coverage. Include the company name, floor, and recipient's name when ordering. For a discreet delivery, mention that when you WhatsApp us and we will ensure the bouquet reaches the right person.</p></details><details><summary>How long does delivery from Kavi Nagar to Mohan Nagar take?</summary><p>Average delivery time from our shop to Mohan Nagar addresses is 25 to 40 minutes. Traffic on the main roads can vary, especially in the evening. We give you an honest time estimate when you place your order, so there are no surprises.</p></details><details><summary>What is the latest order time for Mohan Nagar same-day delivery?</summary><p>Same-day orders for Mohan Nagar are accepted until 9 PM, with delivery by 10 PM. Order by 8:30 PM if you want extra comfort in the timeline. We are open until 10 PM every day.</p></details>`
     },
     "flower-delivery-vijay-nagar-ghaziabad": {
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://rosenpetals.com/flower-delivery-ghaziabad" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Delivery in Vijay Nagar, Ghaziabad", "item": "https://rosenpetals.com/flower-delivery-vijay-nagar-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         slug: "flower-delivery-vijay-nagar-ghaziabad",
         pageTitle: "Flower Delivery in Vijay Nagar, Ghaziabad | Rose n Petals",
         metaDescription: "Fresh flower delivery in Vijay Nagar in under 1 hour. Order handmade bouquets starting from ₹200 on WhatsApp today.",
-        canonicalUrl: "https://rosenpetals.com/#/flower-delivery-vijay-nagar-ghaziabad",
+        canonicalUrl: 'https://rosenpetals.com/flower-delivery-vijay-nagar-ghaziabad',
         areaName: "Vijay Nagar",
         cityName: "Ghaziabad",
         headline: "Flower Delivery in Vijay Nagar — Fresh Bouquets from ₹200",
@@ -227,10 +297,20 @@ window.LocalAreaPagesData = {
         faqContent: `<h2>Vijay Nagar — Frequently Asked Questions</h2><details><summary>Is Vijay Nagar one of your faster delivery areas?</summary><p>Yes. Vijay Nagar is close to our Kavi Nagar shop in Sector 18. For most Vijay Nagar addresses, we deliver in 20 to 30 minutes from the time the order is confirmed and paid. It is among the shortest delivery windows we offer across Ghaziabad.</p></details><details><summary>Do you cover the housing societies near Vijay Nagar main market?</summary><p>Yes. We deliver to the residential colonies, housing societies, and standalone homes throughout Vijay Nagar. WhatsApp us your exact address and we will confirm delivery without issue.</p></details><details><summary>Can I get flowers delivered to Vijay Nagar on the same evening I order?</summary><p>As long as you order before 9 PM, we can deliver the same evening for Vijay Nagar addresses. We are open until 10 PM and Vijay Nagar's proximity to our shop means even late-evening orders can be fulfilled comfortably.</p></details>`
     },
     "flower-delivery-crossing-republik-ghaziabad": {
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Locations", "item": "https://rosenpetals.com/flower-delivery-ghaziabad" },
+                { "@type": "ListItem", "position": 3, "name": "Flower Delivery in Crossing Republik, Ghaziabad", "item": "https://rosenpetals.com/flower-delivery-crossing-republik-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         slug: "flower-delivery-crossing-republik-ghaziabad",
         pageTitle: "Flower Delivery in Crossing Republik, Ghaziabad | Rose n Petals",
         metaDescription: "Fresh flower delivery in Crossing Republik in under 1 hour. Order handmade bouquets starting from ₹200 on WhatsApp today.",
-        canonicalUrl: "https://rosenpetals.com/#/flower-delivery-crossing-republik-ghaziabad",
+        canonicalUrl: 'https://rosenpetals.com/flower-delivery-crossing-republik-ghaziabad',
         areaName: "Crossing Republik",
         cityName: "Ghaziabad",
         headline: "Flower Delivery in Crossing Republik — Fresh Bouquets from ₹200",

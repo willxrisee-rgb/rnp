@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile – Rose n Petals | Ghaziabad's Trusted Florist</title>
+    <meta name="description" content="View your Rose n Petals account details, manage delivery info, and track order history with live status updates.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+    <link rel="apple-touch-icon" href="/assets/favicon-180.png">
+
+    <!-- Google Fonts — Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <!-- Global Header -->
+    <header class="global-header" id="global-header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <img src="/Logo.jpg" alt="Rose n Petals" class="navbar-logo" width="120" height="40" loading="eager">
+            </a>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- Main Navigation -->
+            <nav class="main-nav" id="main-nav">
+                <ul class="nav-list">
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/catalog" class="nav-link">Bouquets</a></li>
+                    <li><a href="/catalog?filter=All" class="nav-link">Occasions</a></li>
+                    <li><a href="/?scrollTo=how-it-works" class="nav-link">How it works</a></li>
+                    <li><a href="/?scrollTo=global-footer" class="nav-link">Contact</a></li>
+                    <li>
+                        <a href="https://www.instagram.com/_rosenpetals_" target="_blank" rel="noopener noreferrer"
+                            class="nav-link ig-link" title="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" style="vertical-align: middle;">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                    </li>
+                    <li id="nav-auth-item">
+                        <a href="/profile.html" class="nav-link nav-auth-link logged-in active" id="nav-profile-link">
+                            <span class="nav-auth-icon">👤</span> My Profile
+                        </a>
+                    </li>
+                    <li class="cart-icon-container" onclick="window.location.href='/catalog'" title="Bouquets Catalog">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            style="vertical-align: middle; color: #333;">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="profile-page-wrapper">
+        <div class="profile-container">
+
+            <!-- Breadcrumb Navigation -->
+            <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">
+                <a href="/" style="text-decoration: none; color: inherit;">Home</a>
+                <span style="margin: 0 6px;">/</span>
+                <span style="color: var(--primary-color); font-weight: 600;">My Profile</span>
+            </div>
+
+            <!-- Loading State -->
+            <div id="profile-loader" class="profile-loading-state">
+                <div style="font-size: 32px; margin-bottom: 12px; animation: spin 1s infinite linear;">🌸</div>
+                <p>Loading your profile & order history...</p>
+            </div>
+
+            <!-- Profile Content Area (Initially Hidden) -->
+            <div id="profile-content" style="display: none;">
+
+                <!-- Top Section: Customer Profile Info -->
+                <section class="profile-card">
+                    <div class="profile-user-info">
+                        <div class="profile-avatar-wrapper">
+                            <img id="user-avatar-img" class="profile-avatar-img" src="" alt="User" style="display: none;">
+                            <span id="user-avatar-initial" class="profile-avatar-initial">U</span>
+                        </div>
+                        <div class="profile-user-meta">
+                            <h1 id="user-display-name" class="profile-user-name">Welcome</h1>
+                            <p id="user-email-text" class="profile-user-email">email@example.com</p>
+                            <div id="user-phone-wrap">
+                                <span id="user-phone-badge" class="profile-phone-pill">
+                                    <span>💬</span>
+                                    <span id="user-phone-text">WhatsApp not set</span>
+                                </span>
+                            </div>
+                            <div id="user-address-wrap" class="profile-address-wrap">
+                                <div class="profile-address-label">
+                                    <span class="profile-address-icon">📍</span>
+                                    <span>Default Delivery Address:</span>
+                                </div>
+                                <p id="user-address-text" class="profile-address-text empty-address">No address saved yet. It will be saved on your next order.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button id="btn-sign-out" class="btn-sign-out" type="button" title="Sign out of your account">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Bottom Section: Order History -->
+                <section class="profile-orders-section">
+                    <div class="orders-section-header">
+                        <h2 class="orders-title">Your Order History</h2>
+                        <span id="orders-count-badge" class="orders-count-badge">0 Orders</span>
+                    </div>
+
+                    <!-- Orders List Container -->
+                    <div id="orders-list-container" class="orders-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="global-footer" id="global-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section brand-info">
+                    <div class="footer-logo">
+                        <img src="/Logo.jpg" alt="Rose n Petals" width="140" height="46" loading="lazy">
+                    </div>
+                    <p class="tagline">Fresh handmade flower bouquets delivered in 1 hour across Ghaziabad.</p>
+                    <p class="since">Serving smiles since 1999.</p>
+                </div>
+            </div>
+            <div class="footer-section meta-info" style="margin-top: 24px; text-align: center; border-top: 1px solid #eee; padding-top: 16px;">
+                <p>&copy; <span id="current-year"></span> Rose n Petals. All rights reserved. | <a href="/policies" style="color: inherit; text-decoration: underline;">Policies</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK v10 Modular -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCp9WS-KaYKUnK9LF3YGD4jwZM4T8JlIFY",
+            authDomain: "rose-n-petals-az3b9.firebaseapp.com",
+            projectId: "rose-n-petals-az3b9",
+            storageBucket: "rose-n-petals-az3b9.firebasestorage.app",
+            messagingSenderId: "477080539500",
+            appId: "1:477080539500:web:040a0bc0df26f0c7666349"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Elements
+        const loader = document.getElementById('profile-loader');
+        const content = document.getElementById('profile-content');
+        const userNameEl = document.getElementById('user-display-name');
+        const userEmailEl = document.getElementById('user-email-text');
+        const userPhoneText = document.getElementById('user-phone-text');
+        const userPhoneBadge = document.getElementById('user-phone-badge');
+        const userAddressText = document.getElementById('user-address-text');
+        const avatarImg = document.getElementById('user-avatar-img');
+        const avatarInitial = document.getElementById('user-avatar-initial');
+        const ordersCountBadge = document.getElementById('orders-count-badge');
+        const ordersContainer = document.getElementById('orders-list-container');
+        const signOutBtn = document.getElementById('btn-sign-out');
+        const currentYearEl = document.getElementById('current-year');
+
+        if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
+
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('mobile-menu-toggle');
+        const mainNav = document.getElementById('main-nav');
+        if (menuBtn && mainNav) {
+            menuBtn.addEventListener('click', () => mainNav.classList.toggle('is-open'));
+        }
+
+        // Sign Out Listener
+        if (signOutBtn) {
+            signOutBtn.addEventListener('click', async () => {
+                if (confirm('Are you sure you want to sign out?')) {
+                    try {
+                        await signOut(auth);
+                        window.location.href = '/login.html';
+                    } catch (err) {
+                        console.error('Sign out error:', err);
+                        alert('Could not sign out. Please try again.');
+                    }
+                }
+            });
+        }
+
+        // Auth Gate
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                // Not authenticated — redirect to login preserving redirect parameter
+                window.location.href = `/login.html?redirect=${encodeURIComponent('/profile.html')}`;
+                return;
+            }
+
+            try {
+                // 1. Fetch User Profile from Firestore 'Users' collection
+                let profile = null;
+                try {
+                    const userSnap = await getDoc(doc(db, "Users", user.uid));
+                    if (userSnap.exists()) {
+                        profile = userSnap.data();
+                    }
+                } catch (e) {
+                    console.warn("Could not fetch user document:", e);
+                }
+
+                const displayName = profile?.name || user.displayName || 'Flower Enthusiast';
+                const email = user.email || profile?.email || '';
+                const whatsapp = profile?.whatsapp || '';
+                const photoURL = user.photoURL || profile?.photoURL || '';
+                const savedAddress = profile?.deliveryAddress || '';
+                const savedPincode = profile?.deliveryPincode || '';
+
+                // Populate Top Section
+                userNameEl.textContent = displayName;
+                userEmailEl.textContent = email;
+
+                if (photoURL) {
+                    avatarImg.src = photoURL;
+                    avatarImg.style.display = 'block';
+                    avatarInitial.style.display = 'none';
+                } else {
+                    avatarInitial.textContent = (displayName[0] || 'U').toUpperCase();
+                    avatarInitial.style.display = 'block';
+                    avatarImg.style.display = 'none';
+                }
+
+                if (whatsapp) {
+                    userPhoneText.textContent = whatsapp;
+                    userPhoneBadge.className = 'profile-phone-pill';
+                } else {
+                    userPhoneText.textContent = 'Add WhatsApp number at checkout';
+                    userPhoneBadge.className = 'profile-phone-pill missing';
+                }
+
+                // Populate Default Delivery Address
+                if (userAddressText) {
+                    if (savedAddress) {
+                        const formattedAddress = savedPincode ? `${savedAddress} (Pincode: ${savedPincode})` : savedAddress;
+                        userAddressText.textContent = formattedAddress;
+                        userAddressText.classList.remove('empty-address');
+                    } else {
+                        userAddressText.textContent = 'No address saved yet. It will be saved on your next order.';
+                        userAddressText.classList.add('empty-address');
+                    }
+                }
+
+                // 2. Fetch Customer Orders from Firestore 'Orders' collection
+                await loadCustomerOrders(user.uid);
+
+                // Show content
+                loader.style.display = 'none';
+                content.style.display = 'block';
+
+            } catch (err) {
+                console.error("Profile load error:", err);
+                loader.innerHTML = `
+                    <p style="color: #DC2626;">We had trouble loading your account. Please refresh the page.</p>
+                    <button class="btn btn-primary" onclick="window.location.reload()" style="margin-top: 12px;">Retry</button>
+                `;
+            }
+        });
+
+        /**
+         * Fetches and renders orders for the authenticated customer.
+         */
+        async function loadCustomerOrders(uid) {
+            let snap;
+            try {
+                // Primary query with createdAt sort
+                const q = query(
+                    collection(db, "Orders"),
+                    where("customerId", "==", uid),
+                    orderBy("createdAt", "desc")
+                );
+                snap = await getDocs(q);
+            } catch (err) {
+                console.warn("Falling back to unindexed query:", err);
+                // Fallback query without orderBy to handle index setup gracefully
+                const fallbackQ = query(
+                    collection(db, "Orders"),
+                    where("customerId", "==", uid)
+                );
+                snap = await getDocs(fallbackQ);
+            }
+
+            const orders = [];
+            snap.forEach((docSnap) => {
+                orders.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            // Ensure in-memory sort by date descending
+            orders.sort((a, b) => {
+                const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+                const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+                return timeB - timeA;
+            });
+
+            ordersCountBadge.textContent = `${orders.length} ${orders.length === 1 ? 'Order' : 'Orders'}`;
+
+            if (orders.length === 0) {
+                renderEmptyOrdersState();
+                return;
+            }
+
+            ordersContainer.innerHTML = orders.map(renderOrderCard).join('');
+        }
+
+        /**
+         * Renders an individual order history card.
+         */
+        function renderOrderCard(order) {
+            const orderRef = (order.id || 'RNP').substring(0, 8).toUpperCase();
+            const dateStr = formatOrderDate(order.createdAt);
+            const statusHtml = getStatusBadgeHtml(order.status);
+            
+            const shopWaMsg = encodeURIComponent(
+                `Hi Rose n Petals! Inquiring about my order #${orderRef} for ${order.bouquetName}.`
+            );
+            const shopWaUrl = `https://api.whatsapp.com/send?phone=917289996804&text=${shopWaMsg}`;
+
+            const bouquetThumb = order.imageUrl
+                ? `<img src="${order.imageUrl}" alt="${escapeHtml(order.bouquetName)}" class="order-thumb-img">`
+                : `<span class="order-thumb-fallback">💐</span>`;
+
+            return `
+                <article class="order-history-card">
+                    <div class="order-card-top">
+                        <div class="order-bouquet-info">
+                            <div class="order-thumb-wrapper">
+                                ${bouquetThumb}
+                            </div>
+                            <div class="order-title-meta">
+                                <h3 class="order-name">${escapeHtml(order.bouquetName || 'Fresh Flower Bouquet')}</h3>
+                                <span class="order-ref">Order Ref: #${orderRef}</span>
+                                <span style="font-size: 0.82rem; color: #64748B;">Placed: ${dateStr}</span>
+                            </div>
+                        </div>
+                        <div class="order-price-badge">
+                            ₹${order.price || '0'}
+                        </div>
+                    </div>
+
+                    <div class="order-meta-grid">
+                        <div class="order-meta-item">
+                            <span class="order-meta-icon">👤</span>
+                            <span>Contact: <strong>${escapeHtml(order.recipientName || 'Self')}</strong></span>
+                        </div>
+                        <div class="order-meta-item">
+                            <span class="order-meta-icon">⏰</span>
+                            <span>Slot: <strong>${escapeHtml(order.deliveryDate || 'Today')} · ${escapeHtml(order.timeSlot || '')}</strong></span>
+                        </div>
+                        <div class="order-meta-item">
+                            <span class="order-meta-icon">📍</span>
+                            <span>Address: ${escapeHtml(order.deliveryAddress || '')} (PIN: <strong>${escapeHtml(order.pincode || '')}</strong>)</span>
+                        </div>
+                        <div class="order-meta-item">
+                            <span class="order-meta-icon">💬</span>
+                            <span>Phone: <strong>${escapeHtml(order.customerPhone || '')}</strong></span>
+                        </div>
+                    </div>
+
+                    ${order.cardMessage && order.cardMessage !== 'None' ? `
+                    <div style="background: #FFFDF5; border: 1px solid #FEF3C7; border-radius: 8px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.86rem; color: #78350F; font-style: italic;">
+                        💌 Card Note: "${escapeHtml(order.cardMessage)}"
+                    </div>` : ''}
+
+                    <div class="order-card-bottom">
+                        <div>
+                            ${statusHtml}
+                        </div>
+                        <div>
+                            <a href="${shopWaUrl}" target="_blank" rel="noopener noreferrer" class="order-whatsapp-btn">
+                                💬 WhatsApp Florist Updates
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        /**
+         * Generates styled badge HTML according to the order's status.
+         */
+        function getStatusBadgeHtml(status) {
+            const s = (status || '').toUpperCase();
+            if (s.includes('PENDING') || s === 'PENDING_SHOP_APPROVAL') {
+                return `<span class="order-status-badge status-pending">⏳ Pending Shop Approval</span>`;
+            } else if (s.includes('CONFIRM')) {
+                return `<span class="order-status-badge status-confirmed">✅ Confirmed & Preparing</span>`;
+            } else if (s.includes('DELIVER') && !s.includes('ED')) {
+                return `<span class="order-status-badge status-delivery">🚚 Out for Delivery</span>`;
+            } else if (s.includes('DELIVERED')) {
+                return `<span class="order-status-badge status-delivered">💐 Delivered</span>`;
+            } else {
+                return `<span class="order-status-badge status-pending">⏳ ${status || 'Under Review'}</span>`;
+            }
+        }
+
+        /**
+         * Renders friendly empty state when user has placed 0 orders.
+         */
+        function renderEmptyOrdersState() {
+            ordersContainer.innerHTML = `
+                <div class="profile-empty-orders">
+                    <span class="empty-orders-icon">💐</span>
+                    <h3 class="empty-orders-title">No Orders Yet</h3>
+                    <p class="empty-orders-text">
+                        You haven't placed any flower orders yet. Fresh, handcrafted bouquets are waiting to brighten someone's day!
+                    </p>
+                    <a href="/catalog" class="btn btn-primary btn-lg" style="display: inline-block;">
+                        Browse Bouquets
+                    </a>
+                </div>
+            `;
+        }
+
+        /**
+         * Formats Firestore timestamp or Date string into human readable Indian date.
+         */
+        function formatOrderDate(timestamp) {
+            if (!timestamp) return 'Recent';
+            let d;
+            if (timestamp.toMillis) {
+                d = new Date(timestamp.toMillis());
+            } else if (timestamp.seconds) {
+                d = new Date(timestamp.seconds * 1000);
+            } else {
+                d = new Date(timestamp);
+            }
+            if (isNaN(d.getTime())) return 'Recent';
+            return d.toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+
+</html>

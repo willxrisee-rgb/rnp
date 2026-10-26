@@ -25,7 +25,7 @@ window.LocalAreaRoutes = {
         const data = window.LocalAreaPagesData ? window.LocalAreaPagesData[slug] : null;
         if (!data) return;
 
-        document.title = data.pageTitle;
+        window.App.applySEOMeta(data);
 
         // WhatsApp Link Setup
         const defaultMessage = `Hi! I want flower delivery in ${data.areaName}.`;
@@ -147,7 +147,7 @@ window.LocalAreaRoutes = {
                     </h2>
                     ${productsHtml}
                     <div class="rnp-section__footer" style="margin-top:2rem;text-align:center;">
-                        <a class="rnp-btn rnp-btn--ghost" href="#/catalog">View All Bouquets →</a>
+                        <a class="rnp-btn rnp-btn--ghost" href="/catalog">View All Bouquets →</a>
                     </div>
                 </section>
 

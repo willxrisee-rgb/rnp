@@ -250,6 +250,11 @@ window.Pages = {
 
         container.innerHTML = html;
         this.setupChipListeners('/catalog?filter=');
+
+        // Trigger 10% discount lead magnet for non-logged-in visitors browsing catalog
+        if (window.Components && typeof window.Components.initDiscountLeadMagnet === 'function') {
+            window.Components.initDiscountLeadMagnet();
+        }
     },
 
     renderBouquetDetailPage(container, slug) {
@@ -367,6 +372,9 @@ window.Pages = {
 
         // Initialize WhatsApp form listener
         WhatsApp.initFormListener();
+
+        // Dispatch custom event for tracking
+        window.dispatchEvent(new CustomEvent('bouquetViewed', { detail: { bouquet: bouquet } }));
     },
 
     // Helper to handle client-side filtering via chip clicks

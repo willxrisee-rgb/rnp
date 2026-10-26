@@ -64,7 +64,7 @@ window.CoreServiceRoutes = {
             };
         }
 
-        document.title = data.pageTitle;
+        window.App.applySEOMeta(data);
 
         const waLink = `https://api.whatsapp.com/send?phone=${data.whatsappNumber}&text=${encodeURIComponent(data.whatsappMessage || 'Hi! I want to order a bouquet.')}`;
 

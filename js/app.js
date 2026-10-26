@@ -1,5 +1,24 @@
 // js/app.js
 
+window.SHARED_LOCAL_SCHEMA = {
+    "@context": "https://schema.org",
+    "@type": "Florist",
+    "name": "Rose n Petals",
+    "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Shop No. 14, KD Market, Block D, Sector 18, Kavi Nagar",
+        "addressLocality": "Ghaziabad",
+        "addressRegion": "Uttar Pradesh",
+        "postalCode": "201002",
+        "addressCountry": "IN"
+    },
+    "telephone": "+919810244455",
+    "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 08:00-22:00",
+    "paymentAccepted": "UPI, Bank Transfer",
+    "areaServed": ["Kavi Nagar", "Raj Nagar"],
+    "url": "https://rosenpetals.com"
+};
+
 function getCurrentRoute() {
     if (window.INITIAL_PAGE) {
         var initial = window.INITIAL_PAGE;
@@ -59,13 +78,17 @@ const App = {
             const href = link.getAttribute('href');
             if (!href) return;
 
-            // Skip external links, tel, mailto, whatsapp, target="_blank", anchors, sitemap
+            // Skip external links, tel, mailto, whatsapp, target="_blank", anchors, sitemap, and standalone HTML pages
             if (link.getAttribute('target') === '_blank' ||
                 href.startsWith('http') ||
                 href.startsWith('tel:') ||
                 href.startsWith('mailto:') ||
                 href.startsWith('#') ||
-                href.endsWith('.xml')) {
+                href.endsWith('.xml') ||
+                href.includes('.html') ||
+                href.startsWith('/login') ||
+                href.startsWith('/profile') ||
+                href.startsWith('/admin')) {
                 return;
             }
 
@@ -258,6 +281,23 @@ const App = {
                 </div></div>`;
             }
         }
+    },
+
+    applySEOMeta(data) {
+        document.title = data.pageTitle;
+        if (data.metaDescription) {
+            document.querySelector('meta[name="description"]')?.setAttribute('content', data.metaDescription);
+            document.querySelector('meta[property="og:description"]')?.setAttribute('content', data.metaDescription);
+        }
+        if (data.canonicalUrl) {
+            document.querySelector('link[rel="canonical"]')?.setAttribute('href', data.canonicalUrl);
+            document.querySelector('meta[property="og:url"]')?.setAttribute('content', data.canonicalUrl);
+        }
+        document.querySelector('meta[property="og:title"]')?.setAttribute('content', data.pageTitle);
+
+        const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+        if (scripts[0] && data.breadcrumbSchema) scripts[0].textContent = JSON.stringify(data.breadcrumbSchema);
+        if (scripts[1] && data.localSchema) scripts[1].textContent = JSON.stringify(data.localSchema);
     }
 };
 

@@ -10,6 +10,18 @@ window.OCCASION_AREAS = window.OCCASION_AREAS || [
 
 window.OccasionPagesData = {
     "birthday-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/birthday-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/birthday-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "Birthday Flower Delivery in Ghaziabad | Rose n Petals",
         "mainKeyword": "birthday flowers Ghaziabad",
         "occasionName": "Birthday",
@@ -109,11 +121,11 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Anniversary Flowers",
-                "href": "#/anniversary-flowers-ghaziabad"
+                "href": "/anniversary-flowers-ghaziabad"
             },
             {
                 "label": "Romance Flowers",
-                "href": "#/romantic-flowers-ghaziabad"
+                "href": "/romantic-flowers-ghaziabad"
             }
         ],
         "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779475822/Carnival_Mix_d2c4cl.png",
@@ -122,6 +134,18 @@ window.OccasionPagesData = {
         "faqContent": `<h2>Birthday Flowers — Frequently Asked Questions</h2><details><summary>Can I get same-day delivery for birthday flowers in Ghaziabad?</summary><p>Yes. Order before 9 PM for same-day delivery across Ghaziabad. For most areas we deliver in under 1 hour from order confirmation.</p></details><details><summary>Can I include a personal birthday message?</summary><p>Absolutely. Every bouquet comes with a free handwritten card. Just share your message when you WhatsApp us at +91 7289996804.</p></details><details><summary>Can I customise the bouquet with their favourite flowers?</summary><p>Yes. Tell us their favourite flowers, colours, and budget on WhatsApp and we will create a custom arrangement. We have been doing this since 1999.</p></details>`
     },
     "anniversary-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/anniversary-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/anniversary-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "Anniversary Flower Delivery in Ghaziabad | Rose n Petals",
         "mainKeyword": "anniversary flowers Ghaziabad",
         "occasionName": "Anniversary",
@@ -217,11 +241,11 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Romance Flowers",
-                "href": "#/romantic-flowers-ghaziabad"
+                "href": "/romantic-flowers-ghaziabad"
             },
             {
                 "label": "Birthday Flowers",
-                "href": "#/birthday-flowers-ghaziabad"
+                "href": "/birthday-flowers-ghaziabad"
             }
         ],
         "heroImage": "https://lh3.googleusercontent.com/d/1_pEGn0sH9qo6zuhQKRj4k62KbZeKXK2V",
@@ -230,6 +254,18 @@ window.OccasionPagesData = {
         "faqContent": `<h2>Anniversary Flowers — Frequently Asked Questions</h2><details><summary>Can you deliver anniversary flowers to a restaurant in Ghaziabad?</summary><p>Yes. Just provide the restaurant name, address, and your reservation time when you WhatsApp us. We coordinate timing so the flowers arrive before your dinner.</p></details><details><summary>How fast can you deliver anniversary flowers?</summary><p>For most areas in Ghaziabad, we deliver in under 1 hour from order confirmation. Order by 9 PM for same-day delivery.</p></details><details><summary>Can I add chocolates to my anniversary bouquet?</summary><p>Yes, we can add chocolates or other small add-ons. Mention it when you order on WhatsApp at +91 7289996804.</p></details>`
     },
     "get-well-soon-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/get-well-soon-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/get-well-soon-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "Get Well Soon Flowers Delivery in Ghaziabad | Rose n Petals",
         "mainKeyword": "get well soon flowers Ghaziabad",
         "occasionName": "Get Well Soon",
@@ -325,11 +361,11 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Sympathy Flowers",
-                "href": "#/sympathy-flowers-ghaziabad"
+                "href": "/sympathy-flowers-ghaziabad"
             },
             {
                 "label": "Thinking of You",
-                "href": "#/romantic-flowers-ghaziabad"
+                "href": "/romantic-flowers-ghaziabad"
             }
         ],
         "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779467296/Sunflower_Burst_Bouquet_rkp5xf.png",
@@ -338,6 +374,18 @@ window.OccasionPagesData = {
         "faqContent": `<h2>Get Well Soon Flowers — Frequently Asked Questions</h2><details><summary>How quickly can you deliver get well soon flowers?</summary><p>We deliver in under 1 hour from confirmation for most Ghaziabad addresses. Order before 9 PM for same-day delivery.</p></details><details><summary>What are the best flowers for a get well soon gift?</summary><p>Bright flowers like gerberas, carnations, and yellow roses are great for lifting spirits. We avoid heavily fragrant varieties that might be uncomfortable for someone recovering.</p></details><details><summary>Can I include a get well card?</summary><p>Yes, a free handwritten card is included with every order. Share your message when you WhatsApp us at +91 7289996804.</p></details>`
     },
     "congratulations-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/congratulations-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/congratulations-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "Congratulations Flowers Delivery in Ghaziabad | Rose n Petals",
         "mainKeyword": "congratulations flowers Ghaziabad",
         "occasionName": "Congratulations",
@@ -433,11 +481,11 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Housewarming Flowers",
-                "href": "#/housewarming-flowers-ghaziabad"
+                "href": "/housewarming-flowers-ghaziabad"
             },
             {
                 "label": "New Baby Flowers",
-                "href": "#/new-baby-flowers-ghaziabad"
+                "href": "/new-baby-flowers-ghaziabad"
             }
         ],
         "heroImage": "https://lh3.googleusercontent.com/d/1owFZSTGRXuKYAEdTZkpZtFh_rAg2mqVV",
@@ -446,6 +494,18 @@ window.OccasionPagesData = {
         "faqContent": `<h2>Congratulations Flowers — Frequently Asked Questions</h2><details><summary>How fast can you deliver congratulations flowers?</summary><p>We deliver in under 1 hour from confirmation for most Ghaziabad addresses. Order before 9 PM for same-day delivery.</p></details><details><summary>Can you deliver to an office in Ghaziabad?</summary><p>Absolutely. Just provide the office address, company name, floor, and recipient's name when you order on WhatsApp. Office deliveries are part of our regular coverage.</p></details><details><summary>Can I add a personalised message?</summary><p>Yes, we include a free handwritten card with your custom message. Share the text when you WhatsApp us at +91 7289996804.</p></details>`
     },
     "sorry-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/sorry-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/sorry-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "Apology & Sorry Flowers Delivery in Ghaziabad | Rose n Petals",
         "mainKeyword": "sorry flowers Ghaziabad",
         "occasionName": "Apology",
@@ -545,15 +605,27 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Romance Flowers",
-                "href": "#/romantic-flowers-ghaziabad"
+                "href": "/romantic-flowers-ghaziabad"
             },
             {
                 "label": "Get Well Soon",
-                "href": "#/get-well-soon-flowers-ghaziabad"
+                "href": "/get-well-soon-flowers-ghaziabad"
             }
         ]
     },
     "romantic-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/romantic-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/romantic-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "Romantic Flowers Delivery in Ghaziabad | Rose n Petals",
         "mainKeyword": "romantic flowers Ghaziabad",
         "occasionName": "Romance",
@@ -653,15 +725,27 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Anniversary Flowers",
-                "href": "#/anniversary-flowers-ghaziabad"
+                "href": "/anniversary-flowers-ghaziabad"
             },
             {
                 "label": "Apology Flowers",
-                "href": "#/sorry-flowers-ghaziabad"
+                "href": "/sorry-flowers-ghaziabad"
             }
         ]
     },
     "new-baby-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/new-baby-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/new-baby-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "New Baby Flowers Delivery in Ghaziabad | Rose n Petals",
         "mainKeyword": "new baby flowers Ghaziabad",
         "occasionName": "New Baby",
@@ -757,11 +841,11 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Congratulations Flowers",
-                "href": "#/congratulations-flowers-ghaziabad"
+                "href": "/congratulations-flowers-ghaziabad"
             },
             {
                 "label": "Get Well Soon Flowers",
-                "href": "#/get-well-soon-flowers-ghaziabad"
+                "href": "/get-well-soon-flowers-ghaziabad"
             }
         ],
         "heroImage": "https://lh3.googleusercontent.com/d/1JTTaBprDopk8V8ws6rpg2VvGRt-GS5wB",
@@ -770,6 +854,18 @@ window.OccasionPagesData = {
         "faqContent": `<h2>New Baby Flowers — Frequently Asked Questions</h2><details><summary>How fast is the delivery?</summary><p>We deliver in under 1 hour from confirmation for most Ghaziabad addresses. Order before 9 PM for same-day delivery.</p></details><details><summary>Are the flowers safe for a newborn's room?</summary><p>We recommend lightly scented flowers like roses, carnations, and gerberas. We avoid heavily fragrant varieties like certain lilies that could be overpowering for a newborn.</p></details><details><summary>Can I include a congratulations card?</summary><p>Yes, a free handwritten welcome card is included with every order. Share your message when you WhatsApp us at +91 7289996804.</p></details>`
     },
     "housewarming-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/housewarming-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/housewarming-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "Housewarming Flowers Delivery in Ghaziabad | Rose n Petals",
         "mainKeyword": "housewarming flowers Ghaziabad",
         "occasionName": "Housewarming",
@@ -865,11 +961,11 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Congratulations Flowers",
-                "href": "#/congratulations-flowers-ghaziabad"
+                "href": "/congratulations-flowers-ghaziabad"
             },
             {
                 "label": "Diwali Flowers",
-                "href": "#/diwali-flowers-ghaziabad"
+                "href": "/diwali-flowers-ghaziabad"
             }
         ],
         "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779504779/Tulip_Charm_qi8hg1.png",
@@ -878,6 +974,18 @@ window.OccasionPagesData = {
         "faqContent": `<h2>Housewarming Flowers — Frequently Asked Questions</h2><details><summary>How quickly can you deliver housewarming flowers?</summary><p>We deliver in under 1 hour from confirmation for most Ghaziabad addresses. Order by 9 PM for same-day delivery.</p></details><details><summary>What kind of flowers are best for housewarming?</summary><p>Sunflowers, bright mixed arrangements, and gerberas are great because they are energetic and welcoming. Lilies and orchids work well for a more elegant, understated look.</p></details><details><summary>Can I deliver flowers on the day they move in?</summary><p>Yes. WhatsApp us the new address and preferred time slot at +91 7289996804 and we will handle the rest. We recommend ordering a few hours in advance to guarantee your preferred slot.</p></details>`
     },
     "sympathy-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/sympathy-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/sympathy-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "Sympathy & Condolence Flowers Ghaziabad | Rose n Petals",
         "mainKeyword": "sympathy flowers Ghaziabad",
         "occasionName": "Sympathy & Condolence",
@@ -973,11 +1081,11 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Get Well Soon Flowers",
-                "href": "#/get-well-soon-flowers-ghaziabad"
+                "href": "/get-well-soon-flowers-ghaziabad"
             },
             {
                 "label": "Apology Flowers",
-                "href": "#/sorry-flowers-ghaziabad"
+                "href": "/sorry-flowers-ghaziabad"
             }
         ],
         "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779476670/Ocean_MIst_vcnm4j.png",
@@ -986,6 +1094,18 @@ window.OccasionPagesData = {
         "faqContent": `<h2>Sympathy Flowers — Frequently Asked Questions</h2><details><summary>How quickly can sympathy flowers be delivered?</summary><p>We prioritise sympathy orders. WhatsApp us at +91 7289996804 immediately and we will confirm delivery time. For most Ghaziabad areas, delivery is within 1 hour of confirmation.</p></details><details><summary>What are the appropriate flowers for condolences?</summary><p>White lilies, white roses, and white carnations are traditionally the most respectful choices for sympathy. We avoid bright colours and bold arrangements for these orders.</p></details><details><summary>Can you deliver to a specific venue or home?</summary><p>Yes, we can deliver to homes, halls, or any specified address in Ghaziabad quietly and respectfully. Provide the full address and any entry instructions when ordering.</p></details>`
     },
     "diwali-flowers-ghaziabad": {
+        metaDescription: "Fresh  by Rose n Petals. We offer handmade bouquets starting at ₹200 with local delivery.",
+        canonicalUrl: "https://rosenpetals.com/diwali-flowers-ghaziabad",
+        breadcrumbSchema: {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rosenpetals.com" },
+                { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://rosenpetals.com/catalog" },
+                { "@type": "ListItem", "position": 3, "name": "", "item": "https://rosenpetals.com/diwali-flowers-ghaziabad" }
+            ]
+        },
+        localSchema: window.SHARED_LOCAL_SCHEMA,
         "pageTitle": "Diwali & Festival Flowers Delivery Ghaziabad | Rose n Petals",
         "mainKeyword": "diwali flowers Ghaziabad",
         "occasionName": "Festival & Diwali",
@@ -1081,11 +1201,11 @@ window.OccasionPagesData = {
         "relatedOccasions": [
             {
                 "label": "Housewarming Flowers",
-                "href": "#/housewarming-flowers-ghaziabad"
+                "href": "/housewarming-flowers-ghaziabad"
             },
             {
                 "label": "Congratulations Flowers",
-                "href": "#/congratulations-flowers-ghaziabad"
+                "href": "/congratulations-flowers-ghaziabad"
             }
         ],
         "heroImage": "https://res.cloudinary.com/dlg6d4qbh/image/upload/v1779505186/Royal_Sunflower_z1zf1o.png",
