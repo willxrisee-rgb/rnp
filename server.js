@@ -704,6 +704,30 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
           await orderRef.set(updateDoc, { merge: true });
           console.log(`[Telegram Webhook] Firestore Order #${orderId} marked as PAYMENT_PENDING`);
+
+          // Send payment link to customer via WhatsApp
+          try {
+            const rawCustomerPhone = (orderData && (orderData.customerPhone || orderData.phone)) || contactPhone || '';
+            const cleanDigits = String(rawCustomerPhone).replace(/\D/g, '');
+            const tenDigitPhone = cleanDigits.slice(-10);
+
+            if (tenDigitPhone.length === 10) {
+              const targetNumber = `91${tenDigitPhone}@c.us`;
+              const effectiveOrderId = (orderData && orderData.id) || orderId;
+              const displayOrderId = effectiveOrderId.startsWith('RNP-')
+                ? effectiveOrderId
+                : `RNP-${effectiveOrderId.substring(0, 8).toUpperCase()}`;
+              const paymentLink = paymentLinkUrl || '';
+              const message = `Great news ${customerName}! 🌸 Rose n Petals has accepted your order #${displayOrderId}. You can complete your secure payment here to confirm your delivery: ${paymentLink}`;
+
+              await client.sendMessage(targetNumber, message);
+              console.log(`[WhatsApp] Sent payment link to ${targetNumber} for order #${displayOrderId}`);
+            } else {
+              console.warn(`[WhatsApp] Skipping payment link dispatch: could not extract 10-digit phone for order #${orderId}: "${rawCustomerPhone}"`);
+            }
+          } catch (waErr) {
+            console.error(`[WhatsApp] Error sending payment link for order #${orderId}:`, waErr.message || waErr);
+          }
         } else {
           await orderRef.set({
             status: 'CANCELLED_SHOP_BUSY',
