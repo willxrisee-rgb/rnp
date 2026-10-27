@@ -8,7 +8,7 @@ const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const Razorpay = require('razorpay');
 const baileys = require('@whiskeysockets/baileys');
 const makeWASocket = baileys.default || baileys.makeWASocket;
-const { useMultiFileAuthState, DisconnectReason } = baileys;
+const { BufferJSON, initAuthCreds, proto, DisconnectReason, useMultiFileAuthState } = baileys;
 const qrcode = require('qrcode-terminal');
 const pino = require('pino');
 
@@ -24,46 +24,9 @@ if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
   console.warn('[Razorpay] Warning: RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing. Payment links will not be generated.');
 }
 
-// Global Baileys Socket instance
+// Global Baileys Socket instance (connected after Firebase Admin initializes)
 let sock = null;
 
-async function connectToWhatsApp() {
-  try {
-    const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info');
-
-    sock = makeWASocket({
-      auth: state,
-      printQRInTerminal: false,
-      logger: pino({ level: 'warn' })
-    });
-
-    sock.ev.on('connection.update', (update) => {
-      const { connection, lastDisconnect, qr } = update;
-
-      if (qr) {
-        console.log('[Baileys WhatsApp] SCAN THIS QR CODE:');
-        qrcode.generate(qr, { small: true });
-      }
-
-      if (connection === 'close') {
-        const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut;
-        console.log('[Baileys WhatsApp] Connection closed, reconnecting:', shouldReconnect);
-        if (shouldReconnect) {
-          connectToWhatsApp();
-        }
-      } else if (connection === 'open') {
-        console.log('[Baileys WhatsApp] Client is connected and ready!');
-      }
-    });
-
-    sock.ev.on('creds.update', saveCreds);
-  } catch (err) {
-    console.error('[Baileys WhatsApp] Connection error:', err.message || err);
-  }
-}
-
-// Execute connection when server starts
-connectToWhatsApp();
 
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTHd0751qQ03HhhAmQhVE32BlLZXOO1g40tqB3XPv_9WZCUwW4iQwZ6mNWUnf0Pvf0aD1HkRBAuOQQu/pub?output=csv';
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
@@ -619,6 +582,131 @@ try {
 } catch (e) {
   console.warn('[Firebase Admin] Initial boot check:', e.message);
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 📱 Baileys Firestore Auth Adapter (Permanent WhatsApp Session)
+// ─────────────────────────────────────────────────────────────────────────────
+async function useFirestoreAuthState(collectionName = 'WhatsAppAuth') {
+  const db = adminDb || getFirebaseAdminDb();
+  if (!db) {
+    console.warn('[WhatsAppAuth] Firebase Admin is not initialized. Falling back to local baileys_auth_info.');
+    return useMultiFileAuthState('baileys_auth_info');
+  }
+
+  const collectionRef = db.collection(collectionName);
+  const fixDocId = (file) => file.replace(/\//g, '__').replace(/:/g, '-');
+
+  const writeData = async (data, file) => {
+    try {
+      const docId = fixDocId(file);
+      const jsonStr = JSON.stringify(data, BufferJSON.replacer);
+      await collectionRef.doc(docId).set({
+        data: jsonStr,
+        updatedAt: FieldValue.serverTimestamp()
+      });
+    } catch (err) {
+      console.error(`[WhatsAppAuth] Failed to write key ${file}:`, err.message);
+    }
+  };
+
+  const readData = async (file) => {
+    try {
+      const docId = fixDocId(file);
+      const docSnap = await collectionRef.doc(docId).get();
+      if (!docSnap.exists) return null;
+      const docData = docSnap.data();
+      if (!docData || !docData.data) return null;
+      return JSON.parse(docData.data, BufferJSON.reviver);
+    } catch (err) {
+      console.error(`[WhatsAppAuth] Failed to read key ${file}:`, err.message);
+      return null;
+    }
+  };
+
+  const removeData = async (file) => {
+    try {
+      const docId = fixDocId(file);
+      await collectionRef.doc(docId).delete();
+    } catch (err) {
+      console.error(`[WhatsAppAuth] Failed to remove key ${file}:`, err.message);
+    }
+  };
+
+  const creds = (await readData('creds.json')) || initAuthCreds();
+
+  return {
+    state: {
+      creds,
+      keys: {
+        get: async (type, ids) => {
+          const data = {};
+          await Promise.all(
+            ids.map(async (id) => {
+              let value = await readData(`${type}-${id}.json`);
+              if (type === 'app-state-sync-key' && value) {
+                value = proto.Message.AppStateSyncKeyData.fromObject(value);
+              }
+              data[id] = value;
+            })
+          );
+          return data;
+        },
+        set: async (data) => {
+          const tasks = [];
+          for (const category in data) {
+            for (const id in data[category]) {
+              const value = data[category][id];
+              const file = `${category}-${id}.json`;
+              tasks.push(value ? writeData(value, file) : removeData(file));
+            }
+          }
+          await Promise.all(tasks);
+        }
+      }
+    },
+    saveCreds: async () => {
+      return writeData(creds, 'creds.json');
+    }
+  };
+}
+
+async function connectToWhatsApp() {
+  try {
+    const { state, saveCreds } = await useFirestoreAuthState('WhatsAppAuth');
+
+    sock = makeWASocket({
+      auth: state,
+      printQRInTerminal: false,
+      logger: pino({ level: 'warn' })
+    });
+
+    sock.ev.on('connection.update', (update) => {
+      const { connection, lastDisconnect, qr } = update;
+
+      if (qr) {
+        console.log('[Baileys WhatsApp] SCAN THIS QR CODE:');
+        qrcode.generate(qr, { small: true });
+      }
+
+      if (connection === 'close') {
+        const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut;
+        console.log('[Baileys WhatsApp] Connection closed, reconnecting:', shouldReconnect);
+        if (shouldReconnect) {
+          connectToWhatsApp();
+        }
+      } else if (connection === 'open') {
+        console.log('[Baileys WhatsApp] Client is connected and ready!');
+      }
+    });
+
+    sock.ev.on('creds.update', saveCreds);
+  } catch (err) {
+    console.error('[Baileys WhatsApp] Connection error:', err.message || err);
+  }
+}
+
+// Execute connection when server starts
+connectToWhatsApp();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 🤖 Telegram Webhook Route (Handle Accept / Deny Callback Queries)
