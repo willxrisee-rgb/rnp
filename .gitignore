@@ -10,3 +10,4 @@ test_parse.js
 test_bestseller.js
 .wwebjs_auth/
 .wwebjs_cache/
+baileys_auth_info/

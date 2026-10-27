@@ -6,8 +6,11 @@ const fs = require('fs');
 const admin = require('firebase-admin');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const Razorpay = require('razorpay');
-const { Client, LocalAuth } = require('whatsapp-web.js');
+const baileys = require('@whiskeysockets/baileys');
+const makeWASocket = baileys.default || baileys.makeWASocket;
+const { useMultiFileAuthState, DisconnectReason } = baileys;
 const qrcode = require('qrcode-terminal');
+const pino = require('pino');
 
 // Initialize Razorpay Client
 let razorpay = null;
@@ -21,35 +24,46 @@ if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
   console.warn('[Razorpay] Warning: RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing. Payment links will not be generated.');
 }
 
-// Initialize WhatsApp Web Client
-const client = new Client({
-  authStrategy: new LocalAuth(),
-  puppeteer: {
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--no-first-run',
-      '--no-zygote',
-      '--single-process',
-      '--disable-gpu'
-    ]
+// Global Baileys Socket instance
+let sock = null;
+
+async function connectToWhatsApp() {
+  try {
+    const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info');
+
+    sock = makeWASocket({
+      auth: state,
+      printQRInTerminal: false,
+      logger: pino({ level: 'warn' })
+    });
+
+    sock.ev.on('connection.update', (update) => {
+      const { connection, lastDisconnect, qr } = update;
+
+      if (qr) {
+        console.log('[Baileys WhatsApp] SCAN THIS QR CODE:');
+        qrcode.generate(qr, { small: true });
+      }
+
+      if (connection === 'close') {
+        const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut;
+        console.log('[Baileys WhatsApp] Connection closed, reconnecting:', shouldReconnect);
+        if (shouldReconnect) {
+          connectToWhatsApp();
+        }
+      } else if (connection === 'open') {
+        console.log('[Baileys WhatsApp] Client is connected and ready!');
+      }
+    });
+
+    sock.ev.on('creds.update', saveCreds);
+  } catch (err) {
+    console.error('[Baileys WhatsApp] Connection error:', err.message || err);
   }
-});
+}
 
-client.on('qr', (qr) => {
-  console.log('[WhatsApp] SCAN THIS QR CODE IN LINKED DEVICES:');
-  qrcode.generate(qr, { small: true });
-});
-
-client.on('ready', () => {
-  console.log('[WhatsApp] Client is ready and connected!');
-});
-
-client.initialize().catch(err => {
-  console.error('[WhatsApp] Client initialization error:', err.message || err);
-});
+// Execute connection when server starts
+connectToWhatsApp();
 
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTHd0751qQ03HhhAmQhVE32BlLZXOO1g40tqB3XPv_9WZCUwW4iQwZ6mNWUnf0Pvf0aD1HkRBAuOQQu/pub?output=csv';
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
@@ -526,22 +540,25 @@ app.post('/api/notify-order', async (req, res) => {
 
     console.log(`[Telegram Bot] Successfully sent order alert for #${displayOrderId}`);
 
-    // Send automated WhatsApp confirmation message to customer
+    // Send automated WhatsApp confirmation message to customer via Baileys
     try {
-      const rawCustomerPhone = order.customerPhone || order.phone || '';
-      const cleanDigits = String(rawCustomerPhone).replace(/\D/g, '');
-      const tenDigitPhone = cleanDigits.slice(-10);
+      if (sock) {
+        const rawCustomerPhone = order.customerPhone || order.phone || '';
+        const cleanPhone = String(rawCustomerPhone).replace(/\D/g, '').slice(-10);
 
-      if (tenDigitPhone.length === 10) {
-        const targetNumber = `91${tenDigitPhone}@c.us`;
-        const message = `Hi ${customerName}, thank you for choosing Rose n Petals! 🌸 We have received your order #${displayOrderId} for the ${bouquetName}. We will notify you once it is dispatched!`;
-        await client.sendMessage(targetNumber, message);
-        console.log(`[WhatsApp] Sent automated confirmation to ${targetNumber} for order #${displayOrderId}`);
+        if (cleanPhone.length === 10) {
+          const jid = '91' + cleanPhone + '@s.whatsapp.net';
+          const message = `Hi ${customerName}, thank you for choosing Rose n Petals! 🌸 We have received your order #${displayOrderId} for the ${bouquetName}. We will notify you once it is dispatched!`;
+          await sock.sendMessage(jid, { text: message });
+          console.log(`[Baileys WhatsApp] Sent automated confirmation to ${jid} for order #${displayOrderId}`);
+        } else {
+          console.warn(`[Baileys WhatsApp] Could not extract valid 10-digit customer phone for order #${displayOrderId}: "${rawCustomerPhone}"`);
+        }
       } else {
-        console.warn(`[WhatsApp] Could not extract valid 10-digit customer phone for order #${displayOrderId}: "${rawCustomerPhone}"`);
+        console.warn(`[Baileys WhatsApp] Socket not connected. Skipping confirmation for order #${displayOrderId}`);
       }
     } catch (waErr) {
-      console.error(`[WhatsApp] Could not send confirmation message for order #${displayOrderId}:`, waErr.message || waErr);
+      console.error(`[Baileys WhatsApp] Could not send confirmation message for order #${displayOrderId}:`, waErr.message || waErr);
     }
 
     return res.status(200).json({ success: true, messageId: telegramData.result?.message_id });
@@ -705,28 +722,31 @@ app.post('/api/telegram-webhook', async (req, res) => {
           await orderRef.set(updateDoc, { merge: true });
           console.log(`[Telegram Webhook] Firestore Order #${orderId} marked as PAYMENT_PENDING`);
 
-          // Send payment link to customer via WhatsApp
+          // Send payment link to customer via WhatsApp (Baileys)
           try {
-            const rawCustomerPhone = (orderData && (orderData.customerPhone || orderData.phone)) || contactPhone || '';
-            const cleanDigits = String(rawCustomerPhone).replace(/\D/g, '');
-            const tenDigitPhone = cleanDigits.slice(-10);
+            if (sock) {
+              const rawCustomerPhone = (orderData && (orderData.customerPhone || orderData.phone)) || contactPhone || '';
+              const cleanPhone = String(rawCustomerPhone).replace(/\D/g, '').slice(-10);
 
-            if (tenDigitPhone.length === 10) {
-              const targetNumber = `91${tenDigitPhone}@c.us`;
-              const effectiveOrderId = (orderData && orderData.id) || orderId;
-              const displayOrderId = effectiveOrderId.startsWith('RNP-')
-                ? effectiveOrderId
-                : `RNP-${effectiveOrderId.substring(0, 8).toUpperCase()}`;
-              const paymentLink = paymentLinkUrl || '';
-              const message = `Great news ${customerName}! 🌸 Rose n Petals has accepted your order #${displayOrderId}. You can complete your secure payment here to confirm your delivery: ${paymentLink}`;
+              if (cleanPhone.length === 10) {
+                const jid = '91' + cleanPhone + '@s.whatsapp.net';
+                const effectiveOrderId = (orderData && orderData.id) || orderId;
+                const displayOrderId = effectiveOrderId.startsWith('RNP-')
+                  ? effectiveOrderId
+                  : `RNP-${effectiveOrderId.substring(0, 8).toUpperCase()}`;
+                const paymentLink = paymentLinkUrl || '';
+                const message = `Great news ${customerName}! 🌸 Rose n Petals has accepted your order #${displayOrderId}. You can complete your secure payment here to confirm your delivery: ${paymentLink}`;
 
-              await client.sendMessage(targetNumber, message);
-              console.log(`[WhatsApp] Sent payment link to ${targetNumber} for order #${displayOrderId}`);
+                await sock.sendMessage(jid, { text: message });
+                console.log(`[Baileys WhatsApp] Sent payment link to ${jid} for order #${displayOrderId}`);
+              } else {
+                console.warn(`[Baileys WhatsApp] Skipping payment link dispatch: could not extract 10-digit phone for order #${orderId}: "${rawCustomerPhone}"`);
+              }
             } else {
-              console.warn(`[WhatsApp] Skipping payment link dispatch: could not extract 10-digit phone for order #${orderId}: "${rawCustomerPhone}"`);
+              console.warn(`[Baileys WhatsApp] Socket not connected. Skipped payment link for order #${orderId}`);
             }
           } catch (waErr) {
-            console.error(`[WhatsApp] Error sending payment link for order #${orderId}:`, waErr.message || waErr);
+            console.error(`[Baileys WhatsApp] Error sending payment link for order #${orderId}:`, waErr.message || waErr);
           }
         } else {
           await orderRef.set({
