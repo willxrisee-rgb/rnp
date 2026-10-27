@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
 const admin = require('firebase-admin');
@@ -454,14 +455,12 @@ app.post('/api/notify-order', async (req, res) => {
 
     console.log('[DEBUG Backend] Sending photo URL to Telegram:', photoUrl);
 
-    let telegramRes = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    let telegramRes = await axios.post(`https://api.telegram.org/bot${botToken}/sendPhoto`, payload, {
+      validateStatus: () => true
     });
 
-    let telegramData = await telegramRes.json();
-    if (!telegramRes.ok || !telegramData.ok) {
+    let telegramData = telegramRes.data;
+    if (!telegramData || !telegramData.ok) {
       console.warn('[Telegram Bot] sendPhoto returned an error, attempting sendMessage fallback:', telegramData);
       const fallbackPayload = {
         chat_id: chatId,
@@ -469,13 +468,11 @@ app.post('/api/notify-order', async (req, res) => {
         parse_mode: 'HTML',
         reply_markup: payload.reply_markup
       };
-      const fallbackRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(fallbackPayload)
+      const fallbackRes = await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, fallbackPayload, {
+        validateStatus: () => true
       });
-      const fallbackData = await fallbackRes.json();
-      if (!fallbackRes.ok || !fallbackData.ok) {
+      const fallbackData = fallbackRes.data;
+      if (!fallbackData || !fallbackData.ok) {
         console.error('[Telegram Bot] Telegram API error:', telegramData);
         return res.status(502).json({ error: 'Telegram API error', details: telegramData });
       }
@@ -641,34 +638,26 @@ app.post('/api/telegram-webhook', async (req, res) => {
     // 3. Edit Message Caption in Telegram (Remove inline keyboard buttons)
     if (chatId && messageId) {
       try {
-        const editRes = await fetch(`https://api.telegram.org/bot${botToken}/editMessageCaption`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            message_id: messageId,
-            caption: updatedText,
-            parse_mode: 'HTML',
-            reply_markup: {
-              inline_keyboard: [] // Removes buttons so they cannot be clicked again
-            }
-          })
-        });
-        const editData = await editRes.json();
-        if (!editRes.ok || !editData.ok) {
+        const editRes = await axios.post(`https://api.telegram.org/bot${botToken}/editMessageCaption`, {
+          chat_id: chatId,
+          message_id: messageId,
+          caption: updatedText,
+          parse_mode: 'HTML',
+          reply_markup: {
+            inline_keyboard: [] // Removes buttons so they cannot be clicked again
+          }
+        }, { validateStatus: () => true });
+        const editData = editRes.data;
+        if (!editData || !editData.ok) {
           // If the message is a text message without caption, fallback to editMessageText
-          if (editData.description && editData.description.includes('no caption')) {
-            await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                chat_id: chatId,
-                message_id: messageId,
-                text: updatedText,
-                parse_mode: 'HTML',
-                reply_markup: { inline_keyboard: [] }
-              })
-            });
+          if (editData?.description && editData.description.includes('no caption')) {
+            await axios.post(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+              chat_id: chatId,
+              message_id: messageId,
+              text: updatedText,
+              parse_mode: 'HTML',
+              reply_markup: { inline_keyboard: [] }
+            }, { validateStatus: () => true });
           } else {
             console.error('[Telegram Webhook] editMessageCaption error:', editData);
           }
@@ -687,15 +676,11 @@ app.post('/api/telegram-webhook', async (req, res) => {
           ? 'Order Accepted! Status: Payment Pending.'
           : 'Order Denied. Status: Shop Busy.';
 
-        await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            callback_query_id: callbackQueryId,
-            text: answerText,
-            show_alert: false
-          })
-        });
+        await axios.post(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
+          callback_query_id: callbackQueryId,
+          text: answerText,
+          show_alert: false
+        }, { validateStatus: () => true });
       } catch (ansErr) {
         console.error('[Telegram Webhook] answerCallbackQuery exception:', ansErr.message);
       }
