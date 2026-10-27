@@ -5,6 +5,42 @@ const path = require('path');
 const fs = require('fs');
 const admin = require('firebase-admin');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const Razorpay = require('razorpay');
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+
+// Initialize Razorpay Client
+let razorpay = null;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+  });
+  console.log('[Razorpay] Successfully initialized Razorpay client.');
+} else {
+  console.warn('[Razorpay] Warning: RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing. Payment links will not be generated.');
+}
+
+// Initialize WhatsApp Web Client
+const client = new Client({
+  authStrategy: new LocalAuth(),
+  puppeteer: {
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  }
+});
+
+client.on('qr', (qr) => {
+  console.log('[WhatsApp] SCAN THIS QR CODE IN LINKED DEVICES:');
+  qrcode.generate(qr, { small: true });
+});
+
+client.on('ready', () => {
+  console.log('[WhatsApp] Client is ready and connected!');
+});
+
+client.initialize().catch(err => {
+  console.error('[WhatsApp] Client initialization error:', err.message || err);
+});
 
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTHd0751qQ03HhhAmQhVE32BlLZXOO1g40tqB3XPv_9WZCUwW4iQwZ6mNWUnf0Pvf0aD1HkRBAuOQQu/pub?output=csv';
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
@@ -480,6 +516,25 @@ app.post('/api/notify-order', async (req, res) => {
     }
 
     console.log(`[Telegram Bot] Successfully sent order alert for #${displayOrderId}`);
+
+    // Send automated WhatsApp confirmation message to customer
+    try {
+      const rawCustomerPhone = order.customerPhone || order.phone || '';
+      const cleanDigits = String(rawCustomerPhone).replace(/\D/g, '');
+      const tenDigitPhone = cleanDigits.slice(-10);
+
+      if (tenDigitPhone.length === 10) {
+        const targetNumber = `91${tenDigitPhone}@c.us`;
+        const message = `Hi ${customerName}, thank you for choosing Rose n Petals! 🌸 We have received your order #${displayOrderId} for the ${bouquetName}. We will notify you once it is dispatched!`;
+        await client.sendMessage(targetNumber, message);
+        console.log(`[WhatsApp] Sent automated confirmation to ${targetNumber} for order #${displayOrderId}`);
+      } else {
+        console.warn(`[WhatsApp] Could not extract valid 10-digit customer phone for order #${displayOrderId}: "${rawCustomerPhone}"`);
+      }
+    } catch (waErr) {
+      console.error(`[WhatsApp] Could not send confirmation message for order #${displayOrderId}:`, waErr.message || waErr);
+    }
+
     return res.status(200).json({ success: true, messageId: telegramData.result?.message_id });
 
   } catch (err) {
@@ -581,16 +636,64 @@ app.post('/api/telegram-webhook', async (req, res) => {
 
     console.log(`[Telegram Webhook] Processing ${isAccept ? 'ACCEPT' : 'DENY'} for Order #${orderId}`);
 
+    let paymentLinkUrl = '';
+
     // 1. Update Firestore Orders collection via Firebase Admin
     const db = getFirebaseAdminDb();
     if (db && orderId) {
       try {
         const orderRef = db.collection('Orders').doc(orderId);
         if (isAccept) {
-          await orderRef.set({
+          // Fetch the current order document from Firestore to get total, customer name, contact details
+          const orderSnap = await orderRef.get();
+          const orderData = orderSnap.exists ? orderSnap.data() : null;
+
+          const totalAmount = orderData ? (orderData.total || orderData.price || 0) : 0;
+          const customerName = orderData?.customerName || orderData?.recipientName || 'Customer';
+          const contactPhone = orderData?.customerPhone || orderData?.phone || '';
+          const customerEmail = orderData?.customerEmail || orderData?.email || '';
+
+          // Generate Razorpay Payment Link
+          if (razorpay && totalAmount > 0) {
+            try {
+              let cleanContact = String(contactPhone).replace(/\D/g, '');
+              if (cleanContact.length === 10) cleanContact = `91${cleanContact}`;
+
+              const customerObj = {};
+              if (customerName) customerObj.name = customerName;
+              if (cleanContact && cleanContact.length >= 10) customerObj.contact = cleanContact;
+              if (customerEmail && customerEmail.includes('@')) customerObj.email = customerEmail;
+
+              const rzpPayload = {
+                amount: Math.round(totalAmount * 100), // in paise
+                currency: 'INR',
+                accept_partial: false,
+                reference_id: orderId,
+                description: `Rose n Petals Order #${orderId}`
+              };
+              if (Object.keys(customerObj).length > 0) {
+                rzpPayload.customer = customerObj;
+              }
+
+              const rzpResponse = await razorpay.paymentLink.create(rzpPayload);
+              paymentLinkUrl = rzpResponse?.short_url || rzpResponse?.url || '';
+              console.log(`[Razorpay] Successfully generated payment link for Order #${orderId}:`, paymentLinkUrl);
+            } catch (rzpErr) {
+              console.error(`[Razorpay] Error creating payment link for Order #${orderId}:`, rzpErr.message || rzpErr);
+            }
+          } else if (!razorpay) {
+            console.warn(`[Razorpay] Instance not initialized. Skipped payment link generation for #${orderId}.`);
+          }
+
+          const updateDoc = {
             status: 'PAYMENT_PENDING',
             updatedAt: FieldValue.serverTimestamp()
-          }, { merge: true });
+          };
+          if (paymentLinkUrl) {
+            updateDoc.paymentLink = paymentLinkUrl;
+          }
+
+          await orderRef.set(updateDoc, { merge: true });
           console.log(`[Telegram Webhook] Firestore Order #${orderId} marked as PAYMENT_PENDING`);
         } else {
           await orderRef.set({
@@ -630,6 +733,10 @@ app.post('/api/telegram-webhook', async (req, res) => {
     let updatedText = formattedLines
       ? `${statusHeader}\n\n${formattedLines}`
       : `${statusHeader}\n\n<b>Order ID:</b> #${escapeTelegramHtml(orderId)}`;
+
+    if (paymentLinkUrl) {
+      updatedText += `\n\n💳 <b>Payment Link:</b> ${paymentLinkUrl}`;
+    }
 
     if (updatedText.length > 1024) {
       updatedText = updatedText.slice(0, 1020) + '...';

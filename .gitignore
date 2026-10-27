@@ -8,3 +8,5 @@ test_csv.csv
 test_img.html
 test_parse.js
 test_bestseller.js
+.wwebjs_auth/
+.wwebjs_cache/

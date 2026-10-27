@@ -2814,6 +2814,53 @@ input.input-invalid {
     text-decoration: underline;
 }
 
+/* Pay Now Button (Razorpay) */
+.btn-pay-now {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: #FFFFFF !important;
+    font-size: 0.90rem;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: var(--border-radius-pill, 9999px);
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    transition: all 0.2s ease;
+    animation: pulse-pay 2s infinite ease-in-out;
+}
+
+.btn-pay-now:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+@keyframes pulse-pay {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.65);
+    }
+}
+
+.status-payment-pending {
+    background: #FEF3C7;
+    color: #B45309;
+    border: 1px solid #FCD34D;
+    font-weight: 700;
+}
+
+.status-cancelled {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+}
+
 /* Empty State */
 .profile-empty-orders {
     background: #FFFFFF;

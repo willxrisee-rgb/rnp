@@ -417,7 +417,12 @@
                         <div>
                             ${statusHtml}
                         </div>
-                        <div>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            ${(order.status || '').toUpperCase() === 'PAYMENT_PENDING' && order.paymentLink ? `
+                            <a href="${escapeHtml(order.paymentLink)}" target="_blank" rel="noopener noreferrer" class="btn-pay-now">
+                                💳 Pay Now
+                            </a>
+                            ` : ''}
                             <a href="${shopWaUrl}" target="_blank" rel="noopener noreferrer" class="order-whatsapp-btn">
                                 💬 WhatsApp Florist Updates
                             </a>
@@ -432,8 +437,12 @@
          */
         function getStatusBadgeHtml(status) {
             const s = (status || '').toUpperCase();
-            if (s.includes('PENDING') || s === 'PENDING_SHOP_APPROVAL') {
+            if (s === 'PAYMENT_PENDING') {
+                return `<span class="order-status-badge status-payment-pending">💳 Payment Pending</span>`;
+            } else if (s.includes('PENDING') || s === 'PENDING_SHOP_APPROVAL') {
                 return `<span class="order-status-badge status-pending">⏳ Pending Shop Approval</span>`;
+            } else if (s.includes('CANCELLED') || s.includes('DENY')) {
+                return `<span class="order-status-badge status-cancelled">❌ Shop Busy (Cancelled)</span>`;
             } else if (s.includes('CONFIRM')) {
                 return `<span class="order-status-badge status-confirmed">✅ Confirmed & Preparing</span>`;
             } else if (s.includes('DELIVER') && !s.includes('ED')) {
