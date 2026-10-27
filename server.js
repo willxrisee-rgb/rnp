@@ -447,7 +447,7 @@ app.post('/api/notify-order', async (req, res) => {
       cleanPhone = `91${cleanPhone}`;
     }
 
-    const customerName = order.customerName || order.recipientName || 'Customer';
+    const customerName = order.recipientName || order.customerName || 'Customer';
     const bouquetName = order.bouquetName || bouquet;
     const prefilledText = `Hi ${customerName}, this is Rose n Petals regarding your order:\n` +
       `Order: #${displayOrderId}\n` +
@@ -516,7 +516,16 @@ app.post('/api/notify-order', async (req, res) => {
 
         if (cleanPhone.length === 10) {
           const jid = '91' + cleanPhone + '@s.whatsapp.net';
-          const message = `Hi ${customerName}, thank you for choosing Rose n Petals! 🌸 We have received your order #${displayOrderId} for the ${bouquetName}. We will notify you once it is dispatched!`;
+          const displayName = order.recipientName || order.customerName || 'Customer';
+          const message = `Hi ${displayName}, thank you for choosing Rose n Petals! 🌸\n` +
+            `We have received your order #${displayOrderId}.\n\n` +
+            `Order Details:\n` +
+            `Bouquet: ${bouquet}\n` +
+            `Price: ₹${price}\n` +
+            `Delivery Date: ${dateSlotText}\n` +
+            `Address: ${fullAddress}\n\n` +
+            `We will notify you once it is confirmed!`;
+
           await sock.sendMessage(jid, { text: message });
           console.log(`[Baileys WhatsApp] Sent automated confirmation to ${jid} for order #${displayOrderId}`);
         } else {
