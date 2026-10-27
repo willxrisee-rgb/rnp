@@ -394,14 +394,44 @@ app.post('/api/notify-order', async (req, res) => {
       messageText += `\n<b>Card Message:</b> <i>${escapeTelegramHtml(order.cardMessage)}</i>`;
     }
 
+    // Telegram caption limit is 1024 characters
+    if (messageText.length > 1024) {
+      messageText = messageText.slice(0, 1020) + '...';
+    }
+
+    // Extract photo URL (with fallback to default store logo if missing/invalid)
+    let photoUrl = (order.imageUrl && typeof order.imageUrl === 'string' && order.imageUrl.trim()) ||
+      (order.cart && order.cart[0] && (order.cart[0].imageUrl || order.cart[0].image_url)) ||
+      'https://rosenpetals.com/Logo.jpg';
+
+    if (photoUrl.startsWith('/')) {
+      photoUrl = `https://rosenpetals.com${photoUrl}`;
+    }
+
+    // Construct WhatsApp URL with digits-only phone and pre-filled order text
+    const rawPhone = order.customerPhone || order.phone || order.whatsapp || '';
+    let cleanPhone = String(rawPhone).replace(/\D/g, '');
+    if (cleanPhone.length === 10) {
+      cleanPhone = `91${cleanPhone}`;
+    }
+
+    const customerName = order.customerName || order.recipientName || 'Customer';
+    const prefilledText = `Hi ${customerName}, this is Rose n Petals regarding your Order #${displayOrderId}.`;
+    const encodedText = encodeURIComponent(prefilledText);
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodedText}`;
+
     const payload = {
       chat_id: chatId,
-      text: messageText,
+      photo: photoUrl,
+      caption: messageText,
       parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: [
           [
             { text: '✅ Accept & Request Payment', callback_data: `ACCEPT_${orderId}` }
+          ],
+          [
+            { text: '💬 Contact Customer', url: whatsappUrl }
           ],
           [
             { text: '❌ Shop Busy (Deny)', callback_data: `DENY_${orderId}` }
@@ -410,16 +440,32 @@ app.post('/api/notify-order', async (req, res) => {
       }
     };
 
-    const telegramRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    let telegramRes = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
-    const telegramData = await telegramRes.json();
+    let telegramData = await telegramRes.json();
     if (!telegramRes.ok || !telegramData.ok) {
-      console.error('[Telegram Bot] Telegram API error:', telegramData);
-      return res.status(502).json({ error: 'Telegram API error', details: telegramData });
+      console.warn('[Telegram Bot] sendPhoto returned an error, attempting sendMessage fallback:', telegramData);
+      const fallbackPayload = {
+        chat_id: chatId,
+        text: messageText,
+        parse_mode: 'HTML',
+        reply_markup: payload.reply_markup
+      };
+      const fallbackRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fallbackPayload)
+      });
+      const fallbackData = await fallbackRes.json();
+      if (!fallbackRes.ok || !fallbackData.ok) {
+        console.error('[Telegram Bot] Telegram API error:', telegramData);
+        return res.status(502).json({ error: 'Telegram API error', details: telegramData });
+      }
+      telegramData = fallbackData;
     }
 
     console.log(`[Telegram Bot] Successfully sent order alert for #${displayOrderId}`);
@@ -502,7 +548,7 @@ app.post('/api/telegram-webhook', async (req, res) => {
     const message = callbackQuery.message;
     const messageId = message?.message_id;
     const chatId = message?.chat?.id;
-    const originalText = message?.text || '';
+    const originalText = message?.caption || message?.text || '';
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     if (!botToken) {
@@ -570,20 +616,24 @@ app.post('/api/telegram-webhook', async (req, res) => {
       }).filter(Boolean).join('\n');
     }
 
-    const updatedText = formattedLines
+    let updatedText = formattedLines
       ? `${statusHeader}\n\n${formattedLines}`
       : `${statusHeader}\n\n<b>Order ID:</b> #${escapeTelegramHtml(orderId)}`;
 
-    // 3. Edit Message Text in Telegram (Remove inline keyboard buttons)
+    if (updatedText.length > 1024) {
+      updatedText = updatedText.slice(0, 1020) + '...';
+    }
+
+    // 3. Edit Message Caption in Telegram (Remove inline keyboard buttons)
     if (chatId && messageId) {
       try {
-        const editRes = await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+        const editRes = await fetch(`https://api.telegram.org/bot${botToken}/editMessageCaption`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             chat_id: chatId,
             message_id: messageId,
-            text: updatedText,
+            caption: updatedText,
             parse_mode: 'HTML',
             reply_markup: {
               inline_keyboard: [] // Removes buttons so they cannot be clicked again
@@ -592,12 +642,27 @@ app.post('/api/telegram-webhook', async (req, res) => {
         });
         const editData = await editRes.json();
         if (!editRes.ok || !editData.ok) {
-          console.error('[Telegram Webhook] editMessageText error:', editData);
+          // If the message is a text message without caption, fallback to editMessageText
+          if (editData.description && editData.description.includes('no caption')) {
+            await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                message_id: messageId,
+                text: updatedText,
+                parse_mode: 'HTML',
+                reply_markup: { inline_keyboard: [] }
+              })
+            });
+          } else {
+            console.error('[Telegram Webhook] editMessageCaption error:', editData);
+          }
         } else {
-          console.log(`[Telegram Webhook] Telegram message #${messageId} updated successfully.`);
+          console.log(`[Telegram Webhook] Telegram message caption #${messageId} updated successfully.`);
         }
       } catch (editErr) {
-        console.error('[Telegram Webhook] editMessageText exception:', editErr.message);
+        console.error('[Telegram Webhook] editMessageCaption exception:', editErr.message);
       }
     }
 
