@@ -408,6 +408,13 @@ app.post('/api/notify-order', async (req, res) => {
       photoUrl = `https://rosenpetals.com${photoUrl}`;
     }
 
+    // Optimize Cloudinary URLs for Telegram payload (force lightweight JPEG)
+    if (photoUrl.includes('res.cloudinary.com/') && photoUrl.includes('/upload/')) {
+      if (!photoUrl.includes('f_jpg,q_auto,w_800/')) {
+        photoUrl = photoUrl.replace('/upload/', '/upload/f_jpg,q_auto,w_800/');
+      }
+    }
+
     // Construct WhatsApp URL with digits-only phone and pre-filled order text
     const rawPhone = order.customerPhone || order.phone || order.whatsapp || '';
     let cleanPhone = String(rawPhone).replace(/\D/g, '');
