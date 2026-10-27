@@ -94,10 +94,10 @@ window.Components = {
                 const profile = await window.RNPAuth.getUserProfile();
                 if (!profile) return;
 
-                // Pre-fill WhatsApp Phone
+                // Pre-fill WhatsApp Phone (10 digits)
                 const phoneInput = document.getElementById('customerPhone');
                 if (phoneInput && profile.whatsapp && (!phoneInput.value.trim() || phoneInput.dataset.prefilled !== 'false')) {
-                    phoneInput.value = profile.whatsapp;
+                    phoneInput.value = String(profile.whatsapp).replace(/\D/g, '').slice(-10);
                     phoneInput.dataset.prefilled = 'true';
                 }
 
@@ -154,7 +154,19 @@ window.Components = {
                             WhatsApp Phone Number <span class="required">*</span>
                             <span class="label-hint">(For order confirmation & delivery updates)</span>
                         </label>
-                        <input type="tel" id="customerPhone" name="customerPhone" required placeholder="+91 98XXXXXXXX" autocomplete="tel">
+                        <div class="phone-input-wrapper">
+                            <span class="phone-prefix">+91</span>
+                            <input 
+                                type="tel" 
+                                id="customerPhone" 
+                                name="customerPhone" 
+                                required 
+                                maxlength="10" 
+                                pattern="[0-9]{10}" 
+                                inputmode="numeric" 
+                                placeholder="98XXXXXXXX" 
+                                autocomplete="tel-national">
+                        </div>
                     </div>
                     
                     <!-- 3. Delivery Address -->

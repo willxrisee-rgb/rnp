@@ -48,6 +48,14 @@ window.WhatsApp = {
             });
         }
 
+        // Real-time Phone Number numeric sanitization (10 digits max)
+        const phoneInput = document.getElementById('customerPhone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+            });
+        }
+
         // 3. Intercept Form Submission
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -88,11 +96,11 @@ window.WhatsApp = {
                     </div>
                 `;
 
-                // Pre-fill Phone Number input from user profile (if not manually edited)
+                // Pre-fill Phone Number input from user profile (10 digits, if not manually edited)
                 const phoneInput = document.getElementById('customerPhone');
                 if (phoneInput && phone) {
                     if (!phoneInput.value.trim() || phoneInput.dataset.prefilled !== 'false') {
-                        phoneInput.value = phone;
+                        phoneInput.value = String(phone).replace(/\D/g, '').slice(-10);
                         phoneInput.dataset.prefilled = 'true';
                     }
                     phoneInput.addEventListener('input', () => {
@@ -250,14 +258,9 @@ window.WhatsApp = {
             return;
         }
 
-        // Strict 10-Digit Phone Validation
+        // Strict 10-Digit Phone Validation (prepends +91 behind the scenes)
         const rawPhone = inputPhone || profile.whatsapp || '';
-        let digits = String(rawPhone).replace(/\D/g, '');
-        if (digits.length === 12 && digits.startsWith('91')) {
-            digits = digits.slice(2);
-        } else if (digits.length === 11 && digits.startsWith('0')) {
-            digits = digits.slice(1);
-        }
+        let digits = String(rawPhone).replace(/\D/g, '').slice(-10);
 
         if (digits.length !== 10) {
             alert('Please enter a valid 10-digit phone number.');

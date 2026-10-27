@@ -848,35 +848,13 @@ textarea:focus {
     margin-bottom: 0;
 }
 
-/* Mobile Sticky CTA */
+/* Mobile Sticky CTA - Hidden for clean product page */
 .mobile-sticky-cta {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-    padding: var(--spacing-md) var(--spacing-lg);
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 100;
-    border-top: 1px solid var(--border-color);
+    display: none !important;
 }
 
-.sticky-price-row flex {
-    display: flex;
-    flex-direction: column;
-}
-
-@media (min-width: 768px) {
-    .mobile-sticky-cta {
-        display: none;
-    }
-
-    .app-main {
-        padding-bottom: 0;
-    }
+.app-main {
+    padding-bottom: 0 !important;
 }
 
 /* Page specific */
@@ -2011,6 +1989,54 @@ textarea:focus {
     font-weight: 400;
     font-size: 0.82rem;
     color: var(--text-muted);
+}
+
+/* ──────────────────────────────────────────────────────────
+   📱 PHONE NUMBER INPUT STYLES (+91 Prefix)
+────────────────────────────────────────────────────────── */
+.phone-input-wrapper {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    background: #FAFAFA;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+}
+
+.phone-input-wrapper:focus-within {
+    border-color: var(--primary-color);
+    background: white;
+}
+
+.phone-prefix {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4B5563;
+    background: #F3F4F6;
+    border-right: 1px solid var(--border-color);
+    user-select: none;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.phone-input-wrapper input[type="tel"] {
+    flex: 1;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: transparent !important;
+    color: var(--text-dark, #111827);
+    width: 100%;
 }
 
 /* ──────────────────────────────────────────────────────────
