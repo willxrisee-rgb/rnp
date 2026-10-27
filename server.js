@@ -146,8 +146,7 @@ function productCardHTML(p, index = 0) {
           <div class="product-tags">${tags}</div>
         </div>
       </a>
-      <button class="btn btn-primary btn-block add-to-cart-btn"
-        data-id="${escapeHtml(String(p.id))}">Order on WhatsApp</button>
+      <a href="${href}" class="btn btn-primary btn-block">Order Now</a>
     </div>`;
 }
 

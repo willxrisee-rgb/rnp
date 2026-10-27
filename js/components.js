@@ -35,7 +35,7 @@ window.Components = {
                     <div class="product-card__price-row" style="display:flex; flex-direction:column; gap:8px;">
                         <span class="product-card__price">₹${bouquet.price}</span>
                         <div style="display:flex; gap:8px;">
-                            <a href="https://api.whatsapp.com/send?phone=917289996804&text=${encodeURIComponent(`Hi! I'd like to order the ${bouquet.name} bouquet.`)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm product-card__btn" onclick="if(window.gtag) gtag('event', 'whatsapp_order_click', { event_category: 'Order Intent', bouquet_name: '${safeBouquetName}' });">Order now</a>
+                            <a href="/bouquet/${bouquet.slug}" class="btn btn-primary btn-sm product-card__btn" onclick="if(window.gtag) gtag('event', 'order_now_click', { event_category: 'Order Intent', bouquet_name: '${safeBouquetName}' });">Order now</a>
                             <button class="btn-add-cart" onclick="if(window.CartUI && window.CartUI.addItem){window.CartUI.addItem('${bouquet.id}')} else {console.warn('CartUI not ready yet')}">Add to Cart</button>
                         </div>
                     </div>
@@ -206,7 +206,7 @@ window.Components = {
                             Message on Card 
                             <span class="label-hint">(Optional)</span>
                         </label>
-                        <textarea id="cardMessage" name="cardMessage" rows="2" placeholder="Write a short heartfelt note to accompany the flowers..."></textarea>
+                        <textarea id="cardMessage" name="cardMessage" rows="2" placeholder="e.g., Happy Anniversary! (Max 4 words)"></textarea>
                     </div>
                     
                     <!-- Payment Information -->

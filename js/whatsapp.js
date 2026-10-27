@@ -240,8 +240,7 @@ window.WhatsApp = {
         const pincode = (formData.get('deliveryPincode') || '').trim();
         const deliveryDate = formData.get('deliveryDate');
         const deliverySlot = formData.get('deliverySlot');
-        let cardMessage = (formData.get('cardMessage') || '').trim();
-        if (!cardMessage) cardMessage = 'None';
+        const rawCardMessage = (formData.get('cardMessage') || '').trim();
         const paymentMethod = formData.get('paymentMethod') || 'UPI';
 
         // Validate Contact Person Name
@@ -251,19 +250,32 @@ window.WhatsApp = {
             return;
         }
 
-        // Validate & normalise phone number from form input
-        let customerPhone = inputPhone || profile.whatsapp || '';
-        if (customerPhone && !customerPhone.startsWith('+')) {
-            const digits = customerPhone.replace(/\D/g, '');
-            if (digits.length === 10) {
-                customerPhone = `+91${digits}`;
-            }
+        // Strict 10-Digit Phone Validation
+        const rawPhone = inputPhone || profile.whatsapp || '';
+        let digits = String(rawPhone).replace(/\D/g, '');
+        if (digits.length === 12 && digits.startsWith('91')) {
+            digits = digits.slice(2);
+        } else if (digits.length === 11 && digits.startsWith('0')) {
+            digits = digits.slice(1);
         }
-        if (!customerPhone || customerPhone.replace(/\D/g, '').length < 10) {
-            alert('Please enter a valid 10-digit WhatsApp phone number for order updates.');
+
+        if (digits.length !== 10) {
+            alert('Please enter a valid 10-digit phone number.');
             document.getElementById('customerPhone')?.focus();
             return;
         }
+        const customerPhone = `+91${digits}`;
+
+        // Validate Card Message (Max 4 words)
+        if (rawCardMessage) {
+            const wordCount = rawCardMessage.split(/\s+/).length;
+            if (wordCount > 4) {
+                alert('Card messages are limited to a maximum of 4 words.');
+                document.getElementById('cardMessage')?.focus();
+                return;
+            }
+        }
+        const cardMessage = rawCardMessage || 'None';
 
         // Validate Delivery Address
         if (!address) {
