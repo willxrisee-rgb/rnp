@@ -416,7 +416,13 @@ app.post('/api/notify-order', async (req, res) => {
     }
 
     const customerName = order.customerName || order.recipientName || 'Customer';
-    const prefilledText = `Hi ${customerName}, this is Rose n Petals regarding your Order #${displayOrderId}.`;
+    const bouquetName = order.bouquetName || bouquet;
+    const prefilledText = `Hi ${customerName}, this is Rose n Petals regarding your order:\n` +
+      `Order: #${displayOrderId}\n` +
+      `Bouquet: ${bouquetName}\n` +
+      `Price: ₹${price}\n` +
+      `Date: ${dateSlotText}\n` +
+      `Address: ${fullAddress}`;
     const encodedText = encodeURIComponent(prefilledText);
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodedText}`;
 
@@ -439,6 +445,8 @@ app.post('/api/notify-order', async (req, res) => {
         ]
       }
     };
+
+    console.log('[DEBUG Backend] Sending photo URL to Telegram:', photoUrl);
 
     let telegramRes = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
       method: 'POST',

@@ -313,7 +313,10 @@ window.WhatsApp = {
         const bouquetId = document.getElementById('bouquetId')?.value || '';
         const bouquetName = document.getElementById('bouquetName')?.value || 'Fresh Floral Arrangement';
         const bouquetPrice = parseFloat(document.getElementById('bouquetPrice')?.value || '0');
-        const bouquetImage = document.getElementById('bouquetImage')?.value || '';
+        
+        // Select currently displayed bouquet image element and extract its absolute src
+        const displayedImg = document.querySelector('.detail-image-wrapper img, img.detail-image, .detail-section img');
+        const bouquetImage = (displayedImg && displayedImg.src) ? displayedImg.src : (document.getElementById('bouquetImage')?.value || '');
 
         const orderData = {
             customerId: user.uid,
@@ -340,6 +343,9 @@ window.WhatsApp = {
             orderData.subtotal = window._pendingCartOrder.subtotal;
             orderData.discount = window._pendingCartOrder.discount;
             orderData.total = window._pendingCartOrder.total;
+            if (!orderData.imageUrl && orderData.cart && orderData.cart[0]) {
+                orderData.imageUrl = orderData.cart[0].imageUrl || orderData.cart[0].image_url || '';
+            }
             if (window._pendingCartOrder.couponStr) {
                 orderData.coupon = window._pendingCartOrder.couponStr.trim();
             }
@@ -352,6 +358,7 @@ window.WhatsApp = {
 
         try {
             // ── 6. Save to Firestore 'Orders' Collection ──
+            console.log('[DEBUG Frontend] Cloudinary URL captured:', orderData.imageUrl);
             const savedOrder = await window.RNPAuth.saveOrderToFirestore(orderData);
 
             // ── 6b. Notify Telegram Owner Approval Bot (Fire-and-forget in background) ──
