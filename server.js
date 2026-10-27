@@ -1,6 +1,9 @@
 require('dotenv').config();
+const https = require('https');
+const httpsAgent = new https.Agent({ family: 4 });
 const express = require('express');
 const axios = require('axios');
+axios.defaults.httpsAgent = httpsAgent;
 const path = require('path');
 const fs = require('fs');
 const admin = require('firebase-admin');
@@ -478,6 +481,7 @@ app.post('/api/notify-order', async (req, res) => {
     console.log('[DEBUG Backend] Sending photo URL to Telegram:', photoUrl);
 
     let telegramRes = await axios.post(`https://api.telegram.org/bot${botToken}/sendPhoto`, payload, {
+      httpsAgent,
       validateStatus: () => true
     });
 
@@ -491,6 +495,7 @@ app.post('/api/notify-order', async (req, res) => {
         reply_markup: payload.reply_markup
       };
       const fallbackRes = await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, fallbackPayload, {
+        httpsAgent,
         validateStatus: () => true
       });
       const fallbackData = fallbackRes.data;
@@ -894,7 +899,7 @@ app.post('/api/telegram-webhook', async (req, res) => {
           reply_markup: {
             inline_keyboard: [] // Removes buttons so they cannot be clicked again
           }
-        }, { validateStatus: () => true });
+        }, { httpsAgent, validateStatus: () => true });
         const editData = editRes.data;
         if (!editData || !editData.ok) {
           // If the message is a text message without caption, fallback to editMessageText
@@ -905,7 +910,7 @@ app.post('/api/telegram-webhook', async (req, res) => {
               text: updatedText,
               parse_mode: 'HTML',
               reply_markup: { inline_keyboard: [] }
-            }, { validateStatus: () => true });
+            }, { httpsAgent, validateStatus: () => true });
           } else {
             console.error('[Telegram Webhook] editMessageCaption error:', editData);
           }
@@ -928,7 +933,7 @@ app.post('/api/telegram-webhook', async (req, res) => {
           callback_query_id: callbackQueryId,
           text: answerText,
           show_alert: false
-        }, { validateStatus: () => true });
+        }, { httpsAgent, validateStatus: () => true });
       } catch (ansErr) {
         console.error('[Telegram Webhook] answerCallbackQuery exception:', ansErr.message);
       }
