@@ -9,11 +9,7 @@ const fs = require('fs');
 const admin = require('firebase-admin');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const Razorpay = require('razorpay');
-const baileys = require('@whiskeysockets/baileys');
-const makeWASocket = baileys.default || baileys.makeWASocket;
-const { BufferJSON, initAuthCreds, proto, DisconnectReason, useMultiFileAuthState } = baileys;
-const qrcode = require('qrcode-terminal');
-const pino = require('pino');
+const nodemailer = require('nodemailer');
 
 // Initialize Razorpay Client
 let razorpay = null;
@@ -27,8 +23,186 @@ if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
   console.warn('[Razorpay] Warning: RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing. Payment links will not be generated.');
 }
 
-// Global Baileys Socket instance (connected after Firebase Admin initializes)
-let sock = null;
+// ─────────────────────────────────────────────────────────────────────────────
+// 📧 Reusable Nodemailer Transporter (Gmail Service)
+// ─────────────────────────────────────────────────────────────────────────────
+let mailTransporter = null;
+function getEmailTransporter() {
+  if (mailTransporter) return mailTransporter;
+  if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+    mailTransporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD
+      }
+    });
+    console.log('[Nodemailer] Reusable email transporter initialized for Gmail service.');
+  } else {
+    console.warn('[Nodemailer] Warning: GMAIL_USER or GMAIL_APP_PASSWORD is not set. Email delivery will be skipped.');
+  }
+  return mailTransporter;
+}
+
+// Check email transporter on boot
+try {
+  getEmailTransporter();
+} catch (e) {
+  console.warn('[Nodemailer] Initial boot setup notice:', e.message);
+}
+
+/**
+ * Generates a branded, responsive HTML email for order acceptance & payment link.
+ */
+function generateOrderAcceptedEmailHtml({
+  displayOrderId,
+  customerName,
+  bouquetName,
+  totalAmount,
+  deliveryDate,
+  timeSlot,
+  recipientName,
+  recipientPhone,
+  deliveryAddress,
+  pincode,
+  cardMessage,
+  paymentLinkUrl,
+  bouquetImage
+}) {
+  const shopPhone = process.env.SHOP_PHONE || '917289996804';
+  const waSupportUrl = `https://wa.me/${shopPhone}?text=Hi%20Rose%20n%20Petals,%20I%20need%20help%20with%20my%20order%20%23${displayOrderId}!`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Link - Order #${escapeHtml(displayOrderId)} | Rose n Petals</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F8FAFC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1E293B;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;padding:30px 10px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width:600px;background-color:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid #E2E8F0;">
+          
+          <!-- BRAND HEADER -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#CC0000 0%,#880000 100%);padding:32px 24px;text-align:center;">
+              <span style="font-size:32px;line-height:1;display:inline-block;margin-bottom:8px;">🌸</span>
+              <h1 style="margin:0;color:#FFFFFF;font-size:24px;font-weight:800;letter-spacing:0.5px;">Rose n Petals</h1>
+              <p style="margin:6px 0 0;color:#FFE4E6;font-size:14px;font-weight:500;">Handcrafted Fresh Bouquets • Express Delivery</p>
+            </td>
+          </tr>
+
+          <!-- STATUS ANNOUNCEMENT -->
+          <tr>
+            <td style="padding:28px 28px 16px;">
+              <div style="background-color:#F0FDF4;border:1px solid #86EFAC;border-radius:12px;padding:16px 20px;text-align:center;margin-bottom:24px;">
+                <div style="font-size:24px;margin-bottom:6px;">🎉</div>
+                <h2 style="margin:0 0 6px;font-size:20px;font-weight:800;color:#166534;">Your Order Has Been Accepted!</h2>
+                <p style="margin:0;font-size:14px;color:#15803D;line-height:1.5;">
+                  Great news <strong>${escapeHtml(customerName)}</strong>! Our florist reviewed fresh bloom inventory and accepted your order request.
+                </p>
+              </div>
+
+              <!-- ORDER REFERENCE -->
+              <table role="presentation" width="100%" style="margin-bottom:20px;background-color:#FFF1F5;border-radius:8px;border:1px solid #FFE4E6;">
+                <tr>
+                  <td style="padding:12px 16px;">
+                    <span style="font-size:13px;color:#881337;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Order Reference:</span>
+                    <strong style="font-size:16px;color:#CC0000;float:right;font-family:monospace;">#${escapeHtml(displayOrderId)}</strong>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- BOUQUET DETAILS -->
+              <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;color:#0F172A;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #F1F5F9;padding-bottom:8px;">
+                Bouquet & Delivery Details
+              </h3>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="font-size:14px;line-height:1.6;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:8px 0;color:#64748B;width:38%;">Bouquet:</td>
+                  <td style="padding:8px 0;color:#0F172A;font-weight:700;">${escapeHtml(bouquetName)}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;color:#64748B;">Total Amount:</td>
+                  <td style="padding:8px 0;color:#CC0000;font-weight:800;font-size:16px;">₹${escapeHtml(totalAmount)}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;color:#64748B;">Recipient:</td>
+                  <td style="padding:8px 0;color:#0F172A;font-weight:600;">${escapeHtml(recipientName)}</td>
+                </tr>
+                ${recipientPhone ? `
+                <tr>
+                  <td style="padding:8px 0;color:#64748B;">Recipient Phone:</td>
+                  <td style="padding:8px 0;color:#0F172A;">${escapeHtml(recipientPhone)}</td>
+                </tr>` : ''}
+                <tr>
+                  <td style="padding:8px 0;color:#64748B;">Delivery Slot:</td>
+                  <td style="padding:8px 0;color:#0F172A;">${escapeHtml(deliveryDate)} ${timeSlot ? `(${escapeHtml(timeSlot)})` : ''}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;color:#64748B;">Delivery Address:</td>
+                  <td style="padding:8px 0;color:#0F172A;">${escapeHtml(deliveryAddress)}${pincode ? `, PIN: ${escapeHtml(pincode)}` : ''}</td>
+                </tr>
+                ${cardMessage ? `
+                <tr>
+                  <td style="padding:8px 0;color:#64748B;">Card Message:</td>
+                  <td style="padding:8px 0;color:#0F172A;font-style:italic;">"${escapeHtml(cardMessage)}"</td>
+                </tr>` : ''}
+              </table>
+
+              <!-- PAYMENT CALL TO ACTION -->
+              ${paymentLinkUrl ? `
+              <div style="text-align:center;margin:28px 0;padding:24px 16px;background:#FFF5F5;border-radius:12px;border:2px dashed #FECDD3;">
+                <p style="margin:0 0 16px;font-size:15px;font-weight:700;color:#881337;">
+                  Click below to securely complete your payment:
+                </p>
+                <a href="${paymentLinkUrl}" target="_blank" style="background-color:#CC0000;color:#FFFFFF;text-decoration:none;padding:16px 36px;border-radius:8px;font-weight:800;font-size:17px;display:inline-block;box-shadow:0 4px 14px rgba(204,0,0,0.35);letter-spacing:0.3px;">
+                  💳 Pay Now (₹${escapeHtml(totalAmount)})
+                </a>
+                <p style="margin:14px 0 0;font-size:12px;color:#64748B;word-break:break-all;">
+                  Payment link URL: <a href="${paymentLinkUrl}" style="color:#CC0000;">${paymentLinkUrl}</a>
+                </p>
+              </div>` : ''}
+
+              <!-- WORKFLOW EXPECTATIONS -->
+              <div style="background-color:#F8FAFC;border-left:4px solid #CC0000;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:24px;">
+                <h4 style="margin:0 0 8px;font-size:14px;font-weight:700;color:#0F172A;">What Happens After Payment?</h4>
+                <p style="margin:0;font-size:13.5px;color:#334155;line-height:1.6;">
+                  After your payment is complete, our florist begins crafting your bouquet immediately, and our delivery agent will contact the recipient number upon arrival. You will also receive real-time updates!
+                </p>
+              </div>
+
+              <!-- SUPPORT BUTTON -->
+              <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid #E2E8F0;">
+                <p style="margin:0 0 12px;font-size:14px;color:#64748B;">Have questions or need help with your order?</p>
+                <a href="${waSupportUrl}" target="_blank" style="background-color:#25D366;color:#FFFFFF;text-decoration:none;padding:10px 22px;border-radius:6px;font-weight:700;font-size:14px;display:inline-block;">
+                  💬 Need help? WhatsApp Us
+                </a>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="background-color:#F1F5F9;padding:20px 28px;text-align:center;font-size:12px;color:#64748B;border-top:1px solid #E2E8F0;">
+              <p style="margin:0 0 6px;font-weight:600;color:#334155;">Rose n Petals Florist</p>
+              <p style="margin:0 0 6px;">Shop No. 14, KD Market, Block D, Sector 18, Kavi Nagar, Ghaziabad, UP 201002</p>
+              <p style="margin:0;">This email was sent automatically regarding order #${escapeHtml(displayOrderId)}.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
 
 
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTHd0751qQ03HhhAmQhVE32BlLZXOO1g40tqB3XPv_9WZCUwW4iQwZ6mNWUnf0Pvf0aD1HkRBAuOQQu/pub?output=csv';
@@ -508,36 +682,6 @@ app.post('/api/notify-order', async (req, res) => {
 
     console.log(`[Telegram Bot] Successfully sent order alert for #${displayOrderId}`);
 
-    // Send automated WhatsApp confirmation message to customer via Baileys
-    try {
-      if (sock) {
-        const rawCustomerPhone = order.customerPhone || order.phone || '';
-        const cleanPhone = String(rawCustomerPhone).replace(/\D/g, '').slice(-10);
-
-        if (cleanPhone.length === 10) {
-          const jid = '91' + cleanPhone + '@s.whatsapp.net';
-          const displayName = order.recipientName || order.customerName || 'Customer';
-          const message = `Hi ${displayName}, thank you for choosing Rose n Petals! 🌸\n` +
-            `We have received your order #${displayOrderId}.\n\n` +
-            `Order Details:\n` +
-            `Bouquet: ${bouquet}\n` +
-            `Price: ₹${price}\n` +
-            `Delivery Date: ${dateSlotText}\n` +
-            `Address: ${fullAddress}\n\n` +
-            `We will notify you once it is confirmed!`;
-
-          await sock.sendMessage(jid, { text: message });
-          console.log(`[Baileys WhatsApp] Sent automated confirmation to ${jid} for order #${displayOrderId}`);
-        } else {
-          console.warn(`[Baileys WhatsApp] Could not extract valid 10-digit customer phone for order #${displayOrderId}: "${rawCustomerPhone}"`);
-        }
-      } else {
-        console.warn(`[Baileys WhatsApp] Socket not connected. Skipping confirmation for order #${displayOrderId}`);
-      }
-    } catch (waErr) {
-      console.error(`[Baileys WhatsApp] Could not send confirmation message for order #${displayOrderId}:`, waErr.message || waErr);
-    }
-
     return res.status(200).json({ success: true, messageId: telegramData.result?.message_id });
 
   } catch (err) {
@@ -598,129 +742,6 @@ try {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 📱 Baileys Firestore Auth Adapter (Permanent WhatsApp Session)
-// ─────────────────────────────────────────────────────────────────────────────
-async function useFirestoreAuthState(collectionName = 'WhatsAppAuth') {
-  const db = adminDb || getFirebaseAdminDb();
-  if (!db) {
-    console.warn('[WhatsAppAuth] Firebase Admin is not initialized. Falling back to local baileys_auth_info.');
-    return useMultiFileAuthState('baileys_auth_info');
-  }
-
-  const collectionRef = db.collection(collectionName);
-  const fixDocId = (file) => file.replace(/\//g, '__').replace(/:/g, '-');
-
-  const writeData = async (data, file) => {
-    try {
-      const docId = fixDocId(file);
-      const jsonStr = JSON.stringify(data, BufferJSON.replacer);
-      await collectionRef.doc(docId).set({
-        data: jsonStr,
-        updatedAt: FieldValue.serverTimestamp()
-      });
-    } catch (err) {
-      console.error(`[WhatsAppAuth] Failed to write key ${file}:`, err.message);
-    }
-  };
-
-  const readData = async (file) => {
-    try {
-      const docId = fixDocId(file);
-      const docSnap = await collectionRef.doc(docId).get();
-      if (!docSnap.exists) return null;
-      const docData = docSnap.data();
-      if (!docData || !docData.data) return null;
-      return JSON.parse(docData.data, BufferJSON.reviver);
-    } catch (err) {
-      console.error(`[WhatsAppAuth] Failed to read key ${file}:`, err.message);
-      return null;
-    }
-  };
-
-  const removeData = async (file) => {
-    try {
-      const docId = fixDocId(file);
-      await collectionRef.doc(docId).delete();
-    } catch (err) {
-      console.error(`[WhatsAppAuth] Failed to remove key ${file}:`, err.message);
-    }
-  };
-
-  const creds = (await readData('creds.json')) || initAuthCreds();
-
-  return {
-    state: {
-      creds,
-      keys: {
-        get: async (type, ids) => {
-          const data = {};
-          await Promise.all(
-            ids.map(async (id) => {
-              let value = await readData(`${type}-${id}.json`);
-              if (type === 'app-state-sync-key' && value) {
-                value = proto.Message.AppStateSyncKeyData.fromObject(value);
-              }
-              data[id] = value;
-            })
-          );
-          return data;
-        },
-        set: async (data) => {
-          const tasks = [];
-          for (const category in data) {
-            for (const id in data[category]) {
-              const value = data[category][id];
-              const file = `${category}-${id}.json`;
-              tasks.push(value ? writeData(value, file) : removeData(file));
-            }
-          }
-          await Promise.all(tasks);
-        }
-      }
-    },
-    saveCreds: async () => {
-      return writeData(creds, 'creds.json');
-    }
-  };
-}
-
-async function connectToWhatsApp() {
-  try {
-    const { state, saveCreds } = await useFirestoreAuthState('WhatsAppAuth');
-
-    sock = makeWASocket({
-      auth: state,
-      printQRInTerminal: false,
-      logger: pino({ level: 'warn' })
-    });
-
-    sock.ev.on('connection.update', (update) => {
-      const { connection, lastDisconnect, qr } = update;
-
-      if (qr) {
-        console.log('[Baileys WhatsApp] SCAN THIS QR CODE:');
-        qrcode.generate(qr, { small: true });
-      }
-
-      if (connection === 'close') {
-        const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut;
-        console.log('[Baileys WhatsApp] Connection closed, reconnecting:', shouldReconnect);
-        if (shouldReconnect) {
-          connectToWhatsApp();
-        }
-      } else if (connection === 'open') {
-        console.log('[Baileys WhatsApp] Client is connected and ready!');
-      }
-    });
-
-    sock.ev.on('creds.update', saveCreds);
-  } catch (err) {
-    console.error('[Baileys WhatsApp] Connection error:', err.message || err);
-  }
-}
-
-// Execute connection when server starts
-connectToWhatsApp();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 🤖 Telegram Webhook Route (Handle Accept / Deny Callback Queries)
@@ -824,31 +845,58 @@ app.post('/api/telegram-webhook', async (req, res) => {
           await orderRef.set(updateDoc, { merge: true });
           console.log(`[Telegram Webhook] Firestore Order #${orderId} marked as PAYMENT_PENDING`);
 
-          // Send payment link to customer via WhatsApp (Baileys)
+          // 📧 Send branded HTML email to customer with payment link
           try {
-            if (sock) {
-              const rawCustomerPhone = (orderData && (orderData.customerPhone || orderData.phone)) || contactPhone || '';
-              const cleanPhone = String(rawCustomerPhone).replace(/\D/g, '').slice(-10);
+            const transporter = getEmailTransporter();
+            const targetCustomerEmail = (customerEmail || (orderData && (orderData.customerEmail || orderData.email)) || '').trim();
 
-              if (cleanPhone.length === 10) {
-                const jid = '91' + cleanPhone + '@s.whatsapp.net';
-                const effectiveOrderId = (orderData && orderData.id) || orderId;
-                const displayOrderId = effectiveOrderId.startsWith('RNP-')
-                  ? effectiveOrderId
-                  : `RNP-${effectiveOrderId.substring(0, 8).toUpperCase()}`;
-                const paymentLink = paymentLinkUrl || '';
-                const message = `Great news ${customerName}! 🌸 Rose n Petals has accepted your order #${displayOrderId}. You can complete your secure payment here to confirm your delivery: ${paymentLink}`;
+            if (transporter && targetCustomerEmail && targetCustomerEmail.includes('@')) {
+              const effectiveOrderId = (orderData && orderData.id) || orderId;
+              const displayOrderId = effectiveOrderId.startsWith('RNP-')
+                ? effectiveOrderId
+                : `RNP-${effectiveOrderId.substring(0, 8).toUpperCase()}`;
 
-                await sock.sendMessage(jid, { text: message });
-                console.log(`[Baileys WhatsApp] Sent payment link to ${jid} for order #${displayOrderId}`);
-              } else {
-                console.warn(`[Baileys WhatsApp] Skipping payment link dispatch: could not extract 10-digit phone for order #${orderId}: "${rawCustomerPhone}"`);
-              }
+              const bouquetName = (orderData && (orderData.bouquetName || (orderData.cart && orderData.cart.map(i => i.name).join(', ')))) || 'Fresh Floral Arrangement';
+              const totalAmount = orderData ? (orderData.total || orderData.price || 0) : 0;
+              const formattedDate = formatDeliveryDate(orderData?.deliveryDate);
+              const timeSlot = orderData?.timeSlot || '';
+              const recipientName = orderData?.recipientName || customerName;
+              const recipientPhone = orderData?.customerPhone || orderData?.phone || contactPhone || '';
+              const deliveryAddress = orderData?.deliveryAddress || '';
+              const pincode = orderData?.pincode || '';
+              const cardMessage = (orderData?.cardMessage && orderData.cardMessage !== 'None') ? orderData.cardMessage : '';
+              const bouquetImage = (orderData && (orderData.imageUrl || (orderData.cart && orderData.cart[0] && (orderData.cart[0].imageUrl || orderData.cart[0].image_url)))) || '';
+
+              const emailHtml = generateOrderAcceptedEmailHtml({
+                displayOrderId,
+                customerName,
+                bouquetName,
+                totalAmount,
+                deliveryDate: formattedDate,
+                timeSlot,
+                recipientName,
+                recipientPhone,
+                deliveryAddress,
+                pincode,
+                cardMessage,
+                paymentLinkUrl,
+                bouquetImage
+              });
+
+              await transporter.sendMail({
+                from: `"Rose n Petals" <${process.env.GMAIL_USER}>`,
+                to: targetCustomerEmail,
+                subject: `Payment Link - Order #${displayOrderId} | Rose n Petals`,
+                html: emailHtml
+              });
+              console.log(`[Nodemailer] Successfully delivered payment link email to ${targetCustomerEmail} for order #${displayOrderId}`);
+            } else if (!transporter) {
+              console.warn(`[Nodemailer] Transporter not ready (verify GMAIL_USER/GMAIL_APP_PASSWORD). Skipped email for order #${orderId}`);
             } else {
-              console.warn(`[Baileys WhatsApp] Socket not connected. Skipped payment link for order #${orderId}`);
+              console.warn(`[Nodemailer] No valid customer email found for order #${orderId} ("${targetCustomerEmail}"). Skipped email.`);
             }
-          } catch (waErr) {
-            console.error(`[Baileys WhatsApp] Error sending payment link for order #${orderId}:`, waErr.message || waErr);
+          } catch (emailErr) {
+            console.error(`[Nodemailer] Error sending order accepted email for order #${orderId}:`, emailErr.message || emailErr);
           }
         } else {
           await orderRef.set({
@@ -995,10 +1043,66 @@ app.post('/api/admin/update', requireAdmin, (req, res) => {
   res.status(200).json({ success: true });
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// 📦 Order Status Polling Route (Fetches specific order status for live tracking)
+// ─────────────────────────────────────────────────────────────────────────────
+app.get('/api/orders/status/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ success: false, error: 'Missing order ID' });
+  }
+
+  const db = getFirebaseAdminDb();
+  if (!db) {
+    return res.status(503).json({ success: false, error: 'Database service unavailable' });
+  }
+
+  try {
+    let orderDoc = await db.collection('Orders').doc(id).get();
+    let orderData = null;
+
+    if (orderDoc.exists) {
+      orderData = { id: orderDoc.id, ...orderDoc.data() };
+    } else {
+      // Fallback query if id is stored as a field or prefix
+      const q = await db.collection('Orders').where('id', '==', id).limit(1).get();
+      if (!q.empty) {
+        const d = q.docs[0];
+        orderData = { id: d.id, ...d.data() };
+      }
+    }
+
+    if (!orderData) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    const effectiveOrderId = orderData.id || id;
+    const displayOrderId = effectiveOrderId.startsWith('RNP-')
+      ? effectiveOrderId
+      : `RNP-${effectiveOrderId.substring(0, 8).toUpperCase()}`;
+
+    return res.status(200).json({
+      success: true,
+      id: orderData.id,
+      displayOrderId,
+      status: orderData.status || 'PENDING_SHOP_APPROVAL',
+      paymentLink: orderData.paymentLink || orderData.paymentLinkUrl || '',
+      price: orderData.total || orderData.price || 0,
+      bouquetName: orderData.bouquetName || (orderData.cart ? orderData.cart.map(i => i.name).join(', ') : 'Fresh Floral Arrangement'),
+      customerEmail: orderData.customerEmail || orderData.email || '',
+      customerPhone: orderData.customerPhone || orderData.phone || ''
+    });
+  } catch (err) {
+    console.error(`[Order Status API] Error fetching status for order #${id}:`, err.message);
+    return res.status(500).json({ success: false, error: 'Failed to fetch order status' });
+  }
+});
+
 // API endpoint to securely pass environment variables to the frontend dynamically
 app.get('/api/config', (req, res) => {
   res.json({
-    sheetUrl: process.env.SHEET_URL || ''
+    sheetUrl: process.env.SHEET_URL || '',
+    shopPhone: process.env.SHOP_PHONE || '917289996804'
   });
 });
 

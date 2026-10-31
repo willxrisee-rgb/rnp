@@ -361,6 +361,9 @@
             const orderRef = (order.id || 'RNP').substring(0, 8).toUpperCase();
             const dateStr = formatOrderDate(order.createdAt);
             const statusHtml = getStatusBadgeHtml(order.status);
+            const isPaymentPending = (order.status || '').toUpperCase() === 'PAYMENT_PENDING';
+            const paymentLink = order.paymentLink || order.paymentLinkUrl || '';
+            const price = order.total || order.price || '0';
             
             const shopWaMsg = encodeURIComponent(
                 `Hi Rose n Petals! Inquiring about my order #${orderRef} for ${order.bouquetName}.`
@@ -372,7 +375,7 @@
                 : `<span class="order-thumb-fallback">💐</span>`;
 
             return `
-                <article class="order-history-card">
+                <article class="order-history-card ${isPaymentPending ? 'order-card-payment-pending' : ''}">
                     <div class="order-card-top">
                         <div class="order-bouquet-info">
                             <div class="order-thumb-wrapper">
@@ -385,7 +388,7 @@
                             </div>
                         </div>
                         <div class="order-price-badge">
-                            ₹${order.price || '0'}
+                            ₹${price}
                         </div>
                     </div>
 
@@ -413,13 +416,28 @@
                         💌 Card Note: "${escapeHtml(order.cardMessage)}"
                     </div>` : ''}
 
+                    ${isPaymentPending && paymentLink ? `
+                    <div class="profile-pay-pending-banner">
+                        <div class="profile-pay-pending-info">
+                            <span class="pay-pending-pulse-dot"></span>
+                            <div>
+                                <strong style="font-size: 0.95rem; color: #9F1239; display: block;">Florist Approved! Payment Required</strong>
+                                <span style="font-size: 0.82rem; color: #881337;">Complete payment to begin bouquet handcrafting and dispatch.</span>
+                            </div>
+                        </div>
+                        <a href="${escapeHtml(paymentLink)}" target="_blank" rel="noopener noreferrer" class="btn-pay-now-prominent">
+                            💳 Pay Now (₹${price}) &rarr;
+                        </a>
+                    </div>
+                    ` : ''}
+
                     <div class="order-card-bottom">
                         <div>
                             ${statusHtml}
                         </div>
                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                            ${(order.status || '').toUpperCase() === 'PAYMENT_PENDING' && order.paymentLink ? `
-                            <a href="${escapeHtml(order.paymentLink)}" target="_blank" rel="noopener noreferrer" class="btn-pay-now">
+                            ${isPaymentPending && paymentLink ? `
+                            <a href="${escapeHtml(paymentLink)}" target="_blank" rel="noopener noreferrer" class="btn-pay-now-prominent">
                                 💳 Pay Now
                             </a>
                             ` : ''}
@@ -438,7 +456,7 @@
         function getStatusBadgeHtml(status) {
             const s = (status || '').toUpperCase();
             if (s === 'PAYMENT_PENDING') {
-                return `<span class="order-status-badge status-payment-pending">💳 Payment Pending</span>`;
+                return `<span class="order-status-badge status-payment-pending">💳 Action Required: Payment Pending</span>`;
             } else if (s.includes('PENDING') || s === 'PENDING_SHOP_APPROVAL') {
                 return `<span class="order-status-badge status-pending">⏳ Pending Shop Approval</span>`;
             } else if (s.includes('CANCELLED') || s.includes('DENY')) {

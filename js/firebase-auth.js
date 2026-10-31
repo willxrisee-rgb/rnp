@@ -255,6 +255,11 @@ export async function signInWithGoogle(redirectUrl) {
  * @param {string} [options.buttonText] - Custom button text
  */
 export function showLoginModal(options = {}) {
+    // Form Wipe Protection: Capture active form inputs before guest redirection
+    if (typeof window.WhatsApp?.savePendingCheckoutState === 'function') {
+        window.WhatsApp.savePendingCheckoutState();
+    }
+
     const redirectUrl = options.redirectUrl || window.location.pathname + window.location.search;
     const title = options.title || "Almost there!";
     const message = options.message || "Please log in to place and track your order.";
