@@ -912,15 +912,18 @@ app.post('/api/telegram-webhook', async (req, res) => {
                 to: targetCustomerEmail,
                 subject: `Payment Link - Order #${displayOrderId} | Rose n Petals`,
                 html: emailHtml
+              }).catch(err => {
+                console.error('[Nodemailer Error]:', err);
+                throw err;
               });
               console.log(`[Nodemailer] Successfully delivered payment link email to ${targetCustomerEmail} for order #${displayOrderId}`);
             } else if (!transporter) {
-              console.warn(`[Nodemailer] Transporter not ready (verify GMAIL_USER/GMAIL_APP_PASSWORD). Skipped email for order #${orderId}`);
+              console.error(`[Nodemailer Error]: Transporter not ready (GMAIL_USER is ${process.env.GMAIL_USER ? 'SET' : 'MISSING'}, GMAIL_APP_PASSWORD is ${process.env.GMAIL_APP_PASSWORD ? 'SET' : 'MISSING'}). Skipped email for order #${orderId}`);
             } else {
-              console.warn(`[Nodemailer] No valid customer email found for order #${orderId} ("${targetCustomerEmail}"). Skipped email.`);
+              console.error(`[Nodemailer Error]: No valid customer email found for order #${orderId} (found: "${targetCustomerEmail}"). Skipped email.`);
             }
           } catch (emailErr) {
-            console.error(`[Nodemailer] Error sending order accepted email for order #${orderId}:`, emailErr.message || emailErr);
+            console.error('[Nodemailer Error]: Full exception details:', emailErr);
           }
         } else {
           await orderRef.set({
@@ -1112,9 +1115,52 @@ app.post('/api/razorpay-webhook', async (req, res) => {
             ? effectiveOrderId
             : `RNP-${effectiveOrderId.substring(0, 8).toUpperCase()}`;
 
-          const botToken = process.env.TELEGRAM_BOT_TOKEN;
-          const chatId = process.env.TELEGRAM_CHAT_ID;
-          const successCaption = `💰 PAYMENT RECEIVED! 💰\nOrder #${displayOrderId} is now PAID and ready to be made.`;
+          const bouquet = (updatedOrderData && (updatedOrderData.bouquetName || (updatedOrderData.cart && updatedOrderData.cart.map(i => i.name).join(', ')))) || 'Fresh Floral Arrangement';
+          const price = (updatedOrderData && (updatedOrderData.total || updatedOrderData.price)) || 0;
+          const formattedDate = formatDeliveryDate(updatedOrderData?.deliveryDate);
+          const dateSlotText = formattedDate && updatedOrderData?.timeSlot
+            ? `${formattedDate} (${updatedOrderData.timeSlot})`
+            : (formattedDate || updatedOrderData?.timeSlot || 'Standard Delivery');
+          const fullAddress = [updatedOrderData?.deliveryAddress, updatedOrderData?.pincode].filter(Boolean).join(', ');
+          const contactText = updatedOrderData?.recipientName && updatedOrderData?.customerPhone
+            ? `${updatedOrderData.recipientName} (${updatedOrderData.customerPhone})`
+            : (updatedOrderData?.recipientName || updatedOrderData?.customerPhone || 'Customer');
+
+          let successCaption = `💰 <b>PAYMENT RECEIVED &amp; VERIFIED</b> 💰\n\n` +
+            `<b>Order ID:</b> #${escapeTelegramHtml(displayOrderId)}\n` +
+            `<b>Bouquet:</b> ${escapeTelegramHtml(bouquet)}\n` +
+            `<b>Price:</b> ₹${escapeTelegramHtml(price)}\n` +
+            `<b>Delivery Date:</b> ${escapeTelegramHtml(dateSlotText)}\n` +
+            `<b>Address:</b> ${escapeTelegramHtml(fullAddress)}\n` +
+            `<b>Contact:</b> ${escapeTelegramHtml(contactText)}`;
+
+          if (updatedOrderData?.cardMessage && updatedOrderData.cardMessage !== 'None') {
+            successCaption += `\n<b>Card Message:</b> <i>${escapeTelegramHtml(updatedOrderData.cardMessage)}</i>`;
+          }
+
+          successCaption += `\n\n✅ <i>Order is now PAID and ready to be made.</i>`;
+
+          if (successCaption.length > 1024) {
+            successCaption = successCaption.slice(0, 1020) + '...';
+          }
+
+          // Construct WhatsApp Contact Customer URL button
+          const rawPhone = updatedOrderData?.customerPhone || updatedOrderData?.phone || updatedOrderData?.whatsapp || '';
+          let cleanPhone = String(rawPhone).replace(/\D/g, '');
+          if (cleanPhone.length === 10) {
+            cleanPhone = `91${cleanPhone}`;
+          }
+          const customerName = updatedOrderData?.recipientName || updatedOrderData?.customerName || 'Customer';
+          const paidWaText = `Hi ${customerName}, your payment for Order #${displayOrderId} (${bouquet}) was received! We are now preparing your bouquet.`;
+          const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(paidWaText)}`;
+
+          const replyMarkup = {
+            inline_keyboard: cleanPhone ? [
+              [
+                { text: '💬 Contact Customer', url: whatsappUrl }
+              ]
+            ] : []
+          };
 
           if (botToken && chatId && telegramMessageId) {
             try {
@@ -1124,9 +1170,7 @@ app.post('/api/razorpay-webhook', async (req, res) => {
                 message_id: telegramMessageId,
                 caption: successCaption,
                 parse_mode: 'HTML',
-                reply_markup: {
-                  inline_keyboard: [] // Completely remove old Accept/Deny buttons so owner cannot click them again
-                }
+                reply_markup: replyMarkup
               }, { httpsAgent, validateStatus: () => true });
 
               const editData = editRes.data;
@@ -1138,14 +1182,15 @@ app.post('/api/razorpay-webhook', async (req, res) => {
                     message_id: telegramMessageId,
                     text: successCaption,
                     parse_mode: 'HTML',
-                    reply_markup: { inline_keyboard: [] }
+                    reply_markup: replyMarkup
                   }, { httpsAgent, validateStatus: () => true });
                 } else {
                   console.warn('[Razorpay Webhook] editMessageCaption error, falling back to sendMessage:', editData);
                   await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     chat_id: chatId,
                     text: successCaption,
-                    parse_mode: 'HTML'
+                    parse_mode: 'HTML',
+                    reply_markup: replyMarkup
                   }, { httpsAgent, validateStatus: () => true });
                 }
               }
@@ -1159,7 +1204,8 @@ app.post('/api/razorpay-webhook', async (req, res) => {
               await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 chat_id: chatId,
                 text: successCaption,
-                parse_mode: 'HTML'
+                parse_mode: 'HTML',
+                reply_markup: replyMarkup
               }, { httpsAgent, validateStatus: () => true });
               console.log(`[Razorpay Webhook] Sent payment success notification to Telegram for Order #${displayOrderId}`);
             } catch (tgErr) {

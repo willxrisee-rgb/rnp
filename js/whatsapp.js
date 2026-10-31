@@ -613,6 +613,8 @@ window.WhatsApp = {
 
         console.log(`[RNP Live Tracking] Polling status every 10s for order #${orderId}`);
 
+        let lastRenderedStatus = null;
+
         const pollStatus = async () => {
             try {
                 const res = await fetch(`/api/orders/status/${encodeURIComponent(orderId)}`);
@@ -622,37 +624,42 @@ window.WhatsApp = {
 
                 const currentStatus = (data.status || '').toUpperCase();
 
+                // 1. Status is PAYMENT_PENDING — render Pay Now button, DO NOT clearInterval!
                 if (currentStatus === 'PAYMENT_PENDING' && data.paymentLink) {
-                    // Instantly stop polling
-                    this.stopStatusPolling();
-
-                    // Play gentle notification sound
-                    this.playGentleNotificationSound();
-
-                    // Trigger celebratory confetti burst
-                    if (typeof window.confetti === 'function') {
-                        window.confetti({
-                            particleCount: 80,
-                            spread: 70,
-                            origin: { y: 0.55 }
-                        });
+                    if (lastRenderedStatus !== 'PAYMENT_PENDING') {
+                        lastRenderedStatus = 'PAYMENT_PENDING';
+                        this.playGentleNotificationSound();
+                        if (typeof window.confetti === 'function') {
+                            window.confetti({
+                                particleCount: 80,
+                                spread: 70,
+                                origin: { y: 0.55 }
+                            });
+                        }
+                        this.renderPaymentUnlockedUI(data, orderData);
+                        this.updateTimelineStep('PAYMENT_PENDING');
                     }
-
-                    // Render massive Pay Now button and accepted view
-                    this.renderPaymentUnlockedUI(data, orderData);
-                } else if (currentStatus === 'PAID' || currentStatus === 'CONFIRMED') {
-                    // Instantly stop polling — payment confirmed!
-                    this.stopStatusPolling();
-                    this.playGentleNotificationSound();
-                    if (typeof window.confetti === 'function') {
-                        window.confetti({
-                            particleCount: 100,
-                            spread: 80,
-                            origin: { y: 0.55 }
-                        });
+                    // IMPORTANT: Do not clearInterval here! Allow polling to continue every 10s so payment completion is detected.
+                } 
+                // 2. Status is PAID — instantly hide Pay Now button, update copy, and highlight 'Making' step
+                else if (currentStatus === 'PAID' || currentStatus === 'CONFIRMED') {
+                    if (lastRenderedStatus !== 'PAID') {
+                        lastRenderedStatus = 'PAID';
+                        this.stopStatusPolling();
+                        this.playGentleNotificationSound();
+                        if (typeof window.confetti === 'function') {
+                            window.confetti({
+                                particleCount: 100,
+                                spread: 80,
+                                origin: { y: 0.55 }
+                            });
+                        }
+                        this.renderPaidSuccessUI(data, orderData);
+                        this.updateTimelineStep('PAID');
                     }
-                    this.renderPaidSuccessUI(data, orderData);
-                } else if (currentStatus === 'CANCELLED_SHOP_BUSY') {
+                } 
+                // 3. Status is CANCELLED_SHOP_BUSY
+                else if (currentStatus === 'CANCELLED_SHOP_BUSY') {
                     this.stopStatusPolling();
                     this.renderShopBusyUI(data, orderData);
                 }
@@ -665,37 +672,105 @@ window.WhatsApp = {
         this._statusPollTimer = setInterval(pollStatus, 10000);
     },
 
+    /**
+     * Updates visual timeline stepper steps according to current order state.
+     */
+    updateTimelineStep(status) {
+        const s = (status || '').toUpperCase();
+        const stepPlaced = document.getElementById('step-placed');
+        const stepReview = document.getElementById('step-review');
+        const stepPayment = document.getElementById('step-payment');
+        const stepMaking = document.getElementById('step-making');
+        const stepDelivery = document.getElementById('step-delivery');
+        const conn1 = document.getElementById('conn-1');
+        const conn2 = document.getElementById('conn-2');
+        const conn3 = document.getElementById('conn-3');
+        const conn4 = document.getElementById('conn-4');
+
+        if (!stepPlaced) return;
+
+        if (s === 'PAYMENT_PENDING') {
+            stepPlaced.className = 'timeline-step step-done';
+            const c1 = stepPlaced.querySelector('.step-circle');
+            if (c1) c1.innerHTML = '✓';
+            conn1?.classList.add('connector-active');
+
+            stepReview.className = 'timeline-step step-done';
+            const c2 = stepReview.querySelector('.step-circle');
+            if (c2) c2.innerHTML = '✓';
+            conn2?.classList.add('connector-active');
+
+            stepPayment.className = 'timeline-step step-active';
+            const c3 = stepPayment.querySelector('.step-circle');
+            if (c3) c3.innerHTML = '3';
+
+            stepMaking.className = 'timeline-step';
+            stepDelivery.className = 'timeline-step';
+        } else if (s === 'PAID' || s === 'CONFIRMED') {
+            stepPlaced.className = 'timeline-step step-done';
+            const c1 = stepPlaced.querySelector('.step-circle');
+            if (c1) c1.innerHTML = '✓';
+            conn1?.classList.add('connector-active');
+
+            stepReview.className = 'timeline-step step-done';
+            const c2 = stepReview.querySelector('.step-circle');
+            if (c2) c2.innerHTML = '✓';
+            conn2?.classList.add('connector-active');
+
+            stepPayment.className = 'timeline-step step-done';
+            const c3 = stepPayment.querySelector('.step-circle');
+            if (c3) c3.innerHTML = '✓';
+            conn3?.classList.add('connector-active');
+
+            // Highlight the 'Making' step on the visual timeline
+            stepMaking.className = 'timeline-step step-active step-highlight-making';
+            const c4 = stepMaking.querySelector('.step-circle');
+            if (c4) c4.innerHTML = '🌸';
+
+            stepDelivery.className = 'timeline-step';
+        }
+    },
+
     renderPaidSuccessUI(statusData, orderData) {
         const liveActionContainer = document.getElementById('live-order-action-container');
         const statusBadge = document.getElementById('summary-status-badge');
 
         if (statusBadge) {
             statusBadge.className = 'status-badge-confirmed';
-            statusBadge.innerHTML = '✅ Payment Received &bull; Handcrafting Bouquet';
+            statusBadge.innerHTML = '✅ Payment Successful &bull; Bouquet Making';
         }
 
         if (liveActionContainer) {
             liveActionContainer.innerHTML = `
-                <div class="massive-payment-card" style="background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border: 1.5px solid #10B981;">
-                    <div class="payment-card-badge" style="background: #059669; color: #FFFFFF;">
-                        <span class="pulse-sparkle">💰</span>
-                        <span>PAYMENT CONFIRMED &bull; ORDER IN PRODUCTION</span>
+                <div class="massive-payment-card payment-success-card animate-glow-pulse" id="payment-success-card">
+                    <div class="payment-card-badge success-badge">
+                        <span class="pulse-sparkle">🎉</span>
+                        <span>PAYMENT CONFIRMED &bull; READY TO CRAFT</span>
                     </div>
-                    <h3 class="payment-card-heading" style="color: #065F46;">Thank you! We Received Your Payment</h3>
-                    <p class="payment-card-desc" style="color: #047857;">
-                        Your order is now being handcrafted by our florist with fresh blooms. Our delivery rider will contact the recipient upon arrival!
+                    <h3 class="payment-card-heading success-heading">Payment Successful! 🎉 We are now preparing your bouquet.</h3>
+                    <p class="payment-card-desc success-desc">
+                        Your payment has been received and verified. Our florists have handpicked the freshest flowers and are now handcrafting your arrangement!
                     </p>
-                    <div style="margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap;">
-                        <a href="/profile.html" class="btn btn-primary" style="display: inline-block; padding: 10px 22px; text-decoration: none; border-radius: 9999px; font-weight: 700;">
+                    <div class="payment-card-footer">
+                        <div class="footer-note-item">
+                            <span class="footer-icon">🌸</span>
+                            <span>Status: <strong>Bouquet Making in Progress</strong>. Our delivery courier will contact ${escapeHtml(orderData?.recipientName || 'the recipient')} upon arrival.</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 18px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <a href="/profile.html" class="btn btn-primary" style="display: inline-block; padding: 10px 24px; text-decoration: none; border-radius: 9999px; font-weight: 700;">
                             View in My Orders &rarr;
                         </a>
-                        <a href="/catalog" class="btn" style="display: inline-block; padding: 10px 22px; text-decoration: none; border-radius: 9999px; background: #FFFFFF; color: #065F46; border: 1px solid #10B981; font-weight: 600;">
-                            Browse More Flowers
+                        <a href="/catalog" class="btn" style="display: inline-block; padding: 10px 24px; text-decoration: none; border-radius: 9999px; background: #FFFFFF; color: #0F172A; border: 1.5px solid #CBD5E1; font-weight: 600;">
+                            Browse More Bouquets
                         </a>
                     </div>
                 </div>
             `;
         }
+
+        // Highlight the 'Making' step on the visual timeline
+        this.updateTimelineStep('PAID');
     },
 
     renderPaymentUnlockedUI(statusData, orderData) {
@@ -805,6 +880,34 @@ window.WhatsApp = {
                         <p class="expectation-p">Our florist will review and accept your order within 10 to 15 minutes.</p>
                         <p class="expectation-p">Once accepted, your secure payment link will appear automatically on this page and will also be sent to your email.</p>
                         <p class="expectation-p">After your payment is complete, we will begin crafting your bouquet, and our delivery agent will contact the provided phone number upon arrival. You will also receive a final WhatsApp confirmation!</p>
+                    </div>
+                </div>
+
+                <!-- 🚀 5-STEP ORDER TIMELINE -->
+                <div class="order-timeline-stepper" id="order-timeline-stepper">
+                    <div class="timeline-step step-done" id="step-placed">
+                        <div class="step-circle">✓</div>
+                        <div class="step-label">Order Placed</div>
+                    </div>
+                    <div class="timeline-connector connector-active" id="conn-1"></div>
+                    <div class="timeline-step step-active" id="step-review">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Florist Review</div>
+                    </div>
+                    <div class="timeline-connector" id="conn-2"></div>
+                    <div class="timeline-step" id="step-payment">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Payment</div>
+                    </div>
+                    <div class="timeline-connector" id="conn-3"></div>
+                    <div class="timeline-step" id="step-making">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Making</div>
+                    </div>
+                    <div class="timeline-connector" id="conn-4"></div>
+                    <div class="timeline-step" id="step-delivery">
+                        <div class="step-circle">5</div>
+                        <div class="step-label">Dispatched</div>
                     </div>
                 </div>
 
