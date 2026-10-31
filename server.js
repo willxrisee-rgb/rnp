@@ -1,6 +1,7 @@
 require('dotenv').config();
 const https = require('https');
 const crypto = require('crypto');
+const dns = require('dns');
 const httpsAgent = new https.Agent({ family: 4 });
 const express = require('express');
 const axios = require('axios');
@@ -32,13 +33,20 @@ function getEmailTransporter() {
   if (mailTransporter) return mailTransporter;
   if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
     mailTransporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD
+      },
+      lookup: (hostname, options, callback) => {
+        dns.lookup(hostname, { family: 4 }, (err, address, family) => {
+          callback(err, address, family);
+        });
       }
     });
-    console.log('[Nodemailer] Reusable email transporter initialized for Gmail service.');
+    console.log('[Nodemailer] Reusable IPv4 email transporter initialized for smtp.gmail.com:465.');
   } else {
     console.warn('[Nodemailer] Warning: GMAIL_USER or GMAIL_APP_PASSWORD is not set. Email delivery will be skipped.');
   }
