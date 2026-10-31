@@ -1170,6 +1170,9 @@ app.post('/api/razorpay-webhook', async (req, res) => {
             ] : []
           };
 
+          const botToken = process.env.TELEGRAM_BOT_TOKEN;
+          const chatId = process.env.TELEGRAM_CHAT_ID;
+
           if (botToken && chatId && telegramMessageId) {
             try {
               // Use Axios (with the existing IPv4 httpsAgent) to call Telegram's editMessageCaption API
