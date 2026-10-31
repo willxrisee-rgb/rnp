@@ -1,7 +1,6 @@
 require('dotenv').config();
 const https = require('https');
 const crypto = require('crypto');
-const dns = require('dns');
 const httpsAgent = new https.Agent({ family: 4 });
 const express = require('express');
 const axios = require('axios');
@@ -11,7 +10,6 @@ const fs = require('fs');
 const admin = require('firebase-admin');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const Razorpay = require('razorpay');
-const nodemailer = require('nodemailer');
 
 // Initialize Razorpay Client
 let razorpay = null;
@@ -25,40 +23,7 @@ if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
   console.warn('[Razorpay] Warning: RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing. Payment links will not be generated.');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 📧 Reusable Nodemailer Transporter (Gmail Service)
-// ─────────────────────────────────────────────────────────────────────────────
-let mailTransporter = null;
-function getEmailTransporter() {
-  if (mailTransporter) return mailTransporter;
-  if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
-    mailTransporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD
-      },
-      lookup: (hostname, options, callback) => {
-        dns.lookup(hostname, { family: 4 }, (err, address, family) => {
-          callback(err, address, family);
-        });
-      }
-    });
-    console.log('[Nodemailer] Reusable IPv4 email transporter initialized for smtp.gmail.com:465.');
-  } else {
-    console.warn('[Nodemailer] Warning: GMAIL_USER or GMAIL_APP_PASSWORD is not set. Email delivery will be skipped.');
-  }
-  return mailTransporter;
-}
 
-// Check email transporter on boot
-try {
-  getEmailTransporter();
-} catch (e) {
-  console.warn('[Nodemailer] Initial boot setup notice:', e.message);
-}
 
 /**
  * Generates a branded, responsive HTML email for order acceptance & payment link.
@@ -877,12 +842,13 @@ app.post('/api/telegram-webhook', async (req, res) => {
           await orderRef.set(updateDoc, { merge: true });
           console.log(`[Telegram Webhook] Firestore Order #${orderId} marked as PAYMENT_PENDING`);
 
-          // 📧 Send branded HTML email to customer with payment link
+          // 📧 Send branded HTML email to customer with payment link via Google Apps Script HTTP bridge
           try {
-            const transporter = getEmailTransporter();
+            const emailWebhook = process.env.GOOGLE_EMAIL_WEBHOOK;
             const targetCustomerEmail = (customerEmail || (orderData && (orderData.customerEmail || orderData.email)) || '').trim();
 
-            if (transporter && targetCustomerEmail && targetCustomerEmail.includes('@')) {
+            if (emailWebhook && targetCustomerEmail && targetCustomerEmail.includes('@')) {
+              const customerEmail = targetCustomerEmail;
               const effectiveOrderId = (orderData && orderData.id) || orderId;
               const displayOrderId = effectiveOrderId.startsWith('RNP-')
                 ? effectiveOrderId
@@ -899,7 +865,8 @@ app.post('/api/telegram-webhook', async (req, res) => {
               const cardMessage = (orderData?.cardMessage && orderData.cardMessage !== 'None') ? orderData.cardMessage : '';
               const bouquetImage = (orderData && (orderData.imageUrl || (orderData.cart && orderData.cart[0] && (orderData.cart[0].imageUrl || orderData.cart[0].image_url)))) || '';
 
-              const emailHtml = generateOrderAcceptedEmailHtml({
+              const emailSubject = `Payment Link - Order #${displayOrderId} | Rose n Petals`;
+              const emailBody = generateOrderAcceptedEmailHtml({
                 displayOrderId,
                 customerName,
                 bouquetName,
@@ -915,23 +882,20 @@ app.post('/api/telegram-webhook', async (req, res) => {
                 bouquetImage
               });
 
-              await transporter.sendMail({
-                from: `"Rose n Petals" <${process.env.GMAIL_USER}>`,
-                to: targetCustomerEmail,
-                subject: `Payment Link - Order #${displayOrderId} | Rose n Petals`,
-                html: emailHtml
-              }).catch(err => {
-                console.error('[Nodemailer Error]:', err);
-                throw err;
+              await axios.post(process.env.GOOGLE_EMAIL_WEBHOOK, {
+                to: customerEmail,
+                subject: emailSubject,
+                html: emailBody
               });
-              console.log(`[Nodemailer] Successfully delivered payment link email to ${targetCustomerEmail} for order #${displayOrderId}`);
-            } else if (!transporter) {
-              console.error(`[Nodemailer Error]: Transporter not ready (GMAIL_USER is ${process.env.GMAIL_USER ? 'SET' : 'MISSING'}, GMAIL_APP_PASSWORD is ${process.env.GMAIL_APP_PASSWORD ? 'SET' : 'MISSING'}). Skipped email for order #${orderId}`);
+
+              console.log(`[Email Dispatch] Successfully sent payment link email via Google Apps Script to ${customerEmail} for order #${displayOrderId}`);
+            } else if (!emailWebhook) {
+              console.warn(`[Email Dispatch] GOOGLE_EMAIL_WEBHOOK is not set in environment variables. Skipped email for order #${orderId}`);
             } else {
-              console.error(`[Nodemailer Error]: No valid customer email found for order #${orderId} (found: "${targetCustomerEmail}"). Skipped email.`);
+              console.warn(`[Email Dispatch] No valid customer email found for order #${orderId} (found: "${targetCustomerEmail}"). Skipped email.`);
             }
           } catch (emailErr) {
-            console.error('[Nodemailer Error]: Full exception details:', emailErr);
+            console.error('[Email Dispatch Error]: Failed to dispatch email via Google Apps Script webhook:', emailErr.message || emailErr);
           }
         } else {
           await orderRef.set({
