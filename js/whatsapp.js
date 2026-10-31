@@ -640,6 +640,18 @@ window.WhatsApp = {
 
                     // Render massive Pay Now button and accepted view
                     this.renderPaymentUnlockedUI(data, orderData);
+                } else if (currentStatus === 'PAID' || currentStatus === 'CONFIRMED') {
+                    // Instantly stop polling — payment confirmed!
+                    this.stopStatusPolling();
+                    this.playGentleNotificationSound();
+                    if (typeof window.confetti === 'function') {
+                        window.confetti({
+                            particleCount: 100,
+                            spread: 80,
+                            origin: { y: 0.55 }
+                        });
+                    }
+                    this.renderPaidSuccessUI(data, orderData);
                 } else if (currentStatus === 'CANCELLED_SHOP_BUSY') {
                     this.stopStatusPolling();
                     this.renderShopBusyUI(data, orderData);
@@ -651,6 +663,39 @@ window.WhatsApp = {
 
         // Poll every 10 seconds
         this._statusPollTimer = setInterval(pollStatus, 10000);
+    },
+
+    renderPaidSuccessUI(statusData, orderData) {
+        const liveActionContainer = document.getElementById('live-order-action-container');
+        const statusBadge = document.getElementById('summary-status-badge');
+
+        if (statusBadge) {
+            statusBadge.className = 'status-badge-confirmed';
+            statusBadge.innerHTML = '✅ Payment Received &bull; Handcrafting Bouquet';
+        }
+
+        if (liveActionContainer) {
+            liveActionContainer.innerHTML = `
+                <div class="massive-payment-card" style="background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border: 1.5px solid #10B981;">
+                    <div class="payment-card-badge" style="background: #059669; color: #FFFFFF;">
+                        <span class="pulse-sparkle">💰</span>
+                        <span>PAYMENT CONFIRMED &bull; ORDER IN PRODUCTION</span>
+                    </div>
+                    <h3 class="payment-card-heading" style="color: #065F46;">Thank you! We Received Your Payment</h3>
+                    <p class="payment-card-desc" style="color: #047857;">
+                        Your order is now being handcrafted by our florist with fresh blooms. Our delivery rider will contact the recipient upon arrival!
+                    </p>
+                    <div style="margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap;">
+                        <a href="/profile.html" class="btn btn-primary" style="display: inline-block; padding: 10px 22px; text-decoration: none; border-radius: 9999px; font-weight: 700;">
+                            View in My Orders &rarr;
+                        </a>
+                        <a href="/catalog" class="btn" style="display: inline-block; padding: 10px 22px; text-decoration: none; border-radius: 9999px; background: #FFFFFF; color: #065F46; border: 1px solid #10B981; font-weight: 600;">
+                            Browse More Flowers
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
     },
 
     renderPaymentUnlockedUI(statusData, orderData) {

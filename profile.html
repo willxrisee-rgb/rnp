@@ -457,6 +457,8 @@
             const s = (status || '').toUpperCase();
             if (s === 'PAYMENT_PENDING') {
                 return `<span class="order-status-badge status-payment-pending">💳 Action Required: Payment Pending</span>`;
+            } else if (s === 'PAID') {
+                return `<span class="order-status-badge status-confirmed">💰 Payment Received & Preparing</span>`;
             } else if (s.includes('PENDING') || s === 'PENDING_SHOP_APPROVAL') {
                 return `<span class="order-status-badge status-pending">⏳ Pending Shop Approval</span>`;
             } else if (s.includes('CANCELLED') || s.includes('DENY')) {

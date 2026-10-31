@@ -1,5 +1,6 @@
 require('dotenv').config();
 const https = require('https');
+const crypto = require('crypto');
 const httpsAgent = new https.Agent({ family: 4 });
 const express = require('express');
 const axios = require('axios');
@@ -496,7 +497,12 @@ const PORT = process.env.PORT || 8080;
 // Must bind to 0.0.0.0 for Render deployments instead of localhost
 const HOST = '0.0.0.0';
 
-app.use(express.json());
+// Parse JSON and preserve raw buffer for webhook signature verification
+app.use(express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
+  }
+}));
 app.use(express.urlencoded({ extended: true }));
 
 // Helper to parse cookies manually
@@ -682,7 +688,22 @@ app.post('/api/notify-order', async (req, res) => {
 
     console.log(`[Telegram Bot] Successfully sent order alert for #${displayOrderId}`);
 
-    return res.status(200).json({ success: true, messageId: telegramData.result?.message_id });
+    const sentMessageId = telegramData.result?.message_id;
+    if (sentMessageId && orderId) {
+      try {
+        const db = getFirebaseAdminDb();
+        if (db) {
+          await db.collection('Orders').doc(orderId).set({
+            telegramMessageId: sentMessageId
+          }, { merge: true });
+          console.log(`[Telegram Bot] Saved telegramMessageId (${sentMessageId}) to Firestore Order #${orderId}`);
+        }
+      } catch (dbErr) {
+        console.warn('[Telegram Bot] Could not save telegramMessageId to Firestore:', dbErr.message);
+      }
+    }
+
+    return res.status(200).json({ success: true, messageId: sentMessageId });
 
   } catch (err) {
     console.error('[Telegram Bot] Exception in /api/notify-order:', err);
@@ -840,6 +861,9 @@ app.post('/api/telegram-webhook', async (req, res) => {
           };
           if (paymentLinkUrl) {
             updateDoc.paymentLink = paymentLinkUrl;
+          }
+          if (messageId) {
+            updateDoc.telegramMessageId = messageId;
           }
 
           await orderRef.set(updateDoc, { merge: true });
@@ -999,6 +1023,162 @@ app.post('/api/telegram-webhook', async (req, res) => {
   } catch (err) {
     console.error('[Telegram Webhook] Uncaught error in handler:', err);
   }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 💳 Razorpay Webhook Route (Handle payment_link.paid)
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/api/razorpay-webhook', async (req, res) => {
+  const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+  const signature = req.headers['x-razorpay-signature'];
+
+  if (!webhookSecret) {
+    console.warn('[Razorpay Webhook] RAZORPAY_WEBHOOK_SECRET is not configured in environment variables.');
+    return res.status(400).send('Invalid signature');
+  }
+
+  if (!signature) {
+    console.warn('[Razorpay Webhook] Missing x-razorpay-signature header.');
+    return res.status(400).send('Invalid signature');
+  }
+
+  // 1. Verify the x-razorpay-signature header using process.env.RAZORPAY_WEBHOOK_SECRET
+  try {
+    const rawPayload = req.rawBody ? req.rawBody.toString('utf8') : JSON.stringify(req.body);
+    const expectedSignature = crypto
+      .createHmac('sha256', webhookSecret)
+      .update(rawPayload)
+      .digest('hex');
+
+    const isValid = (signature === expectedSignature) ||
+      (typeof Razorpay.validateWebhookSignature === 'function' &&
+       (() => { try { return Razorpay.validateWebhookSignature(rawPayload, signature, webhookSecret); } catch { return false; } })());
+
+    if (!isValid) {
+      console.warn('[Razorpay Webhook] Invalid signature received:', signature);
+      return res.status(400).send('Invalid signature');
+    }
+  } catch (verifyErr) {
+    console.error('[Razorpay Webhook] Signature verification error:', verifyErr.message);
+    return res.status(400).send('Invalid signature');
+  }
+
+  // 2. Process the Payment Event
+  try {
+    const event = req.body?.event;
+    console.log(`[Razorpay Webhook] Received verified event: ${event}`);
+
+    // Listen specifically for the payment_link.paid event
+    if (event === 'payment_link.paid') {
+      const orderId = req.body?.payload?.payment_link?.entity?.reference_id;
+      console.log(`[Razorpay Webhook] Processing payment_link.paid for Order ID: ${orderId}`);
+
+      if (orderId) {
+        const db = getFirebaseAdminDb();
+        if (db) {
+          const orderRef = db.collection('Orders').doc(orderId);
+          let orderSnap = await orderRef.get();
+          let orderData = orderSnap.exists ? orderSnap.data() : null;
+
+          // If document not found directly by ID, search by 'id' field
+          if (!orderData) {
+            const querySnap = await db.collection('Orders').where('id', '==', orderId).limit(1).get();
+            if (!querySnap.empty) {
+              const doc = querySnap.docs[0];
+              orderData = doc.data();
+              await doc.ref.set({
+                status: 'PAID',
+                paidAt: FieldValue.serverTimestamp(),
+                razorpayPaymentId: req.body?.payload?.payment?.entity?.id || ''
+              }, { merge: true });
+            }
+          } else {
+            // Update that specific order document in Firestore to { status: 'PAID' }
+            await orderRef.set({
+              status: 'PAID',
+              paidAt: FieldValue.serverTimestamp(),
+              razorpayPaymentId: req.body?.payload?.payment?.entity?.id || ''
+            }, { merge: true });
+          }
+
+          // 3. Update the Owner's Telegram
+          // Fetch the updated order document from Firestore to retrieve the telegramMessageId
+          const updatedSnap = await orderRef.get();
+          const updatedOrderData = updatedSnap.exists ? updatedSnap.data() : orderData;
+          const telegramMessageId = updatedOrderData?.telegramMessageId;
+
+          const effectiveOrderId = (updatedOrderData && updatedOrderData.id) || orderId;
+          const displayOrderId = effectiveOrderId.startsWith('RNP-')
+            ? effectiveOrderId
+            : `RNP-${effectiveOrderId.substring(0, 8).toUpperCase()}`;
+
+          const botToken = process.env.TELEGRAM_BOT_TOKEN;
+          const chatId = process.env.TELEGRAM_CHAT_ID;
+          const successCaption = `💰 PAYMENT RECEIVED! 💰\nOrder #${displayOrderId} is now PAID and ready to be made.`;
+
+          if (botToken && chatId && telegramMessageId) {
+            try {
+              // Use Axios (with the existing IPv4 httpsAgent) to call Telegram's editMessageCaption API
+              const editRes = await axios.post(`https://api.telegram.org/bot${botToken}/editMessageCaption`, {
+                chat_id: chatId,
+                message_id: telegramMessageId,
+                caption: successCaption,
+                parse_mode: 'HTML',
+                reply_markup: {
+                  inline_keyboard: [] // Completely remove old Accept/Deny buttons so owner cannot click them again
+                }
+              }, { httpsAgent, validateStatus: () => true });
+
+              const editData = editRes.data;
+              if (!editData || !editData.ok) {
+                // If the message has no caption, fallback to editMessageText
+                if (editData?.description && editData.description.includes('no caption')) {
+                  await axios.post(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+                    chat_id: chatId,
+                    message_id: telegramMessageId,
+                    text: successCaption,
+                    parse_mode: 'HTML',
+                    reply_markup: { inline_keyboard: [] }
+                  }, { httpsAgent, validateStatus: () => true });
+                } else {
+                  console.warn('[Razorpay Webhook] editMessageCaption error, falling back to sendMessage:', editData);
+                  await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    chat_id: chatId,
+                    text: successCaption,
+                    parse_mode: 'HTML'
+                  }, { httpsAgent, validateStatus: () => true });
+                }
+              }
+              console.log(`[Razorpay Webhook] Successfully updated Telegram alert for Order #${displayOrderId}`);
+            } catch (tgErr) {
+              console.error('[Razorpay Webhook] Error calling Telegram editMessageCaption:', tgErr.message);
+            }
+          } else if (botToken && chatId) {
+            // If telegramMessageId wasn't found on the order document, send a new alert message
+            try {
+              await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                chat_id: chatId,
+                text: successCaption,
+                parse_mode: 'HTML'
+              }, { httpsAgent, validateStatus: () => true });
+              console.log(`[Razorpay Webhook] Sent payment success notification to Telegram for Order #${displayOrderId}`);
+            } catch (tgErr) {
+              console.error('[Razorpay Webhook] Error sending Telegram alert:', tgErr.message);
+            }
+          }
+        } else {
+          console.warn('[Razorpay Webhook] Firebase Admin DB not initialized. Skipped order status update.');
+        }
+      } else {
+        console.warn('[Razorpay Webhook] No reference_id found in payment_link payload.');
+      }
+    }
+  } catch (eventErr) {
+    console.error('[Razorpay Webhook] Error processing webhook event:', eventErr);
+  }
+
+  // Note: Always return a 200 OK at the end of the route so Razorpay knows the webhook was received and stops retrying
+  return res.status(200).json({ status: 'ok' });
 });
 
 // Admin Auth Middleware
