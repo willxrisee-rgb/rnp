@@ -2,7 +2,7 @@
 
 window.Pages = {
     renderHomePage(container) {
-        document.title = "Flower Delivery in Ghaziabad | Fresh Bouquets – Rose n Petals";
+        document.title = "Rose n Petals | Fresh Flower Delivery in Ghaziabad";
 
         const bouquets = Store.getAllProducts();
         const bestSellers = bouquets.filter(b => b.is_best_seller).slice(0, 8);
@@ -295,23 +295,11 @@ window.Pages = {
                     <div class="detail-info">
                         <div class="detail-tags mb-2">${tagsHtml}</div>
                         <h1 class="detail-title">${bouquet.name}</h1>
-                        <p class="detail-price mt-2 mb-4">₹${bouquet.price}</p>
+                        <p class="detail-price mt-2 mb-3">₹${bouquet.price}</p>
                         
-                        <div class="detail-desc mb-4">
-                            <p>${bouquet.short_description}</p>
-                        </div>
-                        
-                        <div class="local-promise-box mb-4">
-                            <h4>🛡️ Local Promise</h4>
-                            <ul class="promise-list">
-                                <li>Local delivery available in Kavi Nagar & Raj Nagar</li>
-                                <li>Custom message card available</li>
-                                <li>Fresh flowers arranged to order</li>
-                            </ul>
-                        </div>
-                        
-                        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+                        <div class="detail-cta-group" style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
                           <button 
+                            id="btn-order-cta"
                             class="btn btn-primary" 
                             style="width:100%;padding:14px;font-size:15px;font-weight:700;"
                             onclick="document.getElementById('bouquet-order-form').scrollIntoView({behavior:'smooth',block:'start'})">
@@ -323,6 +311,19 @@ window.Pages = {
                             onclick="window.CartUI.addItem('${bouquet.id}')">
                             + Add to Cart
                           </button>
+                        </div>
+
+                        <div class="detail-desc mb-4">
+                            <p>${bouquet.short_description}</p>
+                        </div>
+                        
+                        <div class="local-promise-box mb-4">
+                            <h4>🛡️ Local Promise</h4>
+                            <ul class="promise-list">
+                                <li>Local delivery available in Kavi Nagar & Raj Nagar</li>
+                                <li>Custom message card available</li>
+                                <li>Fresh flowers arranged to order</li>
+                            </ul>
                         </div>
 
                         <!-- Embedded Order Form -->

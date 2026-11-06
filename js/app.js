@@ -242,6 +242,12 @@ const App = {
             }
         });
 
+        // Track Meta Pixel PageView on SPA navigation (skip initial load since head script already fires)
+        if (window.fbq && this._hasRenderedInitialRoute) {
+            try { window.fbq('track', 'PageView'); } catch (e) {}
+        }
+        this._hasRenderedInitialRoute = true;
+
         // Simple path-based router
         if (path === '/' || path === '') {
             setCanonical('/');

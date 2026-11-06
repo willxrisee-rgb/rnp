@@ -20,27 +20,19 @@ window.Components = {
         const safeBouquetName = (bouquet.name || '').replace(/'/g, "\\'");
 
         return `
-            <article class="product-card">
-                <a href="/bouquet/${bouquet.slug}" class="product-card__image" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
+            <a href="/bouquet/${bouquet.slug}" class="product-card" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
+                <div class="product-card__image">
                     ${imageHtml}
                     ${badgeHTML}
-                </a>
+                </div>
                 <div class="product-card__content">
-                    <h3 class="product-card__title">
-                        <a href="/bouquet/${bouquet.slug}" onclick="if(window.gtag) gtag('event', 'bouquet_view', { event_category: 'Engagement', bouquet_name: '${safeBouquetName}' });">
-                            ${bouquet.name}
-                        </a>
-                    </h3>
-                    <p class="product-card__desc">${bouquet.short_description}</p>
-                    <div class="product-card__price-row" style="display:flex; flex-direction:column; gap:8px;">
+                    <h3 class="product-card__title">${bouquet.name}</h3>
+                    <p class="product-card__desc">${bouquet.short_description || ''}</p>
+                    <div class="product-card__price-row">
                         <span class="product-card__price">₹${bouquet.price}</span>
-                        <div style="display:flex; gap:8px;">
-                            <a href="/bouquet/${bouquet.slug}" class="btn btn-primary btn-sm product-card__btn" onclick="if(window.gtag) gtag('event', 'order_now_click', { event_category: 'Order Intent', bouquet_name: '${safeBouquetName}' });">Order now</a>
-                            <button class="btn-add-cart" onclick="if(window.CartUI && window.CartUI.addItem){window.CartUI.addItem('${bouquet.id}')} else {console.warn('CartUI not ready yet')}">Add to Cart</button>
-                        </div>
                     </div>
                 </div>
-            </article>
+            </a>
         `;
     },
 
@@ -243,7 +235,7 @@ window.Components = {
                     </div>
                     
                     <button type="submit" id="btn-submit-order" class="btn btn-primary btn-block btn-lg">
-                        <span class="btn-text">Confirm Order</span>
+                        <span class="btn-text">Proceed to Florist Review</span>
                         <span class="btn-spinner" style="display:none;">⏳ Placing your order...</span>
                     </button>
                     <p class="form-note">🔒 Safe checkout. Tracked directly via your account & WhatsApp.</p>

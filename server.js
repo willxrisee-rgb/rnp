@@ -298,30 +298,35 @@ function productCardHTML(p, index = 0) {
     ? 'loading="eager" fetchpriority="high"'
     : 'loading="lazy"';
   const href = `/bouquet/${p.slug}`;
-  const price = p.price ? `<p class="product-price">&#8377;${escapeHtml(String(p.price))}</p>` : '';
+  const price = p.price ? `<span class="product-card__price">&#8377;${escapeHtml(String(p.price))}</span>` : '';
   const img = p.imageurl
     ? `<img src="${escapeHtml(p.imageurl)}"
           alt="${escapeHtml(p.name)} — Flower Bouquet for Delivery in Ghaziabad"
-          class="product-image"
+          class="card-image"
           ${imgAttrs}
           width="400"
           height="400">`
-    : `<div class="product-image-placeholder"></div>`;
-  const tags = p.occasiontags.map(t =>
-    `<span class="badge">${escapeHtml(t)}</span>`
-  ).join('');
+    : `<div class="card-image placeholder-image text-center p-4"><span>Image coming soon</span></div>`;
+  const primaryTag = p.occasiontags && p.occasiontags.length > 0 ? p.occasiontags[0] : '';
+  const badgeHTML = p.isbestseller
+    ? '<span class="product-card__badge bestseller">BEST SELLER</span>'
+    : (primaryTag ? `<span class="product-card__badge occasion">${escapeHtml(primaryTag)}</span>` : '');
+  const desc = p.shortdescription ? `<p class="product-card__desc">${escapeHtml(p.shortdescription)}</p>` : '';
+
   return `
-    <div class="product-card" data-id="${escapeHtml(p.slug)}">
-      <a href="${href}" class="product-card-link">
-        <div class="product-image-wrapper">${img}</div>
-        <div class="product-info">
-          <h3 class="product-name">${escapeHtml(p.name)}</h3>
+    <a href="${href}" class="product-card" data-id="${escapeHtml(p.slug)}">
+      <div class="product-card__image">
+        ${img}
+        ${badgeHTML}
+      </div>
+      <div class="product-card__content">
+        <h3 class="product-name product-card__title">${escapeHtml(p.name)}</h3>
+        ${desc}
+        <div class="product-card__price-row">
           ${price}
-          <div class="product-tags">${tags}</div>
         </div>
-      </a>
-      <a href="${href}" class="btn btn-primary btn-block">Order Now</a>
-    </div>`;
+      </div>
+    </a>`;
 }
 
 function catalogGridHTML(products) {
@@ -423,13 +428,13 @@ function bouquetDetailHTML(p) {
           <div class="detail-tags">${tags}</div>
           <h1 class="detail-title">${escapeHtml(p.name)}</h1>
           ${price}
-          <div class="detail-desc">${desc}</div>
           <a href="https://wa.me/917289996804?text=${waText}"
             target="_blank" rel="noopener noreferrer"
             class="btn btn-primary"
-            style="width:100%;padding:14px;font-size:15px;font-weight:700;display:block;text-align:center;margin-top:16px;">
+            style="width:100%;padding:14px;font-size:15px;font-weight:700;display:block;text-align:center;margin-top:12px;margin-bottom:16px;">
             Order on WhatsApp
           </a>
+          <div class="detail-desc">${desc}</div>
         </div>
       </div>
     </section>`;
@@ -2130,8 +2135,8 @@ app.get('/', async (req, res) => {
     const html = buildSSRPage(
       ssrContent,
       products,
-      'Flower Delivery in Ghaziabad | Fresh Bouquets — Rose n Petals',
-      'Ghaziabad\'s trusted florist since 1999. Fresh handmade bouquets delivered in 1 hour to Kavi Nagar, Indirapuram, Vaishali and more. Starting Rs.200. WhatsApp +91 7289996804.',
+      'Rose n Petals | Fresh Flower Delivery in Ghaziabad',
+      'Order premium flower bouquets for birthdays and anniversaries. Fast, local delivery across Kavi Nagar, Raj Nagar, and Ghaziabad. Request your order today!',
       'https://rosenpetals.com'
     );
     res.send(html);
